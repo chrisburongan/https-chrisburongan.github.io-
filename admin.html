@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Management Tamu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f1f5f9; font-family: 'Inter', sans-serif; }
+        #login-screen { display: flex; }
+        #main-content { display: none; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- Layar Login -->
+    <div id="login-screen" class="fixed inset-0 z-[100] bg-slate-900 flex items-center justify-center p-4">
+        <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md">
+            <h1 class="text-2xl font-bold mb-6 text-center text-slate-800">Admin Login</h1>
+            <div class="space-y-4">
+                <input type="text" id="username" placeholder="Username" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                <input type="password" id="password" placeholder="Password" class="w-full p-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                <button onclick="attemptLogin()" class="w-full py-3 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-all">Masuk</button>
+                <p id="login-error" class="text-red-500 text-sm text-center hidden">Username atau Password salah!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Konten Utama Dashboard -->
+    <div id="main-content" class="max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+            <h2 class="text-3xl font-bold text-slate-800">Management Tamu</h2>
+            <button onclick="logout()" class="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600">Logout</button>
+        </div>
+        
+        <!-- Pengaturan Nama File Otomatis -->
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-8 rounded-r-xl">
+            <div class="flex items-center gap-4">
+                <div class="flex-1">
+                    <p class="text-sm font-bold text-blue-800">Nama File Undangan Terdeteksi:</p>
+                    <p class="text-xs text-blue-600">Link akan diarahkan ke file ini di folder yang sama.</p>
+                </div>
+                <!-- Default diubah ke index.html sesuai temuan Anda -->
+                <input type="text" id="target-filename" value="index.html" onchange="renderGuestTable()" class="p-2 border rounded-lg text-sm w-64 outline-none focus:ring-2 focus:ring-blue-400 font-mono">
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="p-6 bg-white rounded-xl shadow-sm border-b-4 border-blue-500">
+                <h3 class="text-xs uppercase text-slate-400 font-bold mb-1">Total Tamu</h3>
+                <p id="stat-total" class="text-3xl font-bold">0</p>
+            </div>
+            <div class="p-6 bg-white rounded-xl shadow-sm border-b-4 border-green-500">
+                <h3 class="text-xs uppercase text-slate-400 font-bold mb-1">Hadir</h3>
+                <p id="stat-present" class="text-3xl font-bold">0</p>
+            </div>
+            <div class="p-6 bg-white rounded-xl shadow-sm border-b-4 border-yellow-500">
+                <h3 class="text-xs uppercase text-slate-400 font-bold mb-1">Telah Dibuka</h3>
+                <p id="stat-opened" class="text-3xl font-bold">0</p>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-xl shadow-sm mb-8">
+            <h3 class="text-lg font-semibold mb-4">Tambah Tamu Baru</h3>
+            <div class="flex gap-4">
+                <input type="text" id="new-guest-name" placeholder="Nama Lengkap Tamu" class="flex-1 p-3 border rounded-lg outline-none focus:ring-2 focus:ring-blue-500">
+                <button onclick="addGuest()" class="px-8 py-3 bg-slate-800 text-white font-bold rounded-lg hover:bg-black">Tambah</button>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <table class="w-full text-left border-collapse">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th class="p-4 border-b font-semibold text-slate-700">Nama Tamu</th>
+                        <th class="p-4 border-b font-semibold text-slate-700">URL Undangan</th>
+                        <th class="p-4 border-b font-semibold text-slate-700 text-center">Status</th>
+                        <th class="p-4 border-b font-semibold text-slate-700 text-center">RSVP</th>
+                        <th class="p-4 border-b font-semibold text-slate-700 text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="guest-table-body" class="divide-y divide-slate-100"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let guestData = JSON.parse(localStorage.getItem('wedding_guests')) || [];
+
+        function attemptLogin() {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            if (user === 'admin' && pass === '12345') {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('main-content').style.display = 'block';
+                renderGuestTable();
+            } else {
+                document.getElementById('login-error').classList.remove('hidden');
+            }
+        }
+
+        function logout() {
+            location.reload();
+        }
+
+        function copyToClipboard(text, btn) {
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
+            document.execCommand('copy');
+            document.body.removeChild(el);
+
+            const oldText = btn.innerText;
+            btn.innerText = 'Tersalin!';
+            btn.classList.replace('bg-blue-500', 'bg-green-500');
+            setTimeout(() => {
+                btn.innerText = oldText;
+                btn.classList.replace('bg-green-500', 'bg-blue-500');
+            }, 2000);
+        }
+
+        function renderGuestTable() {
+            const tbody = document.getElementById('guest-table-body');
+            tbody.innerHTML = '';
+            
+            let opened = 0, present = 0;
+
+            const currentPath = window.location.pathname;
+            const directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+            const baseServerUrl = window.location.origin + directoryPath;
+            
+            // Menggunakan index.html secara default
+            const filenameUndangan = document.getElementById('target-filename').value || 'index.html';
+
+            guestData.forEach((guest, index) => {
+                if (guest.opened) opened++;
+                if (guest.rsvp === 'Hadir') present++;
+
+                const inviteUrl = `${baseServerUrl}/${filenameUndangan}?to=${encodeURIComponent(guest.name)}&code=${guest.code}`;
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="p-4 text-slate-800 font-medium">${guest.name}</td>
+                    <td class="p-4">
+                        <div class="flex gap-2">
+                            <input type="text" readonly value="${inviteUrl}" class="flex-1 text-xs p-2 bg-slate-50 border rounded">
+                            <button onclick="copyToClipboard('${inviteUrl}', this)" class="px-3 py-1 bg-blue-500 text-white text-xs rounded hover:bg-blue-600">Salin</button>
+                        </div>
+                    </td>
+                    <td class="p-4 text-center">
+                        <span class="text-xs px-2 py-1 rounded-full ${guest.opened ? 'bg-green-100 text-green-700' : 'bg-slate-100 text-slate-500'}">
+                            ${guest.opened ? 'Terbuka' : 'Belum'}
+                        </span>
+                    </td>
+                    <td class="p-4 text-center">
+                        <span class="text-xs font-bold ${guest.rsvp === 'Hadir' ? 'text-green-600' : (guest.rsvp === 'Tidak Hadir' ? 'text-red-600' : 'text-slate-400')}">
+                            ${guest.rsvp}
+                        </span>
+                    </td>
+                    <td class="p-4 text-center">
+                        <button onclick="deleteGuest(${index})" class="text-red-400 hover:text-red-600 text-sm">Hapus</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            document.getElementById('stat-total').innerText = guestData.length;
+            document.getElementById('stat-opened').innerText = opened;
+            document.getElementById('stat-present').innerText = present;
+        }
+
+        function addGuest() {
+            const name = document.getElementById('new-guest-name').value;
+            if (!name) return;
+            guestData.push({
+                name: name,
+                code: Math.random().toString(36).substring(2, 7).toUpperCase(),
+                opened: false,
+                rsvp: '-'
+            });
+            localStorage.setItem('wedding_guests', JSON.stringify(guestData));
+            document.getElementById('new-guest-name').value = '';
+            renderGuestTable();
+        }
+
+        function deleteGuest(i) {
+            if(confirm('Hapus tamu ini?')) {
+                guestData.splice(i, 1);
+                localStorage.setItem('wedding_guests', JSON.stringify(guestData));
+                renderGuestTable();
+            }
+        }
+    </script>
+</body>
+</html>

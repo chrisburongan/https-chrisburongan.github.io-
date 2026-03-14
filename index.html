@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wedding Invitation | Adalah & Ia</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Montserrat:wght@300;400;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Sacramento&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --champagne: #f7e7ce;
+            --gold-deep: #b8860b;
+            --gold-light: #d4af37;
+            --text-dark: #4a4a4a;
+            --bg-floral: #fffdf9;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--bg-floral);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, .font-serif {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .font-signature {
+            font-family: 'Sacramento', cursive;
+        }
+
+        /* Hero Background with Parallax effect simulation */
+        .bg-hero {
+            background: linear-gradient(to bottom, rgba(247, 231, 206, 0.4), rgba(255, 253, 249, 1)), 
+                        url('https://lh3.googleusercontent.com/d/1qbhjTa_5mjI3Z_HFhAmtJuXBfUUvlS7W');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Floral Ornaments */
+        .floral-corner {
+            position: absolute;
+            width: 150px;
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 20px;
+        }
+
+        .gold-text {
+            color: var(--gold-deep);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #d4af37 0%, #b8860b 100%);
+            color: white;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(184, 134, 11, 0.3);
+        }
+
+        /* Music Toggle Rotation */
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .rotating {
+            animation: rotate 8s linear infinite;
+        }
+
+        /* Overlay Styles */
+        #wedding-overlay {
+            transition: all 1.2s ease-in-out;
+        }
+        .overlay-hidden {
+            transform: translateY(-100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--champagne); }
+        ::-webkit-scrollbar-thumb { background: var(--gold-light); border-radius: 10px; }
+    </style>
+</head>
+<body class="overflow-hidden">
+
+    <!-- Landing Cover / Overlay -->
+    <div id="wedding-overlay" class="fixed inset-0 z-[200] bg-white flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+        <!-- Botanical Decoration in Overlay -->
+        <div class="absolute top-0 right-0 p-4 opacity-20">
+            <i data-lucide="flower-2" class="w-32 h-32 gold-text"></i>
+        </div>
+        <div class="absolute bottom-0 left-0 p-4 opacity-20">
+            <i data-lucide="sprout" class="w-32 h-32 gold-text"></i>
+        </div>
+
+        <div data-aos="zoom-in" class="relative z-10">
+            <p class="uppercase tracking-[0.4em] text-xs mb-6 gold-text font-semibold">The Wedding Invitation</p>
+            <h1 class="text-5xl md:text-7xl mb-8 gold-text">Adalah <span class="text-3xl font-serif italic text-gray-400">&</span> Ia</h1>
+            <div class="mb-10">
+                <p class="text-sm italic text-gray-500 mb-2">Kepada Yth. Bapak/Ibu/Saudara/i</p>
+                <p class="text-xl font-bold uppercase tracking-widest border-b border-gold-light inline-block pb-1">Tamu Undangan</p>
+            </div>
+            <button onclick="openInvitation()" class="btn-gold px-12 py-4 rounded-full font-bold flex items-center gap-3 mx-auto shadow-lg">
+                <i data-lucide="heart"></i> BUKA UNDANGAN
+            </button>
+        </div>
+    </div>
+
+    <!-- Background Music (YouTube Embed Hidden) -->
+    <div id="youtube-player" class="hidden"></div>
+    <button id="music-toggle" class="fixed bottom-6 left-6 z-50 bg-white/80 p-3 rounded-full border border-gold-accent/50 shadow-xl backdrop-blur-sm">
+        <i data-lucide="disc" class="w-6 h-6 gold-text" id="music-icon"></i>
+    </button>
+
+    <!-- Hero Section -->
+    <section class="relative h-screen flex items-center justify-center text-center px-4 bg-hero">
+        <div data-aos="fade-up" data-aos-duration="2500" class="glass-card p-10 md:p-16 border-none shadow-none bg-transparent">
+            <p class="uppercase tracking-[0.5em] text-sm mb-6 gold-text font-bold">The Wedding Of</p>
+            <h1 class="text-7xl md:text-9xl mb-6 gold-text drop-shadow-sm">Adalah & Ia</h1>
+            <p class="text-xl md:text-2xl font-serif italic mb-8">28 Maret 2026</p>
+            <div class="mt-8">
+                <i data-lucide="chevron-down" class="mx-auto gold-text animate-bounce w-8 h-8 opacity-60"></i>
+            </div>
+        </div>
+    </section>
+
+    <!-- Couple Section -->
+    <section class="py-24 px-4 bg-white relative overflow-hidden">
+        <div class="container mx-auto max-w-5xl relative z-10">
+            <div class="text-center mb-20" data-aos="fade-up">
+                <h2 class="text-4xl md:text-5xl mb-6 gold-text">Mempelai</h2>
+                <div class="w-24 h-1 bg-gold-light mx-auto mb-6"></div>
+                <p class="max-w-2xl mx-auto italic text-gray-500 font-serif">"Dan di atas semuanya itu: kenakanlah kasih, sebagai pengikat yang mempersatukan dan menyempurnakan."</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <!-- Groom -->
+                <div class="text-center" data-aos="fade-right">
+                    <div class="relative inline-block mb-8">
+                        <div class="w-72 h-72 mx-auto rounded-t-full border-8 border-champagne overflow-hidden shadow-2xl">
+                            <img src="https://lh3.googleusercontent.com/d/1qbhjTa_5mjI3Z_HFhAmtJuXBfUUvlS7W" alt="Adalah" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute -bottom-4 -right-4 bg-white p-3 rounded-full shadow-lg">
+                            <i data-lucide="flower" class="w-6 h-6 gold-text"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-4xl mb-2 gold-text">Adalah</h3>
+                    <p class="font-bold text-gray-600 mb-1">Putra dari</p>
+                    <p class="text-sm text-gray-500 italic">Bapak [Nama Ayah] & Ibu [Nama Ibu]</p>
+                </div>
+
+                <!-- Bride -->
+                <div class="text-center" data-aos="fade-left">
+                    <div class="relative inline-block mb-8">
+                        <div class="w-72 h-72 mx-auto rounded-t-full border-8 border-champagne overflow-hidden shadow-2xl">
+                            <img src="https://lh3.googleusercontent.com/d/1tmPHYafiBgu3UG4A_RBLWdWRU7OvByN0" alt="Ia" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute -bottom-4 -left-4 bg-white p-3 rounded-full shadow-lg">
+                            <i data-lucide="flower-2" class="w-6 h-6 gold-text"></i>
+                        </div>
+                    </div>
+                    <h3 class="text-4xl mb-2 gold-text">Ia</h3>
+                    <p class="font-bold text-gray-600 mb-1">Putri dari</p>
+                    <p class="text-sm text-gray-500 italic">Bapak [Nama Ayah] & Ibu [Nama Ibu]</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Love Story -->
+    <section class="py-24 bg-champagne/20 border-y border-gold-light/20">
+        <div class="container mx-auto px-4 max-w-4xl text-center">
+            <h2 class="text-4xl mb-12 gold-text" data-aos="fade-up">Cerita Cinta Kami</h2>
+            <div class="glass-card p-8 md:p-16 shadow-xl relative" data-aos="zoom-in">
+                <i data-lucide="quote" class="absolute top-6 left-6 w-10 h-10 gold-text opacity-20"></i>
+                <p class="text-lg leading-relaxed text-gray-700 italic font-serif">
+                    "Di sebuah desa kecil, hiduplah seorang anak laki-laki bernama Kiko. Kiko adalah anak yang jujur dan suka menolong. Suatu sore, saat Kiko berjalan pulang sekolah melewati jalan setapak di dekat sawah, matanya menangkap sesuatu berwarna merah di balik semak-semak. Kiko mendekat dan terkejut. Itu adalah sebuah dompet kulit berwarna merah. Kiko mengambil dompet tersebut. Saat dibuka, isinya uang yang cukup banyak dan sebuah KTP. 'Wah, ini dompet milik Pak Jaka, tetangga sebelah rumahku!' seru Kiko."
+                </p>
+                <div class="mt-8 text-gold-deep font-signature text-3xl">Kisah Perjalanan Kami</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Countdown Section -->
+    <section class="py-24 text-center bg-white relative overflow-hidden">
+        <div class="container mx-auto px-4 relative z-10">
+            <h2 class="text-3xl mb-12 tracking-[0.3em] uppercase gold-text font-bold">Menuju Hari Bahagia</h2>
+            <div id="countdown" class="flex justify-center gap-4 md:gap-10">
+                <div class="glass-card min-w-[80px] md:min-w-[120px] p-6 shadow-md border-gold-light/30">
+                    <span id="days" class="text-3xl md:text-5xl font-bold gold-text">00</span>
+                    <p class="text-[10px] md:text-xs uppercase tracking-widest mt-2 font-bold text-gray-400">Hari</p>
+                </div>
+                <div class="glass-card min-w-[80px] md:min-w-[120px] p-6 shadow-md border-gold-light/30">
+                    <span id="hours" class="text-3xl md:text-5xl font-bold gold-text">00</span>
+                    <p class="text-[10px] md:text-xs uppercase tracking-widest mt-2 font-bold text-gray-400">Jam</p>
+                </div>
+                <div class="glass-card min-w-[80px] md:min-w-[120px] p-6 shadow-md border-gold-light/30">
+                    <span id="minutes" class="text-3xl md:text-5xl font-bold gold-text">00</span>
+                    <p class="text-[10px] md:text-xs uppercase tracking-widest mt-2 font-bold text-gray-400">Menit</p>
+                </div>
+                <div class="glass-card min-w-[80px] md:min-w-[120px] p-6 shadow-md border-gold-light/30">
+                    <span id="seconds" class="text-3xl md:text-5xl font-bold gold-text">00</span>
+                    <p class="text-[10px] md:text-xs uppercase tracking-widest mt-2 font-bold text-gray-400">Detik</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Event Detail Section -->
+    <section class="py-24 container mx-auto px-4">
+        <div class="grid md:grid-cols-2 gap-12">
+            <!-- Akad/Pemberkatan -->
+            <div class="glass-card p-10 text-center relative overflow-hidden group hover:shadow-2xl transition-all duration-500" data-aos="fade-up">
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-champagne rounded-full opacity-30 group-hover:scale-150 transition-transform"></div>
+                <i data-lucide="church" class="w-12 h-12 mx-auto mb-6 gold-text"></i>
+                <h3 class="text-3xl mb-4 gold-text">Pemberkatan</h3>
+                <div class="w-16 h-0.5 bg-gold-light mx-auto mb-6"></div>
+                <p class="text-xl font-bold mb-2">Sabtu, 28 Maret 2026</p>
+                <p class="text-lg mb-4 text-gray-500">10:30 WIB</p>
+                <p class="font-bold text-gray-700">GBT Tabernacle Church</p>
+                <p class="text-sm text-gray-500 mb-8 italic">Pusat Kota</p>
+                <a href="https://maps.google.com/?q=GBT+Tabernacle+Church" target="_blank" class="btn-gold px-8 py-3 rounded-full text-xs font-bold tracking-widest inline-flex items-center gap-2">
+                    <i data-lucide="map-pin" class="w-4 h-4"></i> PETUNJUK LOKASI
+                </a>
+            </div>
+
+            <!-- Resepsi -->
+            <div class="glass-card p-10 text-center relative overflow-hidden group hover:shadow-2xl transition-all duration-500" data-aos="fade-up" data-aos-delay="200">
+                <div class="absolute -top-10 -left-10 w-32 h-32 bg-champagne rounded-full opacity-30 group-hover:scale-150 transition-transform"></div>
+                <i data-lucide="glass-water" class="w-12 h-12 mx-auto mb-6 gold-text"></i>
+                <h3 class="text-3xl mb-4 gold-text">Resepsi</h3>
+                <div class="w-16 h-0.5 bg-gold-light mx-auto mb-6"></div>
+                <p class="text-xl font-bold mb-2">Sabtu, 28 Maret 2026</p>
+                <p class="text-lg mb-4 text-gray-500">12:00 WIB</p>
+                <p class="font-bold text-gray-700">GBT Tabernacle Church</p>
+                <p class="text-sm text-gray-500 mb-8 italic">Pusat Kota</p>
+                <a href="https://maps.google.com/?q=GBT+Tabernacle+Church" target="_blank" class="btn-gold px-8 py-3 rounded-full text-xs font-bold tracking-widest inline-flex items-center gap-2">
+                    <i data-lucide="map-pin" class="w-4 h-4"></i> PETUNJUK LOKASI
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="py-24 bg-champagne/10">
+        <div class="container mx-auto px-4">
+            <h2 class="text-center text-4xl mb-4 gold-text" data-aos="fade-up">Galeri Momen</h2>
+            <p class="text-center text-gray-500 italic mb-12" data-aos="fade-up">Captured memories of our journey</p>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-6">
+                <div class="group overflow-hidden rounded-2xl shadow-lg aspect-[4/5]" data-aos="zoom-in">
+                    <img src="https://lh3.googleusercontent.com/d/1vZB7TGoosYDmOpumkfdQyhmQScRRMFGU" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                </div>
+                <div class="group overflow-hidden rounded-2xl shadow-lg aspect-[4/5]" data-aos="zoom-in" data-aos-delay="100">
+                    <img src="https://lh3.googleusercontent.com/d/1tmPHYafiBgu3UG4A_RBLWdWRU7OvByN0" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                </div>
+                <div class="group overflow-hidden rounded-2xl shadow-lg aspect-[4/5]" data-aos="zoom-in" data-aos-delay="200">
+                    <img src="https://lh3.googleusercontent.com/d/1vLI-hfImoabmh4kLflsErzcEvsszgcyD" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                </div>
+                <div class="group overflow-hidden rounded-2xl shadow-lg aspect-[4/5]" data-aos="zoom-in" data-aos-delay="300">
+                    <img src="https://lh3.googleusercontent.com/d/1qF9stHFvWnOkysR9FMKJ-Q8r6ZAoEPYY" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                </div>
+                <div class="group overflow-hidden rounded-2xl shadow-lg aspect-[4/5]" data-aos="zoom-in" data-aos-delay="400">
+                    <img src="https://lh3.googleusercontent.com/d/1qtoy1jbW9iqVEuZr9K2_5FzuYnsK9Znr" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                </div>
+                <div class="group overflow-hidden rounded-2xl shadow-lg aspect-[4/5]" data-aos="zoom-in" data-aos-delay="500">
+                    <img src="https://lh3.googleusercontent.com/d/1mjEQvkcfR4gvIjlmv5eLi7SsuVfhIp3u" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- RSVP Section -->
+    <section class="py-24 container mx-auto px-4 max-w-2xl">
+        <div class="glass-card p-10 md:p-16 shadow-2xl relative" data-aos="fade-up">
+            <div class="absolute -top-6 -right-6">
+                <i data-lucide="mail" class="w-16 h-16 gold-text opacity-10"></i>
+            </div>
+            <h2 class="text-4xl text-center mb-8 gold-text">Kehadiran</h2>
+            <form id="rsvp-form" class="space-y-6">
+                <div>
+                    <label class="block text-xs uppercase tracking-widest font-bold text-gray-500 mb-2">Nama Lengkap</label>
+                    <input type="text" required class="w-full bg-white border border-champagne rounded-xl p-4 focus:ring-2 focus:ring-gold-light outline-none transition-all shadow-sm">
+                </div>
+                <div>
+                    <label class="block text-xs uppercase tracking-widest font-bold text-gray-500 mb-2">Konfirmasi Kehadiran</label>
+                    <select class="w-full bg-white border border-champagne rounded-xl p-4 focus:ring-2 focus:ring-gold-light outline-none transition-all shadow-sm appearance-none">
+                        <option value="Hadir">Hadir</option>
+                        <option value="Berhalangan">Berhalangan</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full btn-gold font-bold py-5 rounded-xl uppercase tracking-[0.3em] shadow-lg">Kirim RSVP</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Gift Section -->
+    <section class="py-24 bg-white text-center">
+        <div class="container mx-auto px-4 max-w-lg">
+            <h2 class="text-4xl mb-8 gold-text">Digital Gift</h2>
+            <div class="w-20 h-1 bg-gold-light mx-auto mb-8"></div>
+            <p class="mb-12 text-gray-500 italic">Doa restu Anda adalah hadiah terindah, namun jika Anda ingin memberikan tanda kasih secara digital:</p>
+            
+            <div class="glass-card p-10 mb-6 relative border-2 border-dashed border-gold-light/40 group hover:border-gold-light transition-colors">
+                <i data-lucide="credit-card" class="w-10 h-10 mx-auto mb-6 gold-text"></i>
+                <p class="text-xl font-bold mb-1">Transfer Bank</p>
+                <p class="text-sm text-gray-400 mb-4 uppercase tracking-widest">Bank Detail</p>
+                <div class="bg-champagne/30 py-4 px-2 rounded-xl mb-6">
+                    <p class="text-2xl font-mono gold-text font-bold" id="account-number">1192254</p>
+                    <p class="text-sm font-semibold mt-1">A.N Chrisanto</p>
+                </div>
+                <button onclick="copyToClipboard()" class="btn-gold px-10 py-3 rounded-full text-xs font-bold tracking-widest uppercase">
+                    Salin Rekening
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Wishes Section -->
+    <section class="py-24 bg-champagne/10 relative">
+        <div class="container mx-auto px-4 max-w-3xl">
+            <h2 class="text-4xl text-center mb-10 gold-text">Ucapan & Harapan</h2>
+            <div class="glass-card p-8 mb-12 shadow-lg" data-aos="fade-up">
+                <p class="text-gray-600 mb-8 italic leading-relaxed text-center">
+                    "Wajah Pak Jaka langsung lega dan bahagia. 'Ya ampun, Kiko! Terima kasih banyak, ya. Ini uang untuk membayar bibit padi. Kalau hilang, Bapak tidak bisa menanam padi musim ini,' ujar Pak Jaka dengan penuh syukur. Sebagai ucapan terima kasih, Pak Jaka memberikan Kiko sebuah cokelat besar. Kiko pulang dengan hati yang sangat senang. Ia sadar, kejujuran membawa ketenangan dan kebahagiaan, jauh lebih berharga daripada mainan baru.'"
+                </p>
+                <div class="space-y-4">
+                    <input type="text" id="wish-name" placeholder="Nama Anda" class="w-full bg-white border border-champagne rounded-xl p-4 outline-none focus:ring-2 focus:ring-gold-light shadow-sm">
+                    <textarea id="wish-text" rows="4" class="w-full bg-white border border-champagne rounded-xl p-4 outline-none focus:ring-2 focus:ring-gold-light shadow-sm" placeholder="Tuliskan doa dan ucapan Anda..."></textarea>
+                    <button onclick="addWish()" class="btn-gold w-full py-4 rounded-xl font-bold tracking-widest uppercase shadow-md">KIRIM DOA</button>
+                </div>
+            </div>
+
+            <div id="wishes-list" class="space-y-6 max-h-[500px] overflow-y-auto pr-4">
+                <!-- Dynamic wishes will appear here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-16 text-center bg-white">
+        <div class="w-32 h-1 bg-champagne mx-auto mb-8"></div>
+        <h2 class="font-signature text-5xl gold-text mb-4">Adalah & Ia</h2>
+        <p class="text-xs text-gray-400 tracking-[0.4em] uppercase mb-8">28.03.2026</p>
+        <div class="flex justify-center gap-6 mb-8">
+            <i data-lucide="instagram" class="w-5 h-5 gold-text cursor-pointer hover:scale-125 transition"></i>
+            <i data-lucide="twitter" class="w-5 h-5 gold-text cursor-pointer hover:scale-125 transition"></i>
+            <i data-lucide="facebook" class="w-5 h-5 gold-text cursor-pointer hover:scale-125 transition"></i>
+        </div>
+        <p class="text-[10px] text-gray-300 font-bold uppercase tracking-widest">&copy; 2026 Crafted with love by MahalKita</p>
+    </footer>
+
+    <!-- Custom Alert Modal -->
+    <div id="custom-modal" class="fixed inset-0 z-[500] hidden flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+        <div class="glass-card p-10 max-w-sm w-full text-center shadow-2xl border-gold-light">
+            <div class="w-16 h-16 bg-champagne rounded-full flex items-center justify-center mx-auto mb-6">
+                <i data-lucide="check" class="w-8 h-8 gold-text"></i>
+            </div>
+            <h3 id="modal-title" class="text-2xl font-bold mb-4 gold-text">Success</h3>
+            <p id="modal-msg" class="text-gray-600 mb-8"></p>
+            <button onclick="closeModal()" class="btn-gold px-12 py-3 rounded-full w-full font-bold">OK</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Init AOS & Lucide
+        AOS.init({ once: true, duration: 1200 });
+        lucide.createIcons();
+
+        // Music Player Logic
+        let player;
+        let isPlaying = false;
+        const tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('youtube-player', {
+                height: '0',
+                width: '0',
+                videoId: 'rtOvBOTyX00',
+                playerVars: {
+                    'autoplay': 0,
+                    'loop': 1,
+                    'playlist': 'rtOvBOTyX00',
+                    'mute': 0
+                },
+                events: {
+                    'onReady': (e) => { console.log("Player Ready"); }
+                }
+            });
+        }
+
+        function openInvitation() {
+            document.getElementById('wedding-overlay').classList.add('overlay-hidden');
+            document.body.classList.remove('overflow-hidden');
+            
+            // Start music
+            if (player && player.playVideo) {
+                player.playVideo();
+                isPlaying = true;
+                document.getElementById('music-icon').classList.add('rotating');
+            }
+        }
+
+        document.getElementById('music-toggle').addEventListener('click', () => {
+            if (isPlaying) {
+                player.pauseVideo();
+                document.getElementById('music-icon').classList.remove('rotating');
+            } else {
+                player.playVideo();
+                document.getElementById('music-icon').classList.add('rotating');
+            }
+            isPlaying = !isPlaying;
+        });
+
+        // Countdown Logic
+        const targetDate = new Date("March 28, 2026 10:30:00").getTime();
+        function updateTimer() {
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+            if (diff < 0) return;
+
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('days').innerText = d.toString().padStart(2, '0');
+            document.getElementById('hours').innerText = h.toString().padStart(2, '0');
+            document.getElementById('minutes').innerText = m.toString().padStart(2, '0');
+            document.getElementById('seconds').innerText = s.toString().padStart(2, '0');
+        }
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        // Clipboard
+        function copyToClipboard() {
+            const num = document.getElementById('account-number').innerText;
+            const temp = document.createElement('textarea');
+            temp.value = num; document.body.appendChild(temp);
+            temp.select(); document.execCommand('copy');
+            document.body.removeChild(temp);
+            showModal("Berhasil Disalin", "Nomor rekening Chrisanto telah disalin ke clipboard.");
+        }
+
+        // Wishes
+        function addWish() {
+            const nameInput = document.getElementById('wish-name');
+            const textInput = document.getElementById('wish-text');
+            
+            if (!nameInput.value || !textInput.value) {
+                showModal("Data Tidak Lengkap", "Silakan isi nama dan ucapan doa Anda.");
+                return;
+            }
+
+            const list = document.getElementById('wishes-list');
+            const card = document.createElement('div');
+            card.className = "glass-card p-6 border-l-8 border-gold-light transform translate-y-4 opacity-0 transition-all duration-700";
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-2">
+                    <p class="font-bold gold-text text-lg">${nameInput.value}</p>
+                    <span class="text-[10px] text-gray-400 uppercase tracking-widest">Baru Saja</span>
+                </div>
+                <p class="text-sm italic text-gray-600">"${textInput.value}"</p>
+            `;
+            list.prepend(card);
+            
+            // Clear inputs
+            nameInput.value = "";
+            textInput.value = "";
+
+            // Animate card appearance
+            setTimeout(() => {
+                card.classList.remove('translate-y-4', 'opacity-0');
+            }, 100);
+        }
+
+        // Modal
+        function showModal(title, msg) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-msg').innerText = msg;
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+        function closeModal() { document.getElementById('custom-modal').classList.add('hidden'); }
+
+        // RSVP Submit
+        document.getElementById('rsvp-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            showModal("Terima Kasih", "Konfirmasi kehadiran Anda telah berhasil dikirimkan.");
+            e.target.reset();
+        });
+    </script>
+</body>
+</html>
