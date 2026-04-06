@@ -3,231 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ian & Angelina | Motion Invitation</title>
+    <title>Ian & Angelina | Wedding Invitation</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
 
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #F9F7F2; color: #4A4A4A; overflow-x: hidden; }
+        body { font-family: 'Inter', sans-serif; background-color: #FDFCFB; color: #5B5247; overflow: hidden; }
         .font-serif { font-family: 'Cormorant Garamond', serif; }
         
-        /* Smooth Scrolling (Lenis) */
-        html.lenis { height: auto; }
-        .lenis.lenis-smooth { scroll-behavior: auto; }
-        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
-        .lenis.lenis-stopped { overflow: hidden; }
-
-        /* Cover Overlay */
-        #cover {
+        /* OPENING OVERLAY */
+        #opening-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1920');
-            background-size: cover; background-position: center;
-            z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;
-            transition: transform 1.5s cubic-bezier(0.77, 0, 0.175, 1);
+            z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;
+            background: #F8F5F1; transition: all 1.2s cubic-bezier(0.7, 0, 0.3, 1);
         }
 
-        /* Floating Ornament Animation (Motion) */
-        @keyframes float {
-            0% { transform: translate(0, 0) rotate(0deg); }
-            50% { transform: translate(-10px, 15px) rotate(5deg); }
-            100% { transform: translate(0, 0) rotate(0deg); }
+        .cover-img {
+            width: 280px; height: 380px; object-fit: cover;
+            border-radius: 150px 150px 0 0;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
         }
-        .floating-flower { animation: float 6s ease-in-out infinite; opacity: 0.6; pointer-events: none; }
 
-        /* Music Button */
+        .btn-open {
+            padding: 12px 30px; border: 1px solid #D4C7B0; border-radius: 50px;
+            text-transform: uppercase; letter-spacing: 0.2em; font-size: 10px;
+            transition: all 0.3s; cursor: pointer; background: white;
+        }
+        .btn-open:hover { background: #D4C7B0; color: white; }
+
+        /* General UI */
         #music-control {
             position: fixed; bottom: 25px; right: 25px; z-index: 100;
-            background: white; border-radius: 50%; width: 45px; height: 45px;
-            display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); cursor: pointer;
+            background: white; border-radius: 50%; width: 40px; height: 40px;
+            display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer;
         }
+        
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Image Masking Effect (TikTok Style) */
-        .img-mask {
-            -webkit-mask-image: url('https://api.iconify.design/bi/flower3.svg');
-            mask-image: url('https://api.iconify.design/bi/flower3.svg');
-            -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
-            -webkit-mask-position: center; mask-position: center;
-        }
+        .reveal { opacity: 0; transform: translateY(30px); }
     </style>
 </head>
 <body class="no-scrollbar">
 
-    <audio id="weddingMusic" loop><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"></audio>
-    <div id="music-control" onclick="toggleMusic()"><span id="music-icon">🎵</span></div>
+    <div id="player" style="position: absolute; top: -9999px;"></div>
 
-    <img src="https://api.iconify.design/clarity/flower-line.svg?color=%238b7e74" class="floating-flower fixed -top-10 -left-10 w-40 h-40 z-50">
-    <img src="https://api.iconify.design/clarity/flower-line.svg?color=%238b7e74" class="floating-flower fixed -bottom-10 -right-10 w-40 h-40 z-50">
-
-    <div id="cover">
-        <div class="text-center px-6">
-            <h2 class="gsap-cover-fade text-[10px] uppercase tracking-[0.6em] mb-6">The Wedding Of</h2>
-            <h1 class="gsap-cover-zoom font-serif text-5xl md:text-7xl mb-10 italic">Ian & Angelina</h1>
-            <div class="gsap-cover-fade mb-10">
-                <p class="text-[9px] uppercase tracking-[0.3em] mb-2 opacity-70 font-bold">Dear Special Guest,</p>
-                <h3 class="text-2xl font-serif italic">{{ request()->query('to', 'Our Family & Friends') }}</h3>
-            </div>
-            <button onclick="openInvitation()" class="gsap-cover-fade px-10 py-4 border border-white/50 text-[10px] uppercase tracking-[0.4em] hover:bg-white hover:text-stone-800 transition-all">Open Invitation</button>
-        </div>
+    <!-- OPENING OVERLAY -->
+    <div id="opening-overlay">
+        <img src="https://lh3.googleusercontent.com/d/1g-3BYjqLajAijrvlajVGDkjgxFT8NPnT" class="cover-img" alt="Cover">
+        <p class="text-[10px] uppercase tracking-[0.4em] mb-3">The Wedding of</p>
+        <h1 class="font-serif text-4xl italic mb-8">Ian & Angelina</h1>
+        <button class="btn-open" onclick="startInvitation()">Open Invitation</button>
     </div>
 
-    <main id="main-content" class="max-w-xl mx-auto bg-white shadow-2xl relative">
+    <!-- MAIN CONTENT -->
+    <main id="main-content" class="max-w-screen-sm mx-auto bg-white shadow-sm relative">
         
-        <section id="hero" class="h-[80vh] flex flex-col items-center justify-center text-center px-10 relative overflow-hidden">
-            <div id="hero-bg" class="absolute inset-0 z-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1920');"></div>
+        <!-- HERO SECTION -->
+        <section id="hero" class="h-screen relative overflow-hidden flex flex-col items-center justify-end pb-24">
+            <img src="https://lh3.googleusercontent.com/d/1g-3BYjqLajAijrvlajVGDkjgxFT8NPnT" class="absolute inset-0 w-full h-full object-cover grayscale-[30%]" id="hero-img">
+            <div class="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
             
-            <div class="z-10 bg-white/60 p-10 rounded-full backdrop-blur-sm shadow-xl">
-                <h2 class="gsap-fade-in font-serif text-4xl mb-4 italic text-stone-800">Together in Love</h2>
-                <p class="gsap-fade-in text-sm text-stone-500 italic px-8">March 28, 2026</p>
+            <div class="z-10 text-center reveal">
+                <p class="text-[10px] uppercase tracking-[0.5em] mb-4">Save the Date</p>
+                <h2 class="font-serif text-6xl italic text-stone-800">Ian & Angelina</h2>
+                <div class="h-[1px] w-20 bg-stone-300 mx-auto my-6"></div>
+                <p class="text-[11px] uppercase tracking-[0.3em]">Saturday, July 06, 2024</p>
             </div>
         </section>
 
-        <section id="intro" class="py-24 px-10 text-center bg-stone-50 reveal-section">
-            <p class="gsap-text-reveal font-serif text-2xl italic leading-relaxed text-stone-700">
-                "Aku akan mencintaimu satu hari lebih lama dari apa yang mereka sebut selamanya."
-            </p>
-            <p class="gsap-fade-in mt-6 text-[10px] uppercase tracking-widest text-stone-400">#berlIANtukANGEL</p>
+        <!-- QUOTE SECTION -->
+        <section class="py-32 px-12 text-center bg-stone-50">
+            <div class="reveal max-w-xs mx-auto">
+                <span class="text-3xl font-serif italic text-stone-300">"</span>
+                <p class="font-serif text-2xl italic leading-relaxed text-stone-600 -mt-4">
+                    Love does not consist in gazing at each other, but in looking outward together in the same direction.
+                </p>
+                <div class="mt-8 text-[9px] uppercase tracking-[0.4em] text-stone-400">#berlIANtukANGEL</div>
+            </div>
         </section>
 
-        <section id="couple" class="py-24 px-10 space-y-16 reveal-section">
+        <!-- GROOM & BRIDE SECTION -->
+        <section class="py-24 px-10 space-y-32">
             <div class="text-center">
-                <div class="gsap-img-mask w-64 h-80 mx-auto mb-8 img-frame overflow-hidden rounded-t-full border-8 border-[#F9F7F2]">
-                    <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=600" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500">
+                <div class="w-64 h-[400px] mx-auto mb-10 overflow-hidden rounded-full reveal">
+                    <img src="https://lh3.googleusercontent.com/d/16tziJAm66OsGK0UzQh0VE64jMXmUj-Fp" class="w-full h-full object-cover">
                 </div>
-                <h3 class="gsap-fade-in font-serif text-4xl mb-2">Ian Chrisanto</h3>
+                <div class="reveal">
+                    <h3 class="font-serif text-4xl mb-3 italic">Ian Chrisanto</h3>
+                    <p class="text-[10px] uppercase tracking-widest text-stone-400">Son of Mr. Chris & Mrs. Chris</p>
+                </div>
             </div>
-            <div class="text-center font-serif text-4xl italic text-stone-300">&</div>
+            
+            <div class="text-center font-serif text-3xl italic text-stone-200 reveal">&</div>
+
             <div class="text-center">
-                <div class="gsap-img-mask w-64 h-80 mx-auto mb-8 img-frame overflow-hidden rounded-t-full border-8 border-[#F9F7F2]">
-                    <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=600" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500">
+                <div class="w-64 h-[400px] mx-auto mb-10 overflow-hidden rounded-full reveal">
+                    <img src="https://lh3.googleusercontent.com/d/1qbhjTa_5mjI3Z_HFhAmtJuXBfUUvlS7W" class="w-full h-full object-cover">
                 </div>
-                <h3 class="gsap-fade-in font-serif text-4xl mb-2">Angelina Ribka</h3>
-            </div>
-        </section>
-
-        <section id="details" class="py-24 px-6 bg-[#FDFCF9] reveal-section">
-            <div class="gsap-zoom-in bg-stone-50 p-10 rounded-3xl text-center border border-stone-100 shadow-lg">
-                <h3 class="font-serif text-3xl mb-8 italic uppercase tracking-widest">Holy Matrimony</h3>
-                <div class="space-y-2 mb-10">
-                    <p class="text-4xl font-serif">July 6, 2024</p>
-                    <p class="text-stone-400 text-sm">10:00 WIB</p>
+                <div class="reveal">
+                    <h3 class="font-serif text-4xl mb-3 italic">Angelina Ribka</h3>
+                    <p class="text-[10px] uppercase tracking-widest text-stone-400">Daughter of Mr. Burongan & Ibu Ribka</p>
                 </div>
-                <p class="italic text-lg mb-2">Gereja Santa Maria Imakulata</p>
-                <p class="text-[10px] text-stone-400 leading-relaxed px-6">Jl. Satu Maret No.27 1, Kec. Kalideres, Jakarta Barat</p>
             </div>
         </section>
 
-        <section id="gallery" class="py-24 px-6 reveal-section">
-            <h2 class="font-serif text-3xl text-center mb-12 italic">Captured Moments</h2>
-            <div class="grid grid-cols-2 gap-4">
-                <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=400" class="gsap-gallery-item rounded-2xl aspect-square object-cover">
-                <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=400" class="gsap-gallery-item rounded-2xl aspect-[3/4] object-cover mt-8">
-                <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=800" class="gsap-gallery-item rounded-2xl col-span-2 aspect-video object-cover">
+        <!-- GALLERY SECTION -->
+        <section id="gallery" class="py-24 px-4 bg-stone-50">
+            <div class="text-center mb-16 reveal">
+                <p class="text-[9px] uppercase tracking-[0.5em] mb-2">Our Moments</p>
+                <h2 class="font-serif text-4xl italic">Love in Frame</h2>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <img src="https://lh3.googleusercontent.com/d/1jjd13Yb5ZW_WpTvHGtiOa5otuauIkJcn" class="gsap-item rounded-sm aspect-[4/5] object-cover">
+                <img src="https://lh3.googleusercontent.com/d/1UbnLrM_XSOxdkkM8oII1UzSlBoADrTW2" class="gsap-item rounded-sm aspect-[3/4] object-cover mt-12">
+                <img src="https://lh3.googleusercontent.com/d/1P23P5kMmtN-o6CsRD6Iq8bCk9zrMqbaR" class="gsap-item rounded-sm aspect-square object-cover -mt-12">
+                <img src="https://lh3.googleusercontent.com/d/1jyCBvxHcUflsPmT903099t3Nd6a8QI-p" class="gsap-item rounded-sm aspect-[16/10] object-cover col-span-2">
             </div>
         </section>
 
-        <footer class="py-20 text-center bg-stone-50 border-t border-stone-100 opacity-50">
-            <img src="{{ asset('images/logo.png') }}" alt="MahalKita" class="h-8 mx-auto mb-6 grayscale">
-            <p class="text-[8px] uppercase tracking-[0.5em] italic">Created by MahalKita.online</p>
+        <!-- FOOTER -->
+        <footer class="py-32 text-center bg-white">
+            <div class="reveal">
+                <p class="text-[10px] uppercase tracking-[0.5em] mb-4">Thank You</p>
+                <h2 class="font-serif text-4xl italic mb-12">Ian & Angelina</h2>
+                <div class="h-[1px] w-12 bg-stone-200 mx-auto mb-8"></div>
+                <p class="text-[8px] uppercase tracking-[0.3em] text-stone-400">Design by MahalKita.online</p>
+            </div>
         </footer>
     </main>
 
-    <script>
-        // 1. Inisialisasi Smooth Scroll (Lenis)
-        const lenis = new Lenis();
-        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
-        requestAnimationFrame(raf);
+    <!-- MUSIC ICON -->
+    <div id="music-control" onclick="toggleMusic()">
+        <svg id="music-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-stone-500"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+    </div>
 
-        // Register ScrollTrigger Plugin
+    <script>
+        // YOUTUBE API
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0', width: '0',
+                videoId: 'SHmvzBocLCQ',
+                playerVars: { 'autoplay': 0, 'loop': 1, 'playlist': 'SHmvzBocLCQ', 'controls': 0 }
+            });
+        }
+
+        // SMOOTH SCROLL (LENIS)
+        const lenis = new Lenis();
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+        
         gsap.registerPlugin(ScrollTrigger);
 
-        // 2. Animasi Cover (Saat Buka Undangan)
-        function openInvitation() {
-            // Animasi Cover Sliding Up
-            gsap.to("#cover", { 
-                y: "-100%", duration: 1.5, ease: "power4.inOut", 
-                onComplete: () => {
-                    document.getElementById('cover').style.display = 'none';
-                    document.body.style.overflow = 'auto'; // Re-enable scroll
-                    
-                    // Jalankan Animasi Section Pertama setelah cover terbuka
-                    runFirstSectionAnimation();
-                } 
-            });
-
-            // Play Music
-            document.getElementById('weddingMusic').play();
+        function startInvitation() {
+            const overlay = document.getElementById('opening-overlay');
+            overlay.style.transform = 'translateY(-100%)';
+            document.body.style.overflow = 'auto';
+            
+            if (player && player.playVideo) player.playVideo();
             document.getElementById('music-control').style.display = 'flex';
+            
+            initAnimations();
         }
 
-        // 3. GSAP SCROLL TRIGGERS (INTI DARI "MOTION")
-
-        // A. Parallax Hero Section (Background bergerak lambat)
-        gsap.to("#hero-bg", {
-            yPercent: 30, // Bergerak turun 30% dari posisinya
-            ease: "none",
-            scrollTrigger: {
-                trigger: "#hero", start: "top top", end: "bottom top",
-                scrub: true // Animasi mengikuti kecepatan scroll
-            }
-        });
-
-        // B. Text Reveal (Muncul dari bawah + memudar)
-        const textReveals = gsap.utils.toArray('.gsap-text-reveal');
-        textReveals.forEach(text => {
-            gsap.from(text, {
-                y: 100, opacity: 0, duration: 1.5, ease: "power3.out",
-                scrollTrigger: { trigger: text, start: "top 80%", toggleActions: "play none none none" }
+        function initAnimations() {
+            // Parallax Hero
+            gsap.to("#hero-img", {
+                yPercent: 20,
+                scrollTrigger: {
+                    trigger: "#hero",
+                    start: "top top",
+                    scrub: true
+                }
             });
-        });
 
-        // C. Image Masking Effect (TikTok Style - Membesar)
-        const imgMasks = gsap.utils.toArray('.gsap-img-mask');
-        imgMasks.forEach(img => {
-            gsap.from(img, {
-                scale: 1.5, opacity: 0, duration: 2, ease: "power2.out",
-                scrollTrigger: { trigger: img, start: "top 85%", toggleActions: "play none none none" }
+            // Reveal on Scroll
+            gsap.utils.toArray(".reveal").forEach(elem => {
+                gsap.to(elem, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 1.5,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: elem,
+                        start: "top 90%"
+                    }
+                });
             });
-        });
 
-        // D. Zoom In Details (Card membesar pelan)
-        gsap.from(".gsap-zoom-in", {
-            scale: 0.8, opacity: 0, duration: 1.5, ease: "back.out(1.7)",
-            scrollTrigger: { trigger: ".gsap-zoom-in", start: "top 80%", toggleActions: "play none none none" }
-        });
-
-        // E. Gallery Masonry (Satu-satu muncul)
-        gsap.from(".gsap-gallery-item", {
-            y: 100, opacity: 0, stagger: 0.3, duration: 1, ease: "power3.out",
-            scrollTrigger: { trigger: "#gallery", start: "top 70%", toggleActions: "play none none none" }
-        });
-
-        // F. General Fade In
-        const fadeIns = gsap.utils.toArray('.gsap-fade-in');
-        fadeIns.forEach(el => {
-            gsap.from(el, {
-                y: 50, opacity: 0, duration: 1, ease: "power2.out",
-                scrollTrigger: { trigger: el, start: "top 90%", toggleActions: "play none none none" }
+            // Gallery reveal
+            gsap.from(".gsap-item", {
+                opacity: 0,
+                y: 40,
+                stagger: 0.2,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: "#gallery",
+                    start: "top 70%"
+                }
             });
-        });
-
-        // Fungsi Animasi Section Pertama (Dijalankan setelah cover terbuka)
-        function runFirstSectionAnimation() {
-            gsap.timeline()
-                .from("#hero .bg-white/60", { scale: 0, opacity: 0, duration: 1.5, ease: "back.out" });
         }
 
-        // Animasi Pembuka di Cover (Sebelum Tombol di Klik)
-        gsap.from(".gsap-cover-zoom", { scale: 2, opacity: 0, duration: 2, ease: "power4.out" });
-        gsap.from(".gsap-cover-fade", { y: 30, opacity: 0, stagger: 0.4, duration: 1.5, ease: "power2.out", delay: 1 });
-
-        // Music Toggle
         function toggleMusic() {
-            const music = document.getElementById('weddingMusic');
-            if (music.paused) { music.play(); } else { music.pause(); }
+            if (!player) return;
+            const state = player.getPlayerState();
+            const btn = document.getElementById('music-control');
+            if (state == 1) { 
+                player.pauseVideo(); 
+                btn.classList.add('opacity-50');
+            } else { 
+                player.playVideo(); 
+                btn.classList.remove('opacity-50');
+            }
         }
     </script>
 </body>
