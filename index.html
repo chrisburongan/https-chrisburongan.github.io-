@@ -3,328 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MahalKita | Premium Digital Invitations</title>
+    <title>Ian & Angelina | Motion Invitation</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+
     <style>
-        body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
-        h1, .font-playfair { font-family: 'Playfair Display', serif; }
-        .modal-animate { animation: modalIn 0.3s ease-out; }
-        @keyframes modalIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .nav-glass { background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.8s ease-out; }
-        .reveal.active { opacity: 1; transform: translateY(0); }
+        body { font-family: 'Inter', sans-serif; background-color: #F9F7F2; color: #4A4A4A; overflow-x: hidden; }
+        .font-serif { font-family: 'Cormorant Garamond', serif; }
         
-        /* Toast Notification Style */
-        #toast { visibility: hidden; min-width: 250px; background-color: #333; color: #fff; text-align: center; border-radius: 50px; padding: 16px; position: fixed; z-index: 200; left: 50%; bottom: 30px; transform: translateX(-50%); font-size: 12px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-        @keyframes fadein { from {bottom: 0; opacity: 0;} to {bottom: 30px; opacity: 1;} }
-        @keyframes fadeout { from {bottom: 30px; opacity: 1;} to {bottom: 0; opacity: 0;} }
+        /* Smooth Scrolling (Lenis) */
+        html.lenis { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+        .lenis.lenis-stopped { overflow: hidden; }
+
+        /* Cover Overlay */
+        #cover {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1920');
+            background-size: cover; background-position: center;
+            z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white;
+            transition: transform 1.5s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        /* Floating Ornament Animation (Motion) */
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-10px, 15px) rotate(5deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+        .floating-flower { animation: float 6s ease-in-out infinite; opacity: 0.6; pointer-events: none; }
+
+        /* Music Button */
+        #music-control {
+            position: fixed; bottom: 25px; right: 25px; z-index: 100;
+            background: white; border-radius: 50%; width: 45px; height: 45px;
+            display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); cursor: pointer;
+        }
+
+        /* Image Masking Effect (TikTok Style) */
+        .img-mask {
+            -webkit-mask-image: url('https://api.iconify.design/bi/flower3.svg');
+            mask-image: url('https://api.iconify.design/bi/flower3.svg');
+            -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat;
+            -webkit-mask-position: center; mask-position: center;
+        }
     </style>
 </head>
-<body class="bg-white text-gray-900">
+<body class="no-scrollbar">
 
-    <div id="toast">Order details copied! Paste it in Messenger.</div>
+    <audio id="weddingMusic" loop><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"></audio>
+    <div id="music-control" onclick="toggleMusic()"><span id="music-icon">🎵</span></div>
 
-    <nav class="sticky top-0 z-[100] nav-glass border-b border-stone-50">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <a href="/" class="flex items-center group">
-                <img src="{{ asset('images/logo.png') }}" alt="MahalKita Logo" 
-                     class="h-16 md:h-24 w-auto object-contain transition duration-500 group-hover:scale-105">
-            </a>
+    <img src="https://api.iconify.design/clarity/flower-line.svg?color=%238b7e74" class="floating-flower fixed -top-10 -left-10 w-40 h-40 z-50">
+    <img src="https://api.iconify.design/clarity/flower-line.svg?color=%238b7e74" class="floating-flower fixed -bottom-10 -right-10 w-40 h-40 z-50">
 
-            <div class="hidden md:flex items-center gap-10 text-[10px] font-bold uppercase tracking-[0.2em] text-stone-500">
-                <a href="#designs" class="hover:text-black transition">Invitations</a>
-                <a href="#pricing" class="hover:text-black transition">Pricing</a>
-                <a href="#testimonials" class="hover:text-black transition">Testimonials</a>
-                
-                <div class="flex items-center gap-4 ml-6">
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="text-stone-900 border-b-2 border-stone-800 pb-0.5 font-bold italic">Dashboard</a>
-                    @else
-                        <button onclick="toggleLoginModal()" class="hover:text-black transition flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 v-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                            Client Login
-                        </button>
-                    @endauth
-                </div>
+    <div id="cover">
+        <div class="text-center px-6">
+            <h2 class="gsap-cover-fade text-[10px] uppercase tracking-[0.6em] mb-6">The Wedding Of</h2>
+            <h1 class="gsap-cover-zoom font-serif text-5xl md:text-7xl mb-10 italic">Ian & Angelina</h1>
+            <div class="gsap-cover-fade mb-10">
+                <p class="text-[9px] uppercase tracking-[0.3em] mb-2 opacity-70 font-bold">Dear Special Guest,</p>
+                <h3 class="text-2xl font-serif italic">{{ request()->query('to', 'Our Family & Friends') }}</h3>
             </div>
-
-            <button onclick="toggleMobileMenu()" class="md:hidden text-stone-800 p-2">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-                </svg>
-            </button>
-        </div>
-
-        <div id="mobileMenu" class="hidden md:hidden bg-white border-b border-stone-100 px-8 py-10 space-y-6 shadow-xl modal-animate">
-            <a href="#designs" onclick="toggleMobileMenu()" class="block text-xs font-bold uppercase tracking-widest text-stone-600">Invitations</a>
-            <a href="#pricing" onclick="toggleMobileMenu()" class="block text-xs font-bold uppercase tracking-widest text-stone-600">Pricing</a>
-            <hr class="border-stone-50">
-            @auth
-                <a href="{{ url('/dashboard') }}" class="block text-xs font-bold uppercase tracking-widest text-stone-900">Dashboard</a>
-            @else
-                <button onclick="toggleLoginModal(); toggleMobileMenu();" class="block text-xs font-bold uppercase tracking-widest text-stone-900">Client Login</button>
-            @endauth
-        </div>
-    </nav>
-
-    <section class="px-6 py-20 md:py-32 text-center max-w-4xl mx-auto reveal">
-        <h1 class="text-4xl md:text-7xl mb-6 leading-[1.1] text-stone-800">Tell Your Love Story Digitally.</h1>
-        <p class="text-stone-500 text-base md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed">Eco-friendly, elegant, and interactive wedding invitations tailored for your special day in Davao and beyond.</p>
-        <a href="#designs" class="bg-stone-800 text-white px-12 py-5 rounded-full font-bold shadow-xl shadow-stone-200 hover:bg-black transition inline-block text-xs tracking-[0.2em] uppercase">
-            View Catalog
-        </a>
-    </section>
-
-    <section id="designs" class="max-w-7xl mx-auto px-4 md:px-6 py-16 bg-stone-50 rounded-[2rem] md:rounded-[3rem] mb-12 border border-stone-100 overflow-hidden reveal">
-        <div class="text-center mb-12">
-            <h2 class="text-[10px] font-bold uppercase tracking-[0.4em] text-stone-400 mb-4">The Catalog</h2>
-            <h3 class="text-3xl md:text-4xl font-black italic text-stone-800">Our Signature Designs</h3>
-            <p class="text-stone-500 mt-3 text-[10px] uppercase tracking-widest italic">Swipe to explore styles</p>
-        </div>
-
-        <div class="flex overflow-x-auto gap-6 pb-8 snap-x snap-mandatory no-scrollbar">
-            <div class="min-w-[280px] md:min-w-[350px] snap-center bg-white rounded-[2rem] shadow-sm border border-stone-200/50 overflow-hidden group hover:shadow-xl transition duration-500">
-                <div class="h-96 bg-stone-100 overflow-hidden relative">
-                    <img src="https://images.unsplash.com/photo-1607192233390-11816007424c?q=80&w=600&auto=format&fit=crop" alt="Modern Minimalist" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                </div>
-                <div class="p-8">
-                    <h3 class="font-bold text-xl uppercase tracking-tight text-stone-800">Modern Minimalist</h3>
-                    <p class="text-stone-500 text-xs mt-3 leading-relaxed">Clean typography and monochrome palette. Perfect for intimate and contemporary weddings.</p>
-                    <button onclick="openOrderModal('Modern Minimalist')" class="mt-6 w-full py-4 rounded-2xl border-2 border-stone-800 text-stone-800 font-black text-xs tracking-widest hover:bg-stone-800 hover:text-white transition-all transform active:scale-95 uppercase">Select Design</button>
-                </div>
-            </div>
-
-            <div class="min-w-[280px] md:min-w-[350px] snap-center bg-white rounded-[2rem] shadow-sm border border-stone-200/50 overflow-hidden group hover:shadow-xl transition duration-500">
-                <div class="h-96 bg-stone-100 overflow-hidden relative">
-                    <img src="https://images.unsplash.com/photo-1510076857177-7470076d4098?q=80&w=600&auto=format&fit=crop" alt="Classic Gold" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                </div>
-                <div class="p-8">
-                    <h3 class="font-bold text-xl uppercase tracking-tight text-stone-800">Classic Gold</h3>
-                    <p class="text-stone-500 text-xs mt-3 leading-relaxed">Royal ornaments and sophisticated fonts. A timeless choice for a grand celebration.</p>
-                    <button onclick="openOrderModal('Classic Gold')" class="mt-6 w-full py-4 rounded-2xl border-2 border-stone-800 text-stone-800 font-black text-xs tracking-widest hover:bg-stone-800 hover:text-white transition-all transform active:scale-95 uppercase">Select Design</button>
-                </div>
-            </div>
-
-            <div class="min-w-[280px] md:min-w-[350px] snap-center bg-white rounded-[2rem] shadow-sm border border-stone-200/50 overflow-hidden group hover:shadow-xl transition duration-500">
-                <div class="h-96 bg-stone-100 overflow-hidden relative">
-                    <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=600&auto=format&fit=crop" alt="Rustic Vibe" class="w-full h-full object-cover group-hover:scale-110 transition duration-700">
-                </div>
-                <div class="p-8">
-                    <h3 class="font-bold text-xl uppercase tracking-tight text-stone-800">Rustic Vibe</h3>
-                    <p class="text-stone-500 text-xs mt-3 leading-relaxed">Floral elements and earthy textures. Best for outdoor and garden receptions.</p>
-                    <button onclick="openOrderModal('Rustic Vibe')" class="mt-6 w-full py-4 rounded-2xl border-2 border-stone-800 text-stone-800 font-black text-xs tracking-widest hover:bg-stone-800 hover:text-white transition-all transform active:scale-95 uppercase">Select Design</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="pricing" class="max-w-7xl mx-auto px-6 py-20 mb-12 overflow-hidden reveal">
-        <div class="text-center mb-16 md:mb-24">
-            <h2 class="text-[10px] font-bold uppercase tracking-[0.4em] text-stone-400 mb-4">Investment</h2>
-            <h3 class="text-4xl md:text-6xl text-stone-800 font-playfair">Choose Your Package</h3>
-        </div>
-
-        <div class="flex overflow-x-auto gap-8 pb-10 snap-x snap-mandatory no-scrollbar">
-            <div class="min-w-[300px] md:min-w-[380px] snap-center group p-8 md:p-12 border border-stone-100 rounded-[2.5rem] bg-white transition-all duration-500 hover:shadow-xl">
-                <h4 class="text-[10px] font-bold mb-6 uppercase tracking-[0.2em] text-stone-400">Essential</h4>
-                <div class="text-3xl md:text-4xl font-light mb-8 text-stone-800"> 149 PHP</div>
-                <ul class="space-y-4 text-xs text-stone-500 mb-10 border-t border-stone-50 pt-8">
-                    <li>✓ 1 Digital Template</li>
-                    <li>✓ RSVP Management</li>
-                    <li>✓ Google Maps Integration</li>
-                    <li class="text-stone-200 line-through">✗ Guest Dashboard</li>
-                </ul>
-                <button onclick="openOrderModal('Essential Package')" class="w-full py-4 border border-stone-800 text-stone-800 font-bold text-[9px] uppercase tracking-widest group-hover:bg-stone-800 group-hover:text-white transition-all duration-300">Get Started</button>
-            </div>
-
-            <div class="min-w-[300px] md:min-w-[380px] snap-center group p-8 md:p-12 border border-stone-800 rounded-[2.5rem] bg-stone-800 text-white shadow-xl relative z-10">
-                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-white text-stone-800 px-5 py-1.5 rounded-full text-[8px] font-black uppercase tracking-[0.2em] shadow-lg">Most Popular</div>
-                <h4 class="text-[10px] font-bold mb-6 uppercase tracking-[0.2em] text-stone-400">Signature</h4>
-                <div class="text-3xl md:text-4xl font-light mb-8 italic text-white"> 299 PHP</div>
-                <ul class="space-y-4 text-xs text-stone-300 mb-10 border-t border-stone-700/50 pt-8">
-                    <li>✓ Custom Domain (Optional)</li>
-                    <li>✓ Premium Guest Dashboard</li>
-                    <li>✓ Unlimited Guest Links</li>
-                    <li>✓ Love Story Gallery</li>
-                </ul>
-                <button onclick="openOrderModal('Signature Package')" class="w-full py-4 bg-white text-stone-800 font-bold text-[9px] uppercase tracking-widest hover:bg-stone-200 transition-all">Select Signature</button>
-            </div>
-
-            <div class="min-w-[300px] md:min-w-[380px] snap-center group p-8 md:p-12 border border-stone-100 rounded-[2.5rem] bg-white transition-all duration-500 hover:shadow-xl">
-                <h4 class="text-[10px] font-bold mb-6 uppercase tracking-[0.2em] text-stone-400">Bespoke</h4>
-                <div class="text-3xl md:text-4xl font-light mb-8 text-stone-800">Custom</div>
-                <ul class="space-y-4 text-xs text-stone-500 mb-10 border-t border-stone-50 pt-8">
-                    <li>✓ Exclusive Hand-drawn Art</li>
-                    <li>✓ Dedicated Wedding Admin</li>
-                    <li>✓ Priority Support</li>
-                    <li>✓ Multi-event Pages</li>
-                </ul>
-                <button onclick="openOrderModal('Bespoke Package')" class="w-full py-4 border border-stone-800 text-stone-800 font-bold text-[9px] uppercase tracking-widest group-hover:bg-stone-800 group-hover:text-white transition-all">Inquire Now</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="testimonials" class="max-w-7xl mx-auto px-6 py-24 mb-12 reveal">
-        <div class="text-center mb-16">
-            <h2 class="text-[10px] font-bold uppercase tracking-[0.4em] text-stone-400 mb-4">Kind Words</h2>
-            <h3 class="text-4xl md:text-5xl text-stone-800 font-playfair italic">Client Stories</h3>
-            <p class="text-stone-500 mt-3 text-[10px] uppercase tracking-widest italic">Swipe to read experiences</p>
-        </div>
-
-        <div class="flex overflow-x-auto gap-8 pb-10 snap-x snap-mandatory no-scrollbar">
-            <div class="min-w-[300px] md:min-w-[400px] snap-center bg-stone-50 p-10 rounded-[2.5rem] border border-stone-100 flex flex-col justify-between hover:shadow-md transition">
-                <div>
-                    <div class="flex gap-1 mb-6 text-stone-800">
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
-                    </div>
-                    <p class="text-stone-600 italic leading-relaxed text-sm mb-8">"Modern Minimalist design was perfect for our intimate wedding in Davao. The RSVP was so easy for our guests!"</p>
-                </div>
-                <div class="flex items-center gap-4">
-                    <img src="https://i.pravatar.cc/150?u=sarah" alt="Client" class="w-10 h-10 rounded-full object-cover">
-                    <div>
-                        <h5 class="text-[10px] font-bold uppercase tracking-widest text-stone-800">Sarah & James</h5>
-                        <p class="text-[9px] text-stone-400 uppercase tracking-tighter">March 2026</p>
-                    </div>
-                </div>
-            </div>
-            <div class="min-w-[300px] md:min-w-[400px] snap-center bg-stone-50 p-10 rounded-[2.5rem] border border-stone-100 flex flex-col justify-between hover:shadow-md transition">
-                <div>
-                    <div class="flex gap-1 mb-6 text-stone-800">
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
-                    </div>
-                    <p class="text-stone-600 italic leading-relaxed text-sm mb-8">"Best digital invitation service! The Classic Gold theme is very premium."</p>
-                </div>
-                <div class="flex items-center gap-4">
-                    <img src="https://i.pravatar.cc/150?u=maria" alt="Client" class="w-10 h-10 rounded-full object-cover">
-                    <div>
-                        <h5 class="text-[10px] font-bold uppercase tracking-widest text-stone-800">Maria & Paolo</h5>
-                        <p class="text-[9px] text-stone-400 uppercase tracking-tighter">January 2026</p>
-                    </div>
-                </div>
-            </div>
-            <div class="min-w-[300px] md:min-w-[400px] snap-center bg-stone-50 p-10 rounded-[2.5rem] border border-stone-100 flex flex-col justify-between hover:shadow-md transition">
-                <div>
-                    <div class="flex gap-1 mb-6 text-stone-800">
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
-                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 .587l3.668 7.568 8.332 1.151-6.064 5.828 1.48 8.279-7.416-3.967-7.417 3.967 1.481-8.279-6.064-5.828 8.332-1.151z"/></svg>
-                    </div>
-                    <p class="text-stone-600 italic leading-relaxed text-sm mb-8">"Incredible support from the MahalKita team. They handled all our special requests perfectly."</p>
-                </div>
-                <div class="flex items-center gap-4">
-                    <img src="https://i.pravatar.cc/150?u=brian" alt="Client" class="w-10 h-10 rounded-full object-cover">
-                    <div>
-                        <h5 class="text-[10px] font-bold uppercase tracking-widest text-stone-800">Angela & Brian</h5>
-                        <p class="text-[9px] text-stone-400 uppercase tracking-tighter">December 2025</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="gallery" class="max-w-7xl mx-auto px-6 py-20 mb-20 reveal">
-        <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
-            <div>
-                <h2 class="text-[10px] font-bold uppercase tracking-[0.4em] text-stone-400 mb-4">Social Feed</h2>
-                <h3 class="text-4xl text-stone-800 font-playfair italic">Captured Moments</h3>
-            </div>
-            <a href="https://facebook.com/p/Mahal-Kita-61582254758128/" target="_blank" class="text-[9px] font-bold uppercase tracking-widest px-6 py-3 border border-stone-200 rounded-full hover:bg-stone-50 transition">Follow Facebook</a>
-        </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="aspect-square overflow-hidden rounded-3xl bg-stone-100"><img src="https://images.unsplash.com/photo-1549416878-b9ca95e26903?q=80&w=600" class="w-full h-full object-cover"></div>
-            <div class="aspect-square overflow-hidden rounded-3xl bg-stone-100"><img src="https://images.unsplash.com/photo-1512474932049-78ac69ede12c?q=80&w=600" class="w-full h-full object-cover"></div>
-            <div class="aspect-square overflow-hidden rounded-3xl bg-stone-100"><img src="https://images.unsplash.com/photo-1522673607200-16489a8ce4c6?q=80&w=600" class="w-full h-full object-cover"></div>
-            <div class="aspect-square overflow-hidden rounded-3xl bg-stone-100"><img src="https://images.unsplash.com/photo-1591604466107-dd9b9533dcb1?q=80&w=600" class="w-full h-full object-cover"></div>
-        </div>
-    </section>
-
-    <footer class="bg-white border-t border-stone-100 pt-20 pb-10">
-        <div class="max-w-7xl mx-auto px-6 text-center md:text-left flex flex-col md:flex-row justify-between items-center gap-10">
-            <div>
-                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-16 w-auto mb-4 mx-auto md:mx-0">
-                <p class="text-stone-400 text-[10px] uppercase tracking-[0.3em]">Crafting Digital Memories</p>
-            </div>
-            <p class="text-stone-300 text-[8px] uppercase tracking-[0.4em]">&copy; 2026 MAHALKITA.ONLINE • ALL RIGHTS RESERVED</p>
-        </div>
-    </footer>
-
-    <div id="loginModal" class="fixed inset-0 bg-stone-900/40 backdrop-blur-sm hidden flex items-center justify-center z-[150] p-4">
-        <div class="bg-white w-full max-w-[400px] rounded-2xl p-10 shadow-2xl relative modal-animate border border-stone-100 text-center">
-            <button onclick="toggleLoginModal()" class="absolute top-4 right-6 text-2xl text-stone-400 hover:text-black">&times;</button>
-            <p class="text-stone-500 text-[10px] uppercase tracking-[0.3em] font-bold mb-8">Client Access Area</p>
-            <form method="POST" action="{{ route('login') }}" class="space-y-4">
-                @csrf
-                <input type="email" name="email" placeholder="Email" required class="w-full px-4 py-3 border border-stone-100 rounded-xl bg-stone-50 outline-none text-sm">
-                <input type="password" name="password" placeholder="Password" required class="w-full px-4 py-3 border border-stone-100 rounded-xl bg-stone-50 outline-none text-sm">
-                <button type="submit" class="w-full bg-stone-800 text-white py-4 font-bold uppercase tracking-[0.2em] text-[10px] rounded-xl">Sign In</button>
-            </form>
+            <button onclick="openInvitation()" class="gsap-cover-fade px-10 py-4 border border-white/50 text-[10px] uppercase tracking-[0.4em] hover:bg-white hover:text-stone-800 transition-all">Open Invitation</button>
         </div>
     </div>
 
+    <main id="main-content" class="max-w-xl mx-auto bg-white shadow-2xl relative">
+        
+        <section id="hero" class="h-[80vh] flex flex-col items-center justify-center text-center px-10 relative overflow-hidden">
+            <div id="hero-bg" class="absolute inset-0 z-0 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=1920');"></div>
+            
+            <div class="z-10 bg-white/60 p-10 rounded-full backdrop-blur-sm shadow-xl">
+                <h2 class="gsap-fade-in font-serif text-4xl mb-4 italic text-stone-800">Together in Love</h2>
+                <p class="gsap-fade-in text-sm text-stone-500 italic px-8">March 28, 2026</p>
+            </div>
+        </section>
+
+        <section id="intro" class="py-24 px-10 text-center bg-stone-50 reveal-section">
+            <p class="gsap-text-reveal font-serif text-2xl italic leading-relaxed text-stone-700">
+                "Aku akan mencintaimu satu hari lebih lama dari apa yang mereka sebut selamanya."
+            </p>
+            <p class="gsap-fade-in mt-6 text-[10px] uppercase tracking-widest text-stone-400">#berlIANtukANGEL</p>
+        </section>
+
+        <section id="couple" class="py-24 px-10 space-y-16 reveal-section">
+            <div class="text-center">
+                <div class="gsap-img-mask w-64 h-80 mx-auto mb-8 img-frame overflow-hidden rounded-t-full border-8 border-[#F9F7F2]">
+                    <img src="https://images.unsplash.com/photo-1519741497674-611481863552?q=80&w=600" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500">
+                </div>
+                <h3 class="gsap-fade-in font-serif text-4xl mb-2">Ian Chrisanto</h3>
+            </div>
+            <div class="text-center font-serif text-4xl italic text-stone-300">&</div>
+            <div class="text-center">
+                <div class="gsap-img-mask w-64 h-80 mx-auto mb-8 img-frame overflow-hidden rounded-t-full border-8 border-[#F9F7F2]">
+                    <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?q=80&w=600" class="w-full h-full object-cover grayscale hover:grayscale-0 transition duration-500">
+                </div>
+                <h3 class="gsap-fade-in font-serif text-4xl mb-2">Angelina Ribka</h3>
+            </div>
+        </section>
+
+        <section id="details" class="py-24 px-6 bg-[#FDFCF9] reveal-section">
+            <div class="gsap-zoom-in bg-stone-50 p-10 rounded-3xl text-center border border-stone-100 shadow-lg">
+                <h3 class="font-serif text-3xl mb-8 italic uppercase tracking-widest">Holy Matrimony</h3>
+                <div class="space-y-2 mb-10">
+                    <p class="text-4xl font-serif">July 6, 2024</p>
+                    <p class="text-stone-400 text-sm">10:00 WIB</p>
+                </div>
+                <p class="italic text-lg mb-2">Gereja Santa Maria Imakulata</p>
+                <p class="text-[10px] text-stone-400 leading-relaxed px-6">Jl. Satu Maret No.27 1, Kec. Kalideres, Jakarta Barat</p>
+            </div>
+        </section>
+
+        <section id="gallery" class="py-24 px-6 reveal-section">
+            <h2 class="font-serif text-3xl text-center mb-12 italic">Captured Moments</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?q=80&w=400" class="gsap-gallery-item rounded-2xl aspect-square object-cover">
+                <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?q=80&w=400" class="gsap-gallery-item rounded-2xl aspect-[3/4] object-cover mt-8">
+                <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?q=80&w=800" class="gsap-gallery-item rounded-2xl col-span-2 aspect-video object-cover">
+            </div>
+        </section>
+
+        <footer class="py-20 text-center bg-stone-50 border-t border-stone-100 opacity-50">
+            <img src="{{ asset('images/logo.png') }}" alt="MahalKita" class="h-8 mx-auto mb-6 grayscale">
+            <p class="text-[8px] uppercase tracking-[0.5em] italic">Created by MahalKita.online</p>
+        </footer>
+    </main>
+
     <script>
-        function openOrderModal(itemName) {
-            const fbPageID = "61582254758128"; 
-            
-            // TEKS PESANAN (Akan disalin otomatis karena m.me tidak support pre-filled text)
-            const orderText = `Hi Mahal Kita! 🌿 I am interested in ordering the [${itemName}] for my wedding. Can you please guide me on the next steps? Thank you!`;
-            
-            // AUTO COPY TO CLIPBOARD
-            navigator.clipboard.writeText(orderText).then(() => {
-                // Tampilkan notifikasi toast
-                const toast = document.getElementById("toast");
-                toast.className = "show";
-                setTimeout(() => { toast.className = toast.className.replace("show", ""); }, 3000);
-                
-                // Redirect ke Messenger setelah sedikit delay agar user sempat melihat toast
-                setTimeout(() => {
-                    window.open(`https://m.me/${fbPageID}`, '_blank');
-                }, 1000);
-            }).catch(err => {
-                // Jika browser block clipboard, langsung buka messenger saja
-                window.open(`https://m.me/${fbPageID}`, '_blank');
+        // 1. Inisialisasi Smooth Scroll (Lenis)
+        const lenis = new Lenis();
+        function raf(time) { lenis.raf(time); requestAnimationFrame(raf); }
+        requestAnimationFrame(raf);
+
+        // Register ScrollTrigger Plugin
+        gsap.registerPlugin(ScrollTrigger);
+
+        // 2. Animasi Cover (Saat Buka Undangan)
+        function openInvitation() {
+            // Animasi Cover Sliding Up
+            gsap.to("#cover", { 
+                y: "-100%", duration: 1.5, ease: "power4.inOut", 
+                onComplete: () => {
+                    document.getElementById('cover').style.display = 'none';
+                    document.body.style.overflow = 'auto'; // Re-enable scroll
+                    
+                    // Jalankan Animasi Section Pertama setelah cover terbuka
+                    runFirstSectionAnimation();
+                } 
             });
+
+            // Play Music
+            document.getElementById('weddingMusic').play();
+            document.getElementById('music-control').style.display = 'flex';
         }
 
-        function toggleMobileMenu() {
-            const menu = document.getElementById('mobileMenu');
-            if(menu) menu.classList.toggle('hidden');
-        }
+        // 3. GSAP SCROLL TRIGGERS (INTI DARI "MOTION")
 
-        function toggleLoginModal() {
-            const modal = document.getElementById('loginModal');
-            modal.classList.toggle('hidden');
-            document.body.style.overflow = modal.classList.contains('hidden') ? 'auto' : 'hidden';
-        }
-
-        function reveal() {
-            var reveals = document.querySelectorAll(".reveal");
-            for (var i = 0; i < reveals.length; i++) {
-                var windowHeight = window.innerHeight;
-                var elementTop = reveals[i].getBoundingClientRect().top;
-                if (elementTop < windowHeight - 150) reveals[i].classList.add("active");
+        // A. Parallax Hero Section (Background bergerak lambat)
+        gsap.to("#hero-bg", {
+            yPercent: 30, // Bergerak turun 30% dari posisinya
+            ease: "none",
+            scrollTrigger: {
+                trigger: "#hero", start: "top top", end: "bottom top",
+                scrub: true // Animasi mengikuti kecepatan scroll
             }
+        });
+
+        // B. Text Reveal (Muncul dari bawah + memudar)
+        const textReveals = gsap.utils.toArray('.gsap-text-reveal');
+        textReveals.forEach(text => {
+            gsap.from(text, {
+                y: 100, opacity: 0, duration: 1.5, ease: "power3.out",
+                scrollTrigger: { trigger: text, start: "top 80%", toggleActions: "play none none none" }
+            });
+        });
+
+        // C. Image Masking Effect (TikTok Style - Membesar)
+        const imgMasks = gsap.utils.toArray('.gsap-img-mask');
+        imgMasks.forEach(img => {
+            gsap.from(img, {
+                scale: 1.5, opacity: 0, duration: 2, ease: "power2.out",
+                scrollTrigger: { trigger: img, start: "top 85%", toggleActions: "play none none none" }
+            });
+        });
+
+        // D. Zoom In Details (Card membesar pelan)
+        gsap.from(".gsap-zoom-in", {
+            scale: 0.8, opacity: 0, duration: 1.5, ease: "back.out(1.7)",
+            scrollTrigger: { trigger: ".gsap-zoom-in", start: "top 80%", toggleActions: "play none none none" }
+        });
+
+        // E. Gallery Masonry (Satu-satu muncul)
+        gsap.from(".gsap-gallery-item", {
+            y: 100, opacity: 0, stagger: 0.3, duration: 1, ease: "power3.out",
+            scrollTrigger: { trigger: "#gallery", start: "top 70%", toggleActions: "play none none none" }
+        });
+
+        // F. General Fade In
+        const fadeIns = gsap.utils.toArray('.gsap-fade-in');
+        fadeIns.forEach(el => {
+            gsap.from(el, {
+                y: 50, opacity: 0, duration: 1, ease: "power2.out",
+                scrollTrigger: { trigger: el, start: "top 90%", toggleActions: "play none none none" }
+            });
+        });
+
+        // Fungsi Animasi Section Pertama (Dijalankan setelah cover terbuka)
+        function runFirstSectionAnimation() {
+            gsap.timeline()
+                .from("#hero .bg-white/60", { scale: 0, opacity: 0, duration: 1.5, ease: "back.out" });
         }
-        window.addEventListener("scroll", reveal);
-        reveal();
+
+        // Animasi Pembuka di Cover (Sebelum Tombol di Klik)
+        gsap.from(".gsap-cover-zoom", { scale: 2, opacity: 0, duration: 2, ease: "power4.out" });
+        gsap.from(".gsap-cover-fade", { y: 30, opacity: 0, stagger: 0.4, duration: 1.5, ease: "power2.out", delay: 1 });
+
+        // Music Toggle
+        function toggleMusic() {
+            const music = document.getElementById('weddingMusic');
+            if (music.paused) { music.play(); } else { music.pause(); }
+        }
     </script>
 </body>
 </html>
