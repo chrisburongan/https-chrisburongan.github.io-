@@ -1,236 +1,1293 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chris & Ribka | Wedding Invitation</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.19/bundled/lenis.min.js"></script>
+import React, { useState, useEffect, useRef } from 'react';
+import { 
+  Heart, 
+  MapPin, 
+  Calendar, 
+  Volume2, 
+  VolumeX, 
+  Copy, 
+  Check, 
+  ChevronDown, 
+  Download, 
+  Send, 
+  Clock, 
+  Info,
+  Gift,
+  Sparkles,
+  Camera,
+  Coffee,
+  PartyPopper,
+  Flame,
+  Shirt,
+  Compass,
+  ArrowRight
+} from 'lucide-react';
 
-    <style>
-        body { font-family: 'Inter', sans-serif; background-color: #FDFCFB; color: #5B5247; overflow: hidden; }
-        .font-serif { font-family: 'Cormorant Garamond', serif; }
-        
-        /* OPENING OVERLAY */
-        #opening-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center;
-            background: #F8F5F1; transition: all 1.2s cubic-bezier(0.7, 0, 0.3, 1);
-        }
+const WEDDING_CONFIG = {
+  couple: {
+    groom: {
+      name: "Rendel Santos",
+      shortName: "Rendel",
+      parents: "Mr. Roberto Santos & Mrs. Evelyn Santos",
+      bio: "A visionary artist and designer who paints life in bold colors and delicate strokes. Rendel found his ultimate muse and peace in Danica's radiant, warm laughter.",
+      photo: "https://lh3.googleusercontent.com/d/13LSsrxTql-mIG9Cknhu4rcuOEe6TYJ0H",
+    },
+    bride: {
+      name: "Danica Ramos",
+      shortName: "Danica",
+      parents: "Mr. Michael Ramos & Mrs. Sarah Ramos",
+      bio: "An elegant botanist and teacher who transforms every space into a garden of joy. Danica found her steady anchor and endless romance in Rendel's poetic heart.",
+      photo: "https://lh3.googleusercontent.com/d/1ynp-SXsLJ6zIq0RttaupiTYyTjlJSjXB",
+    }
+  },
+  general: {
+    tagline: "Together Forever Begins Here",
+    subTagline: "A Dreamy Spring Garden Symphony under the Wildflowers",
+    hashtag: "#RendelDanicaSpringGarden2026",
+    weddingDate: "December 20, 2026 10:00:00",
+    weddingDateLabel: "Sunday, December 20, 2026",
+    musicUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+    whatsappNumber: "+6281234567890"
+  },
+  events: {
+    ceremony: {
+      title: "Holy Matrimony & Vows",
+      date: "Sunday, December 20, 2026",
+      time: "10:00 AM - 11:30 AM",
+      venue: "St. Mary's Garden Cathedral",
+      address: "Blossom Valley Sanctuary, Banjarmasin, Indonesia",
+      mapUrl: "https://maps.google.com/?q=St.+Mary's+Cathedral+Banjarmasin"
+    },
+    reception: {
+      title: "The Spring Garden Banquet",
+      date: "Sunday, December 20, 2026",
+      time: "01:00 PM - 05:00 PM",
+      venue: "The Meadow Pavilion Resort",
+      address: "Emerald Wildflower Fields, Banjarmasin, Indonesia",
+      mapUrl: "https://maps.google.com/?q=The+Royal+Meadow+Gardens+Resort"
+    }
+  },
+  timeline: [
+    {
+      year: "2021",
+      title: "First Meeting at the Botanical Garden",
+      desc: "Our paths crossed amidst a blooming field of spring orchids. A simple request for a picture sparked an afternoon-long conversation that neither of us wanted to end.",
+      photo: "https://lh3.googleusercontent.com/d/1fSwM8zyAx0geG46VOqoMu8t4HcSetNxh"
+    },
+    {
+      year: "2022",
+      title: "The First Date & Cherry Blossom Picnic",
+      desc: "Under a canopy of falling pink petals, we shared our dreams, favorite songs, and a homemade basket of pastries. We knew right then our souls had aligned.",
+      photo: "https://lh3.googleusercontent.com/d/1duIzeRvw-0A_eXn8CbliVPNuLX4djdeR"
+    },
+    {
+      year: "2024",
+      title: "The Falling in Love & Shared Trails",
+      desc: "Years filled with mountain climbs, coastal drives, and building our small plant collection. Love became the quiet comfort of knowing we always had each other.",
+      photo: "https://lh3.googleusercontent.com/d/10LKJ2zIe5h8ePkqjy2TejTgunb5uhqKA"
+    },
+    {
+      year: "2025",
+      title: "A Promontory Engagement",
+      desc: "At sunrise, overlooking the misty valleys of Java, Rendel asked the easiest question of his life. Through tears of joy, Danica answered with a lifetime of 'Yes'.",
+      photo: "https://lh3.googleusercontent.com/d/1Z9s6Pf0neCLejMu4HGeRZVCh2s7CkOVI"
+    }
+  ],
+  gallery: [
+    "https://lh3.googleusercontent.com/d/1fSwM8zyAx0geG46VOqoMu8t4HcSetNxh",
+    "https://lh3.googleusercontent.com/d/13LSsrxTql-mIG9Cknhu4rcuOEe6TYJ0H",
+    "https://lh3.googleusercontent.com/d/1ynp-SXsLJ6zIq0RttaupiTYyTjlJSjXB",
+    "https://lh3.googleusercontent.com/d/1duIzeRvw-0A_eXn8CbliVPNuLX4djdeR",
+    "https://lh3.googleusercontent.com/d/1Z9s6Pf0neCLejMu4HGeRZVCh2s7CkOVI",
+    "https://lh3.googleusercontent.com/d/10LKJ2zIe5h8ePkqjy2TejTgunb5uhqKA",
+    "https://lh3.googleusercontent.com/d/1evNyNWYZGjzHilGiHYgwxHy8pzKNk5LW",
+    "https://lh3.googleusercontent.com/d/162aS9-36fBw7zwRj0awENsHfhbgKcO5q",
+    "https://lh3.googleusercontent.com/d/1v3BeNmJ3aE6xK66ppivhXC3B_gy0yjGN",
+    "https://lh3.googleusercontent.com/d/1aTq_StaiozSuy2o4r7qW8zl6MeoM6Fvu"
+  ],
+  dressCode: {
+    theme: "Vibrant Spring Pastels",
+    description: "We kindly invite our guests to join the visual harmony of our wedding garden. We recommend wearing elegant, lightweight fabrics in soft pastel shades.",
+    palettes: [
+      { name: "Blush Pink", hex: "#F8BBD0", desc: "Cherry Blossom Softness" },
+      { name: "Peach Blossom", hex: "#FFCCBC", desc: "Warm Sunny Apricot" },
+      { name: "Lavender Fields", hex: "#CE93D8", desc: "Whimsical Wild Orchid" },
+      { name: "Sage Garden", hex: "#A5D6A7", desc: "Fresh Spring Moss" },
+      { name: "Sky Mist", hex: "#81D4FA", desc: "Bright Clear Morning" },
+      { name: "Soft Marigold", hex: "#FFF59D", desc: "Vibrant Spring Sunshine" }
+    ]
+  },
+  itinerary: [
+    { time: "10:00 AM", title: "Sacred Exchange of Vows", icon: Heart, desc: "Join us as we lock our promises inside St. Mary's Cathedral Garden." },
+    { time: "11:30 AM", title: "Family Portraits & Hugs", icon: Camera, desc: "A joyful photo-session amidst the wildflower pathways." },
+    { time: "01:00 PM", title: "The Grand Reception Luncheon", icon: Coffee, desc: "Welcome toast, culinary grazing tables, and romantic jazz pieces." },
+    { time: "02:30 PM", title: "Speeches, Games & Love Stories", icon: PartyPopper, desc: "Stories shared by family, bridal party antics, and laughter." },
+    { time: "04:30 PM", title: "The Grand Sparkler Send-Off", icon: Flame, desc: "Bless our departure under a warm, glowing pathway of sparklers." }
+  ],
+  faqs: [
+    {
+      q: "What is the designated Dress Code?",
+      a: "The dress code is Vibrant Spring Garden Pastels. Think delicate garden-formal attire: lovely floral dresses, light colored suits, pastel linen, and comfortable shoes for outdoor lawns."
+    },
+    {
+      q: "Are children invited to the celebration?",
+      a: "To ensure all of our friends and family can relax, mingle, and celebrate fully, our wedding will be an intimate, adults-only occasion."
+    },
+    {
+      q: "When should I complete my RSVP confirmation?",
+      a: "Please fill out the digital RSVP form by November 20, 2026, so our floral planners and caterers can arrange seating perfectly."
+    },
+    {
+      q: "Will the events take place outdoors?",
+      a: "Yes! Both the holy vows and the lunch reception will be held in semi-shaded open-air garden meadows. We suggest sunglasses and sunblock!"
+    }
+  ],
+  registry: [
+    {
+      type: "GCash Digital Transfer",
+      accountNumber: "0912-345-6789",
+      accountHolder: "Rendel Santos",
+      color: "bg-emerald-50/60 border-emerald-200 text-emerald-900"
+    },
+    {
+      type: "BDO Savings Account",
+      accountNumber: "9876-5432-1011",
+      accountHolder: "Danica Santos",
+      color: "bg-rose-50/60 border-rose-200 text-rose-900"
+    }
+  ]
+};
 
-        .cover-img {
-            width: 280px; height: 380px; object-fit: cover;
-            border-radius: 150px 150px 0 0;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.05);
-            margin-bottom: 2rem;
-        }
+const INJECTED_CSS = `
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap');
+  
+  body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #FFFDF8;
+    color: #2D2A29;
+  }
+  
+  .font-serif-header {
+    font-family: 'Playfair Display', serif;
+  }
 
-        .btn-open {
-            padding: 12px 30px; border: 1px solid #D4C7B0; border-radius: 50px;
-            text-transform: uppercase; letter-spacing: 0.2em; font-size: 10px;
-            transition: all 0.3s; cursor: pointer; background: white;
-        }
-        .btn-open:hover { background: #D4C7B0; color: white; }
+  .font-accent-header {
+    font-family: 'Cormorant Garamond', serif;
+  }
 
-        /* General UI */
-        #music-control {
-            position: fixed; bottom: 25px; right: 25px; z-index: 100;
-            background: white; border-radius: 50%; width: 40px; height: 40px;
-            display: none; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.05); cursor: pointer;
-        }
-        
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  /* Custom Butterfly flight animations */
+  @keyframes fly-butterfly-1 {
+    0% { transform: translate(0, 0) rotate(0deg) scale(0.8); }
+    33% { transform: translate(80px, -60px) rotate(15deg) scale(0.9); }
+    66% { transform: translate(160px, -20px) rotate(-10deg) scale(0.85); }
+    100% { transform: translate(240px, -100px) rotate(5deg) scale(0.8); }
+  }
 
-        .reveal { opacity: 0; transform: translateY(30px); }
-    </style>
-</head>
-<body class="no-scrollbar">
+  @keyframes fly-butterfly-2 {
+    0% { transform: translate(0, 0) rotate(0deg) scale(0.7); }
+    50% { transform: translate(-100px, -120px) rotate(-20deg) scale(0.85); }
+    100% { transform: translate(-200px, -40px) rotate(10deg) scale(0.7); }
+  }
 
-    <div id="player" style="position: absolute; top: -9999px;"></div>
+  .butterfly-anim-1 {
+    animation: fly-butterfly-1 25s ease-in-out infinite alternate;
+  }
 
-    <!-- OPENING OVERLAY -->
-    <div id="opening-overlay">
-        <img src="https://lh3.googleusercontent.com/d/1g-3BYjqLajAijrvlajVGDkjgxFT8NPnT" class="cover-img" alt="Cover">
-        <p class="text-[10px] uppercase tracking-[0.4em] mb-3">The Wedding of</p>
-        <h1 class="font-serif text-4xl italic mb-8">Chris & Ribka</h1>
-        <button class="btn-open" onclick="startInvitation()">Open Invitation</button>
-    </div>
+  .butterfly-anim-2 {
+    animation: fly-butterfly-2 28s ease-in-out infinite alternate;
+  }
 
-    <!-- MAIN CONTENT -->
-    <main id="main-content" class="max-w-screen-sm mx-auto bg-white shadow-sm relative">
-        
-        <!-- HERO SECTION -->
-        <section id="hero" class="h-screen relative overflow-hidden flex flex-col items-center justify-end pb-24">
-            <img src="https://lh3.googleusercontent.com/d/1g-3BYjqLajAijrvlajVGDkjgxFT8NPnT" class="absolute inset-0 w-full h-full object-cover grayscale-[30%]" id="hero-img">
-            <div class="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
+  /* Petal drift movement */
+  @keyframes drift-spring-petal {
+    0% {
+      transform: translateY(-10%) translateX(0) rotate(0deg) scale(0.7);
+      opacity: 0;
+    }
+    10% { opacity: 0.85; }
+    90% { opacity: 0.85; }
+    100% {
+      transform: translateY(110vh) translateX(120px) rotate(360deg) scale(1);
+      opacity: 0;
+    }
+  }
+
+  .spring-petal {
+    position: absolute;
+    pointer-events: none;
+    border-radius: 80% 0 85% 85%;
+    animation: drift-spring-petal 15s linear infinite;
+  }
+
+  @keyframes scale-pulse-subtle {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+  }
+
+  .pulse-scale-gold {
+    animation: scale-pulse-subtle 4s infinite ease-in-out;
+  }
+
+  @keyframes portrait-pan {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.08); }
+  }
+
+  .zoom-cinematic {
+    animation: portrait-pan 20s ease-out forwards alternate infinite;
+  }
+
+  /* Custom stylish scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #FFFDF8;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #F8BBD0;
+    border-radius: 10px;
+  }
+`;
+
+export default function App() {
+  const [isOpened, setIsOpened] = useState(false);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+  const [copiedRegistryIndex, setCopiedRegistryIndex] = useState(null);
+  const [activeStoryIdx, setActiveStoryIdx] = useState(0);
+  const [openedFaq, setOpenedFaq] = useState(null);
+  const [lightboxData, setLightboxData] = useState({ open: false, src: "", index: 0 });
+  const [breakingSeal, setBreakingSeal] = useState(false);
+  const [guestName, setGuestName] = useState("Our Honored Guest");
+
+  const audioRef = useRef(null);
+
+  // RSVP Form Input Bindings
+  const [rsvpName, setRsvpName] = useState("");
+  const [rsvpStatus, setRsvpStatus] = useState("Joyfully Attending");
+  const [rsvpGuestCount, setRsvpGuestCount] = useState("1");
+  const [rsvpMessage, setRsvpMessage] = useState("");
+
+  // Guestbook Wishes Local Ledger state
+  const [guestbookWishes, setGuestbookWishes] = useState([
+    { name: "Aunt Clara & Uncle Arthur", relation: "Family Support", text: "May your marriage bloom like the most gorgeous spring rose garden. We love you both so much!" },
+    { name: "Sophia Miller", relation: "Danica's Maid of Honor", text: "Counting down the milliseconds to throw flowers on your paths! To the absolute dream couple!" },
+    { name: "Thomas & Elena", relation: "Rendel's College Buds", text: "From late-night design reviews to walking the wedding aisle! What an extraordinary adventure, mates." }
+  ]);
+  const [inputWishName, setInputWishName] = useState("");
+  const [inputWishRelation, setInputWishRelation] = useState("");
+  const [inputWishText, setInputWishText] = useState("");
+  const [copiedAllWishes, setCopiedAllWishes] = useState(false);
+
+  // Timer countdown values
+  const [timerValues, setTimerValues] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+
+  // Floating Garden Petals
+  const [interactivePetals, setInteractivePetals] = useState([]);
+
+  useEffect(() => {
+    // Resolve parameterized custom guest invitation
+    const searchParams = new URLSearchParams(window.location.search);
+    const toParam = searchParams.get('to');
+    if (toParam) {
+      setGuestName(toParam);
+    }
+
+    // Populate customized spring petals with random coordinates
+    const petalColors = [
+      'rgba(248, 187, 208, 0.75)', // Blush Pink
+      'rgba(255, 204, 188, 0.7)',  // Peach
+      'rgba(206, 147, 216, 0.65)', // Lavender
+      'rgba(165, 214, 167, 0.55)', // Sage
+      'rgba(255, 245, 157, 0.65)'  // Yellow
+    ];
+    const generated = Array.from({ length: 22 }).map((_, i) => ({
+      id: i,
+      size: Math.random() * 15 + 8,
+      left: Math.random() * 100,
+      delay: Math.random() * -15,
+      duration: Math.random() * 10 + 10,
+      color: petalColors[i % petalColors.length]
+    }));
+    setInteractivePetals(generated);
+
+    // Pull local storage guestbook wishes
+    const cached = localStorage.getItem('rendel_danica_wishes_ledger');
+    if (cached) {
+      try {
+        setGuestbookWishes(JSON.parse(cached));
+      } catch (err) {
+        console.error("Local registry parsing failure:", err);
+      }
+    }
+  }, []);
+
+  // Update dynamic countdown time relative to target
+  useEffect(() => {
+    const targetDate = new Date(WEDDING_CONFIG.general.weddingDate).getTime();
+    const intervalId = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+      if (distance < 0) {
+        clearInterval(intervalId);
+        return;
+      }
+      setTimerValues({
+        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
+        seconds: Math.floor((distance % (1000 * 60)) / 1000)
+      });
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const handleOpenInvitationBreak = () => {
+    setBreakingSeal(true);
+    setTimeout(() => {
+      setIsOpened(true);
+      setIsAudioPlaying(true);
+      if (audioRef.current) {
+        audioRef.current.play().catch(err => console.log("User gesture required for audio trigger:", err));
+      }
+    }, 1200);
+  };
+
+  const handleToggleAudio = () => {
+    if (audioRef.current) {
+      if (isAudioPlaying) {
+        audioRef.current.pause();
+      } else {
+        audioRef.current.play().catch(err => console.log("Audio deferred:", err));
+      }
+      setIsAudioPlaying(!isAudioPlaying);
+    }
+  };
+
+  const handleCopyAccountNum = (accountNum, index) => {
+    navigator.clipboard.writeText(accountNum);
+    setCopiedRegistryIndex(index);
+    setTimeout(() => setCopiedRegistryIndex(null), 2500);
+  };
+
+  const handleRsvpSubmitRedirect = (e) => {
+    e.preventDefault();
+    const formattedText = `Hello! I would love to RSVP for Rendel & Danica's Beautiful Spring Wedding!%0A%0A*Guest Name:* ${encodeURIComponent(rsvpName || guestName)}%0A*Attendance Status:* ${encodeURIComponent(rsvpStatus)}%0A*Total Guests:* ${rsvpGuestCount}%0A*Special Message/Dietary Notes:* ${encodeURIComponent(rsvpMessage || "Sending you all our love!")}`;
+    const whatsappLink = `https://api.whatsapp.com/send?phone=${WEDDING_CONFIG.general.whatsappNumber}&text=${formattedText}`;
+    window.open(whatsappLink, '_blank');
+  };
+
+  const handleAddLocalWish = (e) => {
+    e.preventDefault();
+    if (!inputWishName || !inputWishText) return;
+    const newEntry = {
+      name: inputWishName,
+      relation: inputWishRelation || "Dear Friend",
+      text: inputWishText
+    };
+    const updated = [newEntry, ...guestbookWishes];
+    setGuestbookWishes(updated);
+    localStorage.setItem('rendel_danica_wishes_ledger', JSON.stringify(updated));
+    setInputWishName("");
+    setInputWishRelation("");
+    setInputWishText("");
+  };
+
+  const handleCopyAllWishes = () => {
+    const textStream = guestbookWishes.map(w => `Wish from ${w.name} (${w.relation}): "${w.text}"`).join('\n\n');
+    navigator.clipboard.writeText(textStream);
+    setCopiedAllWishes(true);
+    setTimeout(() => setCopiedAllWishes(false), 2500);
+  };
+
+  const handleExportWishesFile = () => {
+    const formatted = guestbookWishes.map(w => `Guest Name: ${w.name}\nRelation: ${w.relation}\nWishes: ${w.text}\n------------------------------`).join('\n\n');
+    const blob = new Blob([formatted], { type: "text/plain;charset=utf-8" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "Rendel_and_Danica_Wedding_Wishes.txt";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  return (
+    <div className="relative min-h-screen text-[#2E2825] bg-[#FFFDF8] overflow-x-hidden antialiased selection:bg-[#F8BBD0] selection:text-gray-900">
+      <style>{INJECTED_CSS}</style>
+
+      {/* Embedded Symphony Audio Element */}
+      <audio ref={audioRef} src={WEDDING_CONFIG.general.musicUrl} loop />
+
+      {/* Elegant Drifting Petals Overlay (Fixed globally) */}
+      <div className="fixed inset-0 pointer-events-none z-30 overflow-hidden">
+        {interactivePetals.map(p => (
+          <div
+            key={p.id}
+            className="spring-petal"
+            style={{
+              width: `${p.size}px`,
+              height: `${p.size}px`,
+              left: `${p.left}%`,
+              background: `radial-gradient(circle, #FFFFFF 0%, ${p.color} 100%)`,
+              animationDelay: `${p.delay}s`,
+              animationDuration: `${p.duration}s`,
+              top: `-10%`
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Floating Animated Butterflies in background */}
+      <div className="absolute inset-x-0 top-[20%] pointer-events-none overflow-hidden h-[80vh] z-10">
+        <svg className="absolute w-8 h-8 text-[#CE93D8] butterfly-anim-1 opacity-40 left-[10%] top-[10%]" viewBox="0 0 100 100" fill="currentColor">
+          <path d="M50 50 C20 20, 10 50, 50 80 C90 50, 80 20, 50 50 Z" />
+        </svg>
+        <svg className="absolute w-6 h-6 text-[#F8BBD0] butterfly-anim-2 opacity-50 right-[15%] top-[40%]" viewBox="0 0 100 100" fill="currentColor">
+          <path d="M50 50 C20 20, 10 50, 50 80 C90 50, 80 20, 50 50 Z" />
+        </svg>
+      </div>
+
+      {}
+      {!isOpened && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-gradient-to-br from-[#FFFDF8] via-[#FFF5F6] to-[#E8F5E9] transition-all duration-1000">
+          <div className="absolute inset-0 bg-[radial-gradient(#F8BBD0_1px,transparent_1px)] [background-size:24px_24px] opacity-25"></div>
+          
+          <div className={`relative max-w-xl w-full bg-white/80 backdrop-blur-md border border-[#F8BBD0]/35 rounded-[40px] p-8 md:p-12 shadow-[0_30px_100px_rgba(248,187,208,0.3)] flex flex-col items-center justify-center text-center transition-all duration-1000 ${breakingSeal ? 'scale-90 opacity-0 blur-md pointer-events-none' : 'scale-100'}`}>
             
-            <div class="z-10 text-center reveal">
-                <p class="text-[10px] uppercase tracking-[0.5em] mb-4">Save the Date</p>
-                <h2 class="font-serif text-6xl italic text-stone-800">Chris & Ribka</h2>
-                <div class="h-[1px] w-20 bg-stone-300 mx-auto my-6"></div>
-                <p class="text-[11px] uppercase tracking-[0.3em]">Saturday, July 06, 2024</p>
+            {/* Elegant Floral Monogram Monocle */}
+            <div className="mb-6 relative animate-bounce">
+              <div className="w-28 h-28 rounded-full border-2 border-dashed border-[#A5D6A7] flex items-center justify-center p-2 bg-gradient-to-tr from-[#FFFDF8] to-[#FFF5F6]">
+                <div className="w-22 h-22 rounded-full border border-[#F8BBD0] flex flex-col items-center justify-center bg-white shadow-inner">
+                  <span className="font-serif-header text-xs text-[#A5D6A7] tracking-widest font-bold">R & D</span>
+                  <Heart className="w-4.5 h-4.5 text-[#F8BBD0] fill-current animate-pulse mt-1" />
+                </div>
+              </div>
             </div>
-        </section>
 
-        <!-- QUOTE SECTION -->
-        <section class="py-32 px-12 text-center bg-stone-50">
-            <div class="reveal max-w-xs mx-auto">
-                <span class="text-3xl font-serif italic text-stone-300">"</span>
-                <p class="font-serif text-2xl italic leading-relaxed text-stone-600 -mt-4">
-                    Love does not consist in gazing at each other, but in looking outward together in the same direction.
+            <p className="text-[10px] md:text-xs font-bold text-[#A5D6A7] tracking-[0.4em] uppercase mb-4">THE CELEBRATION COVENANT</p>
+            
+            <h1 className="font-serif-header text-4xl md:text-5xl text-[#2D2A29] font-bold leading-tight mb-2">
+              Rendel <span className="font-accent-header italic text-2xl text-slate-400">&amp;</span> Danica
+            </h1>
+
+            <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-[#F8BBD0] to-transparent my-4"></div>
+
+            {/* Customized Personal Invitation Box */}
+            <div className="bg-[#FFFDF8] border border-[#F8BBD0]/20 rounded-2xl p-5 mb-8 shadow-sm max-w-sm w-full">
+              <span className="text-[9px] font-bold tracking-[0.2em] text-[#CE93D8] uppercase block mb-1">EXCLUSIVELY INVITED</span>
+              <h3 className="font-serif-header text-lg font-bold text-slate-800 italic">&ldquo;{guestName}&rdquo;</h3>
+              <p className="text-[10px] text-slate-500 mt-2 font-medium">Together with our beloved families, we request the honor of your pleasant presence.</p>
+            </div>
+
+            {/* Interactive Spring Flower Wax Seal */}
+            <div className="relative group cursor-pointer mb-6" onClick={handleOpenInvitationBreak}>
+              <div className="w-22 h-22 bg-gradient-to-br from-[#F8BBD0] to-[#E91E63] rounded-full border-4 border-[#FFF59D] shadow-xl flex items-center justify-center transform transition-all duration-700 active:scale-95 group-hover:scale-105">
+                <div className="w-18 h-18 rounded-full border border-white/25 flex flex-col items-center justify-center">
+                  <span className="font-accent-header text-white font-bold text-sm tracking-widest">TAP SEAL</span>
+                </div>
+              </div>
+              <div className="absolute inset-0 bg-[#F8BBD0]/25 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            </div>
+
+            <button 
+              onClick={handleOpenInvitationBreak}
+              className="pulse-scale-gold bg-gradient-to-r from-[#A5D6A7] to-[#81D4FA] hover:from-[#81D4FA] hover:to-[#A5D6A7] text-white text-xs font-bold tracking-[0.25em] px-10 py-4.5 rounded-full transition-all duration-500 shadow-md uppercase"
+            >
+              Open Spring Invitation
+            </button>
+            
+            <p className="text-[10px] text-slate-400 mt-4 tracking-widest uppercase">Experience the story in bloom</p>
+          </div>
+        </div>
+      )}
+
+      {/* MAIN CINEMATIC WEB PLATFORM */}
+      {isOpened && (
+        <div className="animate-fade-in transition-opacity duration-1000">
+
+          {/* Elegant top progress tracking indicator & symphony visualizer */}
+          <button
+            onClick={handleToggleAudio}
+            className="fixed bottom-6 right-6 z-40 bg-white/95 backdrop-blur-md border border-[#F8BBD0]/40 p-4 rounded-2xl shadow-2xl flex items-center space-x-3 transition-all duration-300 hover:scale-105"
+            title="Toggle Symphony"
+          >
+            <div className="flex items-end space-x-[2.5px] h-4.5 w-7">
+              {[...Array(5)].map((_, i) => (
+                <div 
+                  key={i} 
+                  className={`w-[3px] bg-[#F8BBD0] rounded-full transition-all duration-300 ${isAudioPlaying ? 'animate-pulse' : 'h-[2px]'}`}
+                  style={{
+                    height: isAudioPlaying ? `${Math.floor(Math.random() * 14) + 4}px` : '2px',
+                    animationDelay: `${i * 150}ms`
+                  }}
+                />
+              ))}
+            </div>
+            <span className="text-[9px] font-bold tracking-[0.25em] text-slate-500 hidden md:inline">
+              {isAudioPlaying ? "MUSIC PLAYING" : "MUSIC MUTED"}
+            </span>
+          </button>
+
+          {}
+          <header id="home" className="relative min-h-screen flex flex-col justify-between items-center text-center px-4 py-16 overflow-hidden bg-slate-900">
+            {/* Cinematic overlay filter for ambient lighting */}
+            <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/15 to-black/55 z-10"></div>
+            
+            {/* Ken Burns background transition canvas */}
+            <div className="absolute inset-0 overflow-hidden">
+              <img
+                src="https://lh3.googleusercontent.com/d/1fSwM8zyAx0geG46VOqoMu8t4HcSetNxh"
+                alt="Rendel and Danica Romantic Garden Background"
+                className="w-full h-full object-cover zoom-cinematic filter brightness-90"
+              />
+            </div>
+
+            {/* Cinematic Monogram Header */}
+            <div className="z-20 text-white/90">
+              <span className="text-[10px] tracking-[0.4em] text-[#FFF59D] font-bold uppercase block mb-2">SPRING COMMENCEMENT</span>
+              <h2 className="font-serif-header text-xl tracking-widest font-semibold italic">R &amp; D</h2>
+              <div className="w-10 h-[1px] bg-gradient-to-r from-transparent via-white to-transparent mx-auto mt-2"></div>
+            </div>
+
+            {/* Core typography centerpiece */}
+            <div className="z-20 max-w-4xl mx-auto my-auto py-12">
+              <p className="font-accent-header text-2xl md:text-3xl text-white italic font-medium mb-4 tracking-wide text-shadow">
+                &ldquo;Together Forever Begins Here&rdquo;
+              </p>
+              
+              <h1 className="font-serif-header text-5xl md:text-8xl font-bold text-white leading-none tracking-widest drop-shadow-2xl">
+                Rendel <span className="font-accent-header italic font-light text-3xl md:text-5xl text-[#FFF59D]">&amp;</span> Danica
+              </h1>
+              
+              <p className="text-white/80 text-xs md:text-sm font-bold tracking-[0.3em] uppercase mt-6 max-w-lg mx-auto">
+                {WEDDING_CONFIG.general.subTagline}
+              </p>
+            </div>
+
+            {/* Luxury Live Countdown Indicator */}
+            <div className="z-20 w-full max-w-lg mx-auto bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-[30px] shadow-2xl">
+              <span className="text-[9px] font-bold tracking-[0.3em] text-[#FFF59D] block mb-4 uppercase">COUNTING THE DAYS TO THE UNION</span>
+              <div className="grid grid-cols-4 gap-4">
+                <div>
+                  <span className="block font-serif-header text-3xl md:text-4xl text-white font-bold">{timerValues.days}</span>
+                  <span className="text-[9px] uppercase font-bold text-white/65 tracking-widest">Days</span>
+                </div>
+                <div>
+                  <span className="block font-serif-header text-3xl md:text-4xl text-white font-bold">{timerValues.hours}</span>
+                  <span className="text-[9px] uppercase font-bold text-white/65 tracking-widest">Hours</span>
+                </div>
+                <div>
+                  <span className="block font-serif-header text-3xl md:text-4xl text-white font-bold">{timerValues.minutes}</span>
+                  <span className="text-[9px] uppercase font-bold text-white/65 tracking-widest">Mins</span>
+                </div>
+                <div>
+                  <span className="block font-serif-header text-3xl md:text-4xl text-white font-bold">{timerValues.seconds}</span>
+                  <span className="text-[9px] uppercase font-bold text-white/65 tracking-widest">Secs</span>
+                </div>
+              </div>
+            </div>
+          </header>
+
+          {}
+          <section className="py-24 px-6 bg-gradient-to-b from-[#FFFDF8] via-white to-[#FFF5F6] relative overflow-hidden">
+            <div className="max-w-4xl mx-auto text-center relative z-10">
+              <span className="text-xs font-bold text-[#A5D6A7] tracking-[0.3em] uppercase block mb-3">A SOLEMN MESSAGE TO</span>
+              <h2 className="font-serif-header text-3xl md:text-5xl text-[#2D2A29] font-extrabold italic">&ldquo;{guestName}&rdquo;</h2>
+              <div className="w-16 h-[1.5px] bg-[#F8BBD0] mx-auto my-6"></div>
+              
+              <p className="font-accent-header text-2xl italic text-slate-600 leading-relaxed max-w-2xl mx-auto mb-8">
+                &ldquo;Because you have shared in our lives by your friendship and love, we invite you to join us in celebrating our marriage as we promise our lives in the garden.&rdquo;
+              </p>
+              
+              <div className="inline-flex items-center space-x-3 text-slate-500 font-bold tracking-widest text-[10px] uppercase">
+                <span>SUNDAY, DECEMBER 20, 2026</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-[#A5D6A7]"></span>
+                <span>BANJARMASIN, INDONESIA</span>
+              </div>
+            </div>
+          </section>
+
+          {}
+          <section id="couple" className="py-28 px-6 bg-white relative overflow-hidden">
+            <div className="absolute -left-12 top-0 w-64 h-64 bg-[#FFF5F6] rounded-full filter blur-3xl opacity-75"></div>
+            
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-20">
+                <span className="text-xs font-bold text-[#A5D6A7] tracking-[0.3em] uppercase block mb-2">THE SOULS BEYOND PLACES</span>
+                <h2 className="font-serif-header text-3xl md:text-5xl font-bold text-[#2D2A29]">The Blessed Couple</h2>
+                <div className="w-16 h-[1.5px] bg-[#F8BBD0] mx-auto mt-4"></div>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-stretch">
+                
+                {/* Groom Card */}
+                <div className="flex flex-col md:flex-row items-center md:items-start bg-[#FFFDF8] border border-[#F8BBD0]/15 rounded-[40px] p-8 space-y-6 md:space-y-0 md:space-x-8 shadow-sm hover:shadow-md transition-all duration-500">
+                  <div className="relative w-56 h-76 rounded-[40px_10px_40px_10px] overflow-hidden border border-[#A5D6A7]/30 shadow-lg flex-shrink-0 bg-slate-100">
+                    <img
+                      src={WEDDING_CONFIG.couple.groom.photo}
+                      alt={WEDDING_CONFIG.couple.groom.name}
+                      className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                    />
+                  </div>
+                  <div className="flex flex-col justify-between h-full text-center md:text-left">
+                    <div>
+                      <h3 className="font-serif-header text-2xl font-bold text-[#2D2A29]">{WEDDING_CONFIG.couple.groom.name}</h3>
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-[#A5D6A7] block mt-1 mb-4">THE GROOM</span>
+                      
+                      <div className="mb-4">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">SON OF</p>
+                        <p className="font-accent-header italic text-[#2D2A29] font-bold text-lg">{WEDDING_CONFIG.couple.groom.parents}</p>
+                      </div>
+                      
+                      <p className="text-slate-600 text-xs md:text-sm leading-relaxed italic">
+                        &ldquo;{WEDDING_CONFIG.couple.groom.bio}&rdquo;
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Bride Card */}
+                <div className="flex flex-col md:flex-row items-center md:items-start bg-[#FFFDF8] border border-[#F8BBD0]/15 rounded-[40px] p-8 space-y-6 md:space-y-0 md:space-x-8 shadow-sm hover:shadow-md transition-all duration-500">
+                  <div className="relative w-56 h-76 rounded-[10px_40px_10px_40px] overflow-hidden border border-[#CE93D8]/30 shadow-lg flex-shrink-0 bg-slate-100">
+                    <img
+                      src={WEDDING_CONFIG.couple.bride.photo}
+                      alt={WEDDING_CONFIG.couple.bride.name}
+                      className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
+                    />
+                  </div>
+                  <div className="flex flex-col justify-between h-full text-center md:text-left">
+                    <div>
+                      <h3 className="font-serif-header text-2xl font-bold text-[#2D2A29]">{WEDDING_CONFIG.couple.bride.name}</h3>
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-[#CE93D8] block mt-1 mb-4">THE BRIDE</span>
+                      
+                      <div className="mb-4">
+                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">DAUGHTER OF</p>
+                        <p className="font-accent-header italic text-[#2D2A29] font-bold text-lg">{WEDDING_CONFIG.couple.bride.parents}</p>
+                      </div>
+                      
+                      <p className="text-slate-600 text-xs md:text-sm leading-relaxed italic">
+                        &ldquo;{WEDDING_CONFIG.couple.bride.bio}&rdquo;
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+          {}
+          <section id="story" className="py-28 px-6 bg-[#FFFDF8] relative overflow-hidden border-t border-[#F8BBD0]/15">
+            <div className="max-w-5xl mx-auto">
+              <div className="text-center mb-16">
+                <span className="text-xs font-bold text-[#A5D6A7] tracking-[0.3em] uppercase block mb-1">OUR CHAPTERS OF BLOOM</span>
+                <h2 className="font-serif-header text-3xl md:text-5xl font-bold text-[#2D2A29]">Love Story Timeline</h2>
+                <div className="w-16 h-[1.5px] bg-[#F8BBD0] mx-auto mt-4"></div>
+              </div>
+
+              {/* Vertical Timeline Stack with dynamic state */}
+              <div className="relative border-l-2 border-[#F8BBD0]/35 ml-4 md:ml-32 space-y-16">
+                {WEDDING_CONFIG.timeline.map((story, idx) => (
+                  <div key={idx} className="relative pl-8 md:pl-12 group">
+                    {/* Floating point on timeline timeline */}
+                    <div className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full border-2 border-[#A5D6A7] bg-white group-hover:scale-125 transition-transform duration-300" />
+                    
+                    <span className="absolute -left-4 md:-left-28 top-0 font-serif-header text-xl md:text-2xl text-[#CE93D8] font-bold">
+                      {story.year}
+                    </span>
+
+                    <div className="bg-white border border-[#F8BBD0]/15 rounded-[32px] p-6 md:p-8 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col md:flex-row items-center gap-8">
+                      <div className="w-full md:w-2/5 aspect-[4/3] rounded-2xl overflow-hidden border border-[#A5D6A7]/20 flex-shrink-0 bg-slate-50">
+                        <img src={story.photo} alt={story.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                      </div>
+                      <div>
+                        <h4 className="font-serif-header text-lg md:text-xl font-bold text-[#2D2A29] mb-3">
+                          {story.title}
+                        </h4>
+                        <p className="text-slate-600 text-xs md:text-sm leading-relaxed">
+                          {story.desc}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {}
+          <section id="itinerary" className="py-28 px-6 bg-white relative overflow-hidden border-t border-[#F8BBD0]/15">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-16">
+                <span className="text-xs font-bold text-[#CE93D8] tracking-[0.3em] uppercase block mb-1">THE SEQUENCE OF HAPPINESS</span>
+                <h2 className="font-serif-header text-3xl md:text-5xl font-bold text-[#2D2A29]">Wedding Itinerary</h2>
+                <div className="w-16 h-[1.5px] bg-[#F8BBD0] mx-auto mt-4"></div>
+              </div>
+
+              {/* Horizontal / Stacked sequence of steps */}
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
+                {WEDDING_CONFIG.itinerary.map((step, idx) => {
+                  const IconComp = step.icon;
+                  return (
+                    <div key={idx} className="bg-[#FFFDF8] border border-[#F8BBD0]/15 rounded-[30px] p-6 text-center hover:shadow-md transition-all duration-300 flex flex-col justify-between items-center group">
+                      <div>
+                        <span className="text-[10px] font-bold text-[#A5D6A7] block mb-2">{step.time}</span>
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#FFF5F6] to-[#FFF59D] border border-[#F8BBD0]/30 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                          <IconComp className="w-5 h-5 text-[#F8BBD0] fill-current" />
+                        </div>
+                        <h4 className="font-serif-header text-xs md:text-sm font-bold text-[#2D2A29] mb-2">{step.title}</h4>
+                      </div>
+                      <p className="text-[11px] text-slate-500 leading-relaxed mt-2">{step.desc}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+
+          {}
+          <section id="dresscode" className="py-28 px-6 bg-[#FFFDF8] relative overflow-hidden border-t border-[#F8BBD0]/15">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="mb-12">
+                <div className="inline-flex p-3 rounded-full bg-white border border-[#F8BBD0]/35 mb-4">
+                  <Shirt className="w-6 h-6 text-[#CE93D8]" />
+                </div>
+                <span className="text-xs font-bold text-[#A5D6A7] tracking-[0.3em] uppercase block mb-1">VISUAL HARMONY</span>
+                <h2 className="font-serif-header text-3xl md:text-5xl font-bold text-[#2D2A29]">{WEDDING_CONFIG.dressCode.theme}</h2>
+                <p className="text-xs text-slate-500 mt-4 max-w-lg mx-auto leading-relaxed">
+                  {WEDDING_CONFIG.dressCode.description}
                 </p>
-                <div class="mt-8 text-[9px] uppercase tracking-[0.4em] text-stone-400">#berlIANtukANGEL</div>
-            </div>
-        </section>
+              </div>
 
-        <!-- GROOM & BRIDE SECTION -->
-        <section class="py-24 px-10 space-y-32">
-            <div class="text-center">
-                <div class="w-64 h-[400px] mx-auto mb-10 overflow-hidden rounded-full reveal">
-                    <img src="https://lh3.googleusercontent.com/d/16tziJAm66OsGK0UzQh0VE64jMXmUj-Fp" class="w-full h-full object-cover">
+              {/* Pastel Swatch row */}
+              <div className="grid grid-cols-2 md:grid-cols-6 gap-6 max-w-3xl mx-auto">
+                {WEDDING_CONFIG.dressCode.palettes.map((swatch, idx) => (
+                  <div key={idx} className="flex flex-col items-center">
+                    <div 
+                      className="w-16 h-16 rounded-full shadow-inner border border-white/40 transform hover:scale-110 transition-transform duration-300"
+                      style={{ backgroundColor: swatch.hex }}
+                    />
+                    <span className="text-xs font-bold text-slate-700 mt-3 block">{swatch.name}</span>
+                    <span className="text-[9px] text-slate-400 block mt-0.5">{swatch.desc}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {}
+          <section id="details" className="py-28 px-6 bg-white relative overflow-hidden">
+            <div className="max-w-5xl mx-auto">
+              <div className="text-center mb-16">
+                <span className="text-xs font-bold text-[#A5D6A7] tracking-[0.3em] uppercase block mb-1">CELEBRATE THE SACRED DAY</span>
+                <h2 className="font-serif-header text-3xl md:text-5xl font-bold text-[#2D2A29]">Sacred Schedules</h2>
+                <div className="w-16 h-[1.5px] bg-[#F8BBD0] mx-auto mt-4"></div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-stretch">
+                
+                {/* Ceremony Block */}
+                <div className="bg-[#FFFDF8] border-2 border-[#F8BBD0]/15 rounded-[40px] p-8 md:p-10 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300">
+                  <div>
+                    <div className="w-12 h-12 bg-white border border-[#F8BBD0]/35 rounded-full flex items-center justify-center mb-6 shadow-md text-[#F8BBD0]">
+                      <Heart className="w-5 h-5 fill-current" />
+                    </div>
+                    <h3 className="font-serif-header text-2xl font-bold text-[#2D2A29] mb-4">{WEDDING_CONFIG.events.ceremony.title}</h3>
+                    
+                    <div className="space-y-4 text-xs md:text-sm text-slate-600 mb-8">
+                      <div className="flex items-start space-x-3">
+                        <Calendar className="w-5 h-5 text-[#A5D6A7] mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-bold text-[#2D2A29]">{WEDDING_CONFIG.events.ceremony.date}</p>
+                          <p className="text-slate-500">{WEDDING_CONFIG.events.ceremony.time}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start space-x-3">
+                        <MapPin className="w-5 h-5 text-[#A5D6A7] mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-bold text-[#2D2A29]">{WEDDING_CONFIG.events.ceremony.venue}</p>
+                          <p className="text-slate-500">{WEDDING_CONFIG.events.ceremony.address}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <a
+                      href={WEDDING_CONFIG.events.ceremony.mapUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 inline-flex items-center justify-center space-x-2 bg-[#A5D6A7] hover:bg-slate-900 text-white font-bold tracking-wider py-3.5 px-4 rounded-xl shadow transition-colors text-xs"
+                    >
+                      <MapPin className="w-4 h-4" />
+                      <span>VIEW GOOGLE MAPS</span>
+                    </a>
+                    <a
+                      href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(WEDDING_CONFIG.events.ceremony.title)}&dates=20261220T030000Z/20261220T043000Z&details=The+Wedding+of+Rendel+and+Danica&location=${encodeURIComponent(WEDDING_CONFIG.events.ceremony.venue)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center space-x-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold tracking-wider py-3.5 px-4 rounded-xl transition-colors text-xs"
+                    >
+                      <Calendar className="w-4 h-4 text-[#F8BBD0]" />
+                      <span>ADD TO CALENDAR</span>
+                    </a>
+                  </div>
                 </div>
-                <div class="reveal">
-                    <h3 class="font-serif text-4xl mb-3 italic">Ian Chrisanto</h3>
-                    <p class="text-[10px] uppercase tracking-widest text-stone-400">Son of Mr. Chris & Mrs. Chris</p>
+
+                {/* Reception Block */}
+                <div className="bg-[#FFFDF8] border-2 border-[#F8BBD0]/15 rounded-[40px] p-8 md:p-10 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300">
+                  <div>
+                    <div className="w-12 h-12 bg-white border border-[#CE93D8]/35 rounded-full flex items-center justify-center mb-6 shadow-md text-[#CE93D8]">
+                      <Sparkles className="w-5 h-5 fill-current" />
+                    </div>
+                    <h3 className="font-serif-header text-2xl font-bold text-[#2D2A29] mb-4">{WEDDING_CONFIG.events.reception.title}</h3>
+                    
+                    <div className="space-y-4 text-xs md:text-sm text-slate-600 mb-8">
+                      <div className="flex items-start space-x-3">
+                        <Calendar className="w-5 h-5 text-[#CE93D8] mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-bold text-[#2D2A29]">{WEDDING_CONFIG.events.reception.date}</p>
+                          <p className="text-slate-500">{WEDDING_CONFIG.events.reception.time}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-start space-x-3">
+                        <MapPin className="w-5 h-5 text-[#CE93D8] mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-bold text-[#2D2A29]">{WEDDING_CONFIG.events.reception.venue}</p>
+                          <p className="text-slate-500">{WEDDING_CONFIG.events.reception.address}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <a
+                      href={WEDDING_CONFIG.events.reception.mapUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 inline-flex items-center justify-center space-x-2 bg-[#CE93D8] hover:bg-slate-900 text-white font-bold tracking-wider py-3.5 px-4 rounded-xl shadow transition-colors text-xs"
+                    >
+                      <MapPin className="w-4 h-4" />
+                      <span>VIEW GOOGLE MAPS</span>
+                    </a>
+                    <a
+                      href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(WEDDING_CONFIG.events.reception.title)}&dates=20261220T060000Z/20261220T100000Z&details=The+Wedding+of+Rendel+and+Danica+Reception&location=${encodeURIComponent(WEDDING_CONFIG.events.reception.venue)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center space-x-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold tracking-wider py-3.5 px-4 rounded-xl transition-colors text-xs"
+                    >
+                      <Calendar className="w-4 h-4 text-[#F8BBD0]" />
+                      <span>ADD TO CALENDAR</span>
+                    </a>
+                  </div>
                 </div>
-            </div>
-            
-            <div class="text-center font-serif text-3xl italic text-stone-200 reveal">&</div>
 
-            <div class="text-center">
-                <div class="w-64 h-[400px] mx-auto mb-10 overflow-hidden rounded-full reveal">
-                    <img src="https://lh3.googleusercontent.com/d/1qbhjTa_5mjI3Z_HFhAmtJuXBfUUvlS7W" class="w-full h-full object-cover">
+              </div>
+            </div>
+          </section>
+
+          {}
+          <section id="gallery" className="py-28 px-6 bg-[#FFFDF8] relative overflow-hidden border-t border-[#F8BBD0]/15">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-16">
+                <span className="text-xs font-bold text-[#A5D6A7] tracking-[0.3em] uppercase block mb-1">MOMENTS OF FOREVER</span>
+                <h2 className="font-serif-header text-3xl md:text-5xl font-bold text-[#2D2A29]">Captured Memories</h2>
+                <div className="w-16 h-[1.5px] bg-[#F8BBD0] mx-auto mt-4"></div>
+              </div>
+
+              {/* Multi-column masonry layout */}
+              <div className="columns-2 md:columns-4 gap-4 space-y-4">
+                {WEDDING_CONFIG.gallery.map((imgUrl, idx) => (
+                  <div
+                    key={idx}
+                    onClick={() => setLightboxData({ open: true, src: imgUrl, index: idx })}
+                    className="overflow-hidden rounded-3xl cursor-pointer relative group border border-[#F8BBD0]/20 shadow-sm hover:shadow-md transition-all duration-300 break-inside-avoid"
+                  >
+                    <img
+                      src={imgUrl}
+                      alt={`Memory path frame ${idx + 1}`}
+                      className="w-full object-cover rounded-3xl transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Sparkles className="w-6 h-6 text-white animate-pulse" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Custom Lightbox zoomed viewer */}
+            {lightboxData.open && (
+              <div className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-sm flex items-center justify-center p-4">
+                <button
+                  onClick={() => setLightboxData({ open: false, src: "", index: 0 })}
+                  className="absolute top-6 right-6 text-white/80 hover:text-white text-3xl p-2 hover:scale-110 transition-transform"
+                >
+                  &times;
+                </button>
+                
+                <button
+                  onClick={() => {
+                    const prevIdx = (lightboxData.index - 1 + WEDDING_CONFIG.gallery.length) % WEDDING_CONFIG.gallery.length;
+                    setLightboxData({ open: true, src: WEDDING_CONFIG.gallery[prevIdx], index: prevIdx });
+                  }}
+                  className="absolute left-4 text-white/80 hover:text-white text-3xl p-4 hover:scale-125 transition-transform"
+                >
+                  &#10094;
+                </button>
+
+                <div className="max-w-4xl max-h-[80vh] rounded-3xl overflow-hidden border border-[#F8BBD0] shadow-2xl">
+                  <img src={lightboxData.src} alt="Lightbox Zoom Frame" className="max-w-full max-h-[75vh] object-contain mx-auto" />
                 </div>
-                <div class="reveal">
-                    <h3 class="font-serif text-4xl mb-3 italic">Ribka Simanjuntak</h3>
-                    <p class="text-[10px] uppercase tracking-widest text-stone-400">Daughter Mr Jhonny Simanjuntak & Mrs. Tina Hutabarat</p>
+
+                <button
+                  onClick={() => {
+                    const nextIdx = (lightboxData.index + 1) % WEDDING_CONFIG.gallery.length;
+                    setLightboxData({ open: true, src: WEDDING_CONFIG.gallery[nextIdx], index: nextIdx });
+                  }}
+                  className="absolute right-4 text-white/80 hover:text-white text-3xl p-4 hover:scale-125 transition-transform"
+                >
+                  &#10095;
+                </button>
+              </div>
+            )}
+          </section>
+
+          {/* Interactive embedded maps block */}
+          <section className="relative w-full h-[400px] overflow-hidden border-t border-b border-[#F8BBD0]/20 bg-slate-50">
+            <iframe
+              title="Meadow Pavilion maps route"
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127453.64936353347!2d114.52622724647334!3d-3.3241517436034176!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2de4208e43c51111%3A0x3030bfb5b03f0b0!2sBanjarmasin%2C%20Banjarmasin%20City%2C%20South%20Kalimantan!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid"
+              className="absolute inset-0 w-full h-full border-none filter contrast-105"
+              allowFullScreen=""
+              loading="lazy"
+            ></iframe>
+          </section>
+
+          {}
+          <section id="rsvp" className="py-28 px-6 bg-white relative overflow-hidden">
+            <div className="max-w-5xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
+                
+                {/* RSVP Form Card with soft spring colors */}
+                <div className="bg-[#FFFDF8] border border-[#F8BBD0]/35 rounded-[40px] p-8 md:p-10 shadow-sm relative">
+                  <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-[#FFF59D] animate-bounce" />
+                  <span className="text-xs font-bold text-[#A5D6A7] tracking-[0.25em] uppercase block mb-1">RESERVE A MOMENT</span>
+                  <h3 className="font-serif-header text-3xl font-bold text-[#2D2A29] mb-4">Confirm Presence</h3>
+                  <p className="text-xs text-slate-500 mb-8 leading-relaxed">
+                    Kindly share your confirmation below. Submitting will open your WhatsApp client directly to coordinate with our concierge.
+                  </p>
+
+                  <form onSubmit={handleRsvpSubmitRedirect} className="space-y-6">
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-700 uppercase tracking-wider mb-2">Full Name</label>
+                      <input
+                        type="text"
+                        required
+                        value={rsvpName}
+                        onChange={(e) => setRsvpName(e.target.value)}
+                        placeholder="e.g. Duke Chrisanto Somerset"
+                        className="w-full px-4 py-3.5 text-sm border border-[#F8BBD0]/30 bg-white rounded-2xl focus:outline-none focus:border-[#CE93D8] transition-colors"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-700 uppercase tracking-wider mb-2">Attendance Status</label>
+                      <select
+                        value={rsvpStatus}
+                        onChange={(e) => setRsvpStatus(e.target.value)}
+                        className="w-full px-4 py-3.5 text-sm border border-[#F8BBD0]/30 bg-white rounded-2xl focus:outline-none focus:border-[#CE93D8] transition-colors"
+                      >
+                        <option value="Joyfully Attending">Joyfully Attending</option>
+                        <option value="Regretfully Declining">Regretfully Declining</option>
+                        <option value="Undecided">Still Undecided</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-700 uppercase tracking-wider mb-2">Total Seats Required</label>
+                      <select
+                        value={rsvpGuestCount}
+                        onChange={(e) => setRsvpGuestCount(e.target.value)}
+                        className="w-full px-4 py-3.5 text-sm border border-[#F8BBD0]/30 bg-white rounded-2xl focus:outline-none focus:border-[#CE93D8] transition-colors"
+                      >
+                        <option value="1">1 Seat</option>
+                        <option value="2">2 Seats</option>
+                        <option value="3">3 Seats</option>
+                        <option value="4">4 Seats</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-[10px] font-bold text-slate-700 uppercase tracking-wider mb-2">Blessing Notes / Dietary Request</label>
+                      <textarea
+                        rows="3"
+                        value={rsvpMessage}
+                        onChange={(e) => setRsvpMessage(e.target.value)}
+                        placeholder="Write special food dietary requirements or a sweet note..."
+                        className="w-full px-4 py-3.5 text-sm border border-[#F8BBD0]/30 bg-white rounded-2xl focus:outline-none focus:border-[#CE93D8] transition-colors resize-none"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-[#A5D6A7] to-[#81D4FA] hover:from-[#CE93D8] hover:to-[#F8BBD0] text-white font-bold tracking-widest py-4 rounded-2xl shadow-md transition-colors"
+                    >
+                      <Send className="w-4 h-4" />
+                      <span>SUBMIT VIA WHATSAPP</span>
+                    </button>
+                  </form>
                 </div>
-            </div>
-        </section>
 
-        <!-- GALLERY SECTION -->
-        <section id="gallery" class="py-24 px-4 bg-stone-50">
-            <div class="text-center mb-16 reveal">
-                <p class="text-[9px] uppercase tracking-[0.5em] mb-2">Our Moments</p>
-                <h2 class="font-serif text-4xl italic">Love in Frame</h2>
-            </div>
-            
-            <div class="grid grid-cols-2 gap-3">
-                <img src="https://lh3.googleusercontent.com/d/1jjd13Yb5ZW_WpTvHGtiOa5otuauIkJcn" class="gsap-item rounded-sm aspect-[4/5] object-cover">
-                <img src="https://lh3.googleusercontent.com/d/1UbnLrM_XSOxdkkM8oII1UzSlBoADrTW2" class="gsap-item rounded-sm aspect-[3/4] object-cover mt-12">
-                <img src="https://lh3.googleusercontent.com/d/1P23P5kMmtN-o6CsRD6Iq8bCk9zrMqbaR" class="gsap-item rounded-sm aspect-square object-cover -mt-12">
-                <img src="https://lh3.googleusercontent.com/d/1jyCBvxHcUflsPmT903099t3Nd6a8QI-p" class="gsap-item rounded-sm aspect-[16/10] object-cover col-span-2">
-            </div>
-        </section>
+                {/* Local Guestbook Scroller Board */}
+                <div className="flex flex-col justify-between h-full space-y-8">
+                  <div>
+                    <span className="text-xs font-bold text-[#CE93D8] tracking-[0.25em] uppercase block mb-1">DIGITAL LEDGER CONTRIB</span>
+                    <h3 className="font-serif-header text-3xl font-bold text-[#2D2A29] mb-4">Wishes Guestbook</h3>
+                    <p className="text-xs text-slate-500 mb-6 leading-relaxed">
+                      Leave a lovely message on our local session register. Your kind wishes are cached directly on your client browser, and you can export or share the list!
+                    </p>
 
-        <!-- FOOTER -->
-        <footer class="py-32 text-center bg-white">
-            <div class="reveal">
-                <p class="text-[10px] uppercase tracking-[0.5em] mb-4">Thank You</p>
-                <h2 class="font-serif text-4xl italic mb-12">Chris & Ribka</h2>
-                <div class="h-[1px] w-12 bg-stone-200 mx-auto mb-8"></div>
-                <p class="text-[8px] uppercase tracking-[0.3em] text-stone-400">Design by MahalKita.online</p>
-            </div>
-        </footer>
-    </main>
+                    <form onSubmit={handleAddLocalWish} className="space-y-4 mb-6">
+                      <div className="grid grid-cols-2 gap-4">
+                        <input
+                          type="text"
+                          required
+                          placeholder="Your Name"
+                          value={inputWishName}
+                          onChange={(e) => setInputWishName(e.target.value)}
+                          className="w-full px-4 py-3 text-xs border border-[#F8BBD0]/30 bg-[#FFFDF8] rounded-2xl focus:outline-none focus:border-[#CE93D8]"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Relation (e.g. Bestie)"
+                          value={inputWishRelation}
+                          onChange={(e) => setInputWishRelation(e.target.value)}
+                          className="w-full px-4 py-3 text-xs border border-[#F8BBD0]/30 bg-[#FFFDF8] rounded-2xl focus:outline-none focus:border-[#CE93D8]"
+                        />
+                      </div>
+                      <textarea
+                        rows="2"
+                        required
+                        placeholder="Write your beautiful spring wishes and prayers..."
+                        value={inputWishText}
+                        onChange={(e) => setInputWishText(e.target.value)}
+                        className="w-full px-4 py-3 text-xs border border-[#F8BBD0]/30 bg-[#FFFDF8] rounded-2xl focus:outline-none focus:border-[#CE93D8] resize-none"
+                      />
+                      <button
+                        type="submit"
+                        className="w-full bg-[#FFFDF8] hover:bg-slate-50 text-slate-700 font-bold py-2.5 rounded-2xl text-xs tracking-wider border border-[#F8BBD0]/30 transition-colors"
+                      >
+                        SUBMIT LEDGER ENTRY
+                      </button>
+                    </form>
+                  </div>
 
-    <!-- MUSIC ICON -->
-    <div id="music-control" onclick="toggleMusic()">
-        <svg id="music-svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-stone-500"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+                  {/* Scroller feeds list */}
+                  <div className="bg-gradient-to-b from-[#FFFDF8] to-[#FFF5F6] rounded-[30px] p-6 border border-[#F8BBD0]/20 max-h-[250px] overflow-y-auto space-y-4 shadow-inner">
+                    {guestbookWishes.map((w, idx) => (
+                      <div key={idx} className="border-b border-slate-200/50 pb-3 last:border-none">
+                        <div className="flex items-center space-x-2 mb-1">
+                          <span className="font-bold text-xs text-slate-800">{w.name}</span>
+                          <span className="text-[8px] font-bold px-2 py-0.5 bg-[#A5D6A7]/15 text-[#A5D6A7] rounded-full uppercase">
+                            {w.relation}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-600 italic">"{w.text}"</p>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Backup Actions */}
+                  <div className="grid grid-cols-2 gap-3 mt-4">
+                    <button
+                      onClick={handleCopyAllWishes}
+                      className="inline-flex items-center justify-center space-x-1.5 py-2.5 px-3 border border-[#F8BBD0]/40 hover:bg-[#F8BBD0]/10 text-[#F8BBD0] font-semibold rounded-2xl text-xs transition-colors"
+                    >
+                      <Copy className="w-4 h-4" />
+                      <span>{copiedAllWishes ? 'COPIED!' : 'COPY ALL MESSAGES'}</span>
+                    </button>
+                    <button
+                      onClick={handleExportWishesFile}
+                      className="inline-flex items-center justify-center space-x-1.5 py-2.5 px-3 bg-[#A5D6A7]/15 hover:bg-[#A5D6A7]/25 text-[#A5D6A7] font-semibold rounded-2xl text-xs transition-colors"
+                    >
+                      <Download className="w-4 h-4" />
+                      <span>DOWNLOAD .TXT</span>
+                    </button>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+          {}
+          <section id="registry" className="py-28 px-6 bg-[#FFFDF8] relative overflow-hidden border-t border-[#F8BBD0]/15">
+            <div className="max-w-4xl mx-auto text-center">
+              <div className="mb-16">
+                <span className="text-xs font-bold text-[#CE93D8] tracking-[0.25em] uppercase block mb-1">SECURE TOKENS LEDGER</span>
+                <h2 className="font-serif-header text-3xl md:text-5xl font-bold text-[#2D2A29]">Love &amp; Blessings Gifts</h2>
+                <div className="w-16 h-[1.5px] bg-[#F8BBD0] mx-auto mt-4"></div>
+                <p className="text-xs md:text-sm text-slate-500 max-w-lg mx-auto mt-4 leading-relaxed">
+                  Your warm presence is already the most precious flower in our spring garden. But if you wish to assist in funding our honeymoon path, you can securely utilize our direct details:
+                </p>
+              </div>
+
+              {/* Bank Cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-2xl mx-auto">
+                {WEDDING_CONFIG.registry.map((reg, idx) => (
+                  <div
+                    key={idx}
+                    className={`${reg.color} rounded-[32px] p-6 text-left border relative overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between`}
+                  >
+                    <div>
+                      <div className="flex justify-between items-start mb-6">
+                        <span className="font-serif-header font-bold text-slate-800 tracking-wider text-base">{reg.type}</span>
+                        <div className="w-8 h-8 rounded-full bg-white/40 flex items-center justify-center text-slate-600">
+                          <Gift className="w-4 h-4" />
+                        </div>
+                      </div>
+
+                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">ACCOUNT NUMBER</p>
+                      <p className="font-serif-header text-xl md:text-2xl font-bold text-slate-800 tracking-wide mb-4">
+                        {reg.accountNumber}
+                      </p>
+
+                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">ACCOUNT HOLDER</p>
+                      <p className="font-bold text-slate-700 text-xs">
+                        {reg.accountHolder}
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => handleCopyAccountNum(reg.accountNumber, idx)}
+                      className="mt-6 w-full py-3 bg-white hover:bg-slate-50 border border-slate-100 text-slate-700 font-bold rounded-2xl text-[11px] tracking-wider transition-colors inline-flex items-center justify-center space-x-1.5 shadow-sm"
+                    >
+                      {copiedRegistryIndex === idx ? (
+                        <>
+                          <Check className="w-4 h-4 text-emerald-600" />
+                          <span className="text-emerald-700 font-bold">COPIED SUCCESSFULLY</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="w-4 h-4 text-slate-400" />
+                          <span>COPY ACCOUNT NUMBER</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {}
+          <section id="faq" className="py-28 px-6 bg-white relative overflow-hidden">
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-16">
+                <span className="text-xs font-bold text-[#A5D6A7] tracking-[0.25em] uppercase block mb-1">HELPFUL INFORMATION</span>
+                <h2 className="font-serif-header text-3xl md:text-5xl font-bold text-[#2D2A29]">Frequently Asked Questions</h2>
+                <div className="w-16 h-[1.5px] bg-[#F8BBD0] mx-auto mt-4"></div>
+              </div>
+
+              <div className="space-y-4">
+                {WEDDING_CONFIG.faqs.map((faq, idx) => {
+                  const isOpen = openedFaq === idx;
+                  return (
+                    <div
+                      key={idx}
+                      className="border border-[#F8BBD0]/30 rounded-3xl overflow-hidden transition-all duration-300 bg-[#FFFDF8] hover:border-[#CE93D8]"
+                    >
+                      <button
+                        onClick={() => setOpenedFaq(isOpen ? null : idx)}
+                        className="w-full px-6 py-5 flex justify-between items-center text-left hover:bg-[#FFF5F6] transition-colors focus:outline-none"
+                      >
+                        <span className="font-serif-header font-bold text-slate-800 text-xs md:text-sm">{faq.q}</span>
+                        <ChevronDown
+                          className={`w-4 h-4 text-[#F8BBD0] transform transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+                        />
+                      </button>
+
+                      {isOpen && (
+                        <div className="px-6 py-5 bg-white text-xs md:text-sm text-slate-600 leading-relaxed border-t border-slate-100">
+                          {faq.a}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+
+          {}
+          <section className="py-28 px-6 bg-[#FFFDF8] relative text-center overflow-hidden border-t border-[#F8BBD0]/20">
+            <div className="max-w-3xl mx-auto relative z-10">
+              {/* Premium flower-bordered grateful portrait framing */}
+              <div className="relative w-64 h-80 mx-auto mb-10 rounded-[60px_10px_60px_10px] overflow-hidden border border-[#F8BBD0]/30 shadow-2xl bg-slate-50">
+                <img
+                  src="https://lh3.googleusercontent.com/d/1duIzeRvw-0A_eXn8CbliVPNuLX4djdeR"
+                  alt="Rendel and Danica Final Frame"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              <p className="font-accent-header text-3xl md:text-4xl italic text-slate-800 font-bold mb-4">
+                With Sincerest Gratitude
+              </p>
+              
+              <p className="text-xs md:text-sm text-slate-500 max-w-md mx-auto leading-relaxed mb-12">
+                Thank you for weaving your support into our floral bouquet of memories. We look forward to clinking glasses under the wildflowers with you!
+              </p>
+
+              <h2 className="font-serif-header text-3xl md:text-5xl text-[#F8BBD0] font-extrabold mb-1">
+                Rendel &amp; Danica
+              </h2>
+              <p className="text-[10px] font-bold text-[#A5D6A7] tracking-[0.3em] uppercase mt-2">
+                {WEDDING_CONFIG.general.hashtag}
+              </p>
+            </div>
+          </section>
+
+          {}
+          <footer className="bg-gradient-to-b from-slate-900 to-black text-white/90 py-16 px-6 text-center border-t border-[#F8BBD0]/15">
+            <div className="max-w-4xl mx-auto">
+              <span className="font-serif-header text-2xl font-bold tracking-widest text-[#F8BBD0]">R &amp; D</span>
+              <p className="text-[9px] text-slate-500 mt-2 mb-8 tracking-[0.3em] uppercase">HANDCRAFTED FOR RENDEL &amp; DANICA</p>
+              
+              <div className="w-16 h-[0.5px] bg-white/20 mx-auto mb-8"></div>
+
+              {/* Dynamic deployment guide pane */}
+              <div className="text-left bg-white/5 backdrop-blur-sm p-6 rounded-3xl max-w-xl mx-auto border border-white/10">
+                <h4 className="text-xs font-serif-header font-bold text-[#F8BBD0] tracking-wider mb-3 flex items-center">
+                  <Compass className="w-4 h-4 mr-1.5" />
+                  <span>Deployment Directives</span>
+                </h4>
+                <p className="text-[11px] text-slate-400 mb-4 leading-relaxed">
+                  This Next.js / React build generates custom static indices without requiring external state engines.
+                </p>
+                <div className="space-y-3 text-xs">
+                  <div>
+                    <span className="font-bold text-[#F8BBD0]">▲ Vercel Hosting:</span>
+                    <p className="text-[10px] text-slate-400 ml-3">Run <code className="bg-white/10 px-1 py-0.5 rounded">vercel deploy</code> within the project folder to set up a live domain instantly.</p>
+                  </div>
+                  <div>
+                    <span className="font-bold text-[#CE93D8]">✦ Netlify Portal:</span>
+                    <p className="text-[10px] text-slate-400 ml-3">Drag-and-drop the compiled static assets directory directly into the Netlify GUI builder.</p>
+                  </div>
+                  <div>
+                    <span className="font-bold text-[#A5D6A7]">❖ GitHub Pages:</span>
+                    <p className="text-[10px] text-slate-400 ml-3">Push code to your master branch and activate Actions to compile and host your page on Github servers.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </footer>
+
+        </div>
+      )}
     </div>
-
-    <script>
-        // YOUTUBE API
-        var tag = document.createElement('script');
-        tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-        var player;
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                height: '0', width: '0',
-                videoId: 'SHmvzBocLCQ',
-                playerVars: { 'autoplay': 0, 'loop': 1, 'playlist': 'SHmvzBocLCQ', 'controls': 0 }
-            });
-        }
-
-        // SMOOTH SCROLL (LENIS)
-        const lenis = new Lenis();
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
-        
-        gsap.registerPlugin(ScrollTrigger);
-
-        function startInvitation() {
-            const overlay = document.getElementById('opening-overlay');
-            overlay.style.transform = 'translateY(-100%)';
-            document.body.style.overflow = 'auto';
-            
-            if (player && player.playVideo) player.playVideo();
-            document.getElementById('music-control').style.display = 'flex';
-            
-            initAnimations();
-        }
-
-        function initAnimations() {
-            // Parallax Hero
-            gsap.to("#hero-img", {
-                yPercent: 20,
-                scrollTrigger: {
-                    trigger: "#hero",
-                    start: "top top",
-                    scrub: true
-                }
-            });
-
-            // Reveal on Scroll
-            gsap.utils.toArray(".reveal").forEach(elem => {
-                gsap.to(elem, {
-                    opacity: 1,
-                    y: 0,
-                    duration: 1.5,
-                    ease: "power2.out",
-                    scrollTrigger: {
-                        trigger: elem,
-                        start: "top 90%"
-                    }
-                });
-            });
-
-            // Gallery reveal
-            gsap.from(".gsap-item", {
-                opacity: 0,
-                y: 40,
-                stagger: 0.2,
-                duration: 1,
-                scrollTrigger: {
-                    trigger: "#gallery",
-                    start: "top 70%"
-                }
-            });
-        }
-
-        function toggleMusic() {
-            if (!player) return;
-            const state = player.getPlayerState();
-            const btn = document.getElementById('music-control');
-            if (state == 1) { 
-                player.pauseVideo(); 
-                btn.classList.add('opacity-50');
-            } else { 
-                player.playVideo(); 
-                btn.classList.remove('opacity-50');
-            }
-        }
-    </script>
-</body>
-</html>
+  );
+}
