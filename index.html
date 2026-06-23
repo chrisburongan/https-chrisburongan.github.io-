@@ -1,1293 +1,1108 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  Heart, 
-  MapPin, 
-  Calendar, 
-  Volume2, 
-  VolumeX, 
-  Copy, 
-  Check, 
-  ChevronDown, 
-  Download, 
-  Send, 
-  Clock, 
-  Info,
-  Gift,
-  Sparkles,
-  Camera,
-  Coffee,
-  PartyPopper,
-  Flame,
-  Shirt,
-  Compass,
-  ArrowRight
+  Heart, Calendar, MapPin, Music, Play, Pause, VolumeX, Volume2, Settings,
+  ChevronDown, Copy, Download, Share2, HelpCircle, Send, Check, AlertCircle, Clock, Info, X
 } from 'lucide-react';
 
-const WEDDING_CONFIG = {
-  couple: {
-    groom: {
-      name: "Rendel Santos",
-      shortName: "Rendel",
-      parents: "Mr. Roberto Santos & Mrs. Evelyn Santos",
-      bio: "A visionary artist and designer who paints life in bold colors and delicate strokes. Rendel found his ultimate muse and peace in Danica's radiant, warm laughter.",
-      photo: "https://lh3.googleusercontent.com/d/13LSsrxTql-mIG9Cknhu4rcuOEe6TYJ0H",
-    },
-    bride: {
-      name: "Danica Ramos",
-      shortName: "Danica",
-      parents: "Mr. Michael Ramos & Mrs. Sarah Ramos",
-      bio: "An elegant botanist and teacher who transforms every space into a garden of joy. Danica found her steady anchor and endless romance in Rendel's poetic heart.",
-      photo: "https://lh3.googleusercontent.com/d/1ynp-SXsLJ6zIq0RttaupiTYyTjlJSjXB",
-    }
-  },
-  general: {
-    tagline: "Together Forever Begins Here",
-    subTagline: "A Dreamy Spring Garden Symphony under the Wildflowers",
-    hashtag: "#RendelDanicaSpringGarden2026",
-    weddingDate: "December 20, 2026 10:00:00",
-    weddingDateLabel: "Sunday, December 20, 2026",
-    musicUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-    whatsappNumber: "+6281234567890"
-  },
-  events: {
-    ceremony: {
-      title: "Holy Matrimony & Vows",
-      date: "Sunday, December 20, 2026",
-      time: "10:00 AM - 11:30 AM",
-      venue: "St. Mary's Garden Cathedral",
-      address: "Blossom Valley Sanctuary, Banjarmasin, Indonesia",
-      mapUrl: "https://maps.google.com/?q=St.+Mary's+Cathedral+Banjarmasin"
-    },
-    reception: {
-      title: "The Spring Garden Banquet",
-      date: "Sunday, December 20, 2026",
-      time: "01:00 PM - 05:00 PM",
-      venue: "The Meadow Pavilion Resort",
-      address: "Emerald Wildflower Fields, Banjarmasin, Indonesia",
-      mapUrl: "https://maps.google.com/?q=The+Royal+Meadow+Gardens+Resort"
-    }
-  },
-  timeline: [
-    {
-      year: "2021",
-      title: "First Meeting at the Botanical Garden",
-      desc: "Our paths crossed amidst a blooming field of spring orchids. A simple request for a picture sparked an afternoon-long conversation that neither of us wanted to end.",
-      photo: "https://lh3.googleusercontent.com/d/1fSwM8zyAx0geG46VOqoMu8t4HcSetNxh"
-    },
-    {
-      year: "2022",
-      title: "The First Date & Cherry Blossom Picnic",
-      desc: "Under a canopy of falling pink petals, we shared our dreams, favorite songs, and a homemade basket of pastries. We knew right then our souls had aligned.",
-      photo: "https://lh3.googleusercontent.com/d/1duIzeRvw-0A_eXn8CbliVPNuLX4djdeR"
-    },
-    {
-      year: "2024",
-      title: "The Falling in Love & Shared Trails",
-      desc: "Years filled with mountain climbs, coastal drives, and building our small plant collection. Love became the quiet comfort of knowing we always had each other.",
-      photo: "https://lh3.googleusercontent.com/d/10LKJ2zIe5h8ePkqjy2TejTgunb5uhqKA"
-    },
-    {
-      year: "2025",
-      title: "A Promontory Engagement",
-      desc: "At sunrise, overlooking the misty valleys of Java, Rendel asked the easiest question of his life. Through tears of joy, Danica answered with a lifetime of 'Yes'.",
-      photo: "https://lh3.googleusercontent.com/d/1Z9s6Pf0neCLejMu4HGeRZVCh2s7CkOVI"
-    }
-  ],
-  gallery: [
-    "https://lh3.googleusercontent.com/d/1fSwM8zyAx0geG46VOqoMu8t4HcSetNxh",
-    "https://lh3.googleusercontent.com/d/13LSsrxTql-mIG9Cknhu4rcuOEe6TYJ0H",
-    "https://lh3.googleusercontent.com/d/1ynp-SXsLJ6zIq0RttaupiTYyTjlJSjXB",
-    "https://lh3.googleusercontent.com/d/1duIzeRvw-0A_eXn8CbliVPNuLX4djdeR",
-    "https://lh3.googleusercontent.com/d/1Z9s6Pf0neCLejMu4HGeRZVCh2s7CkOVI",
-    "https://lh3.googleusercontent.com/d/10LKJ2zIe5h8ePkqjy2TejTgunb5uhqKA",
-    "https://lh3.googleusercontent.com/d/1evNyNWYZGjzHilGiHYgwxHy8pzKNk5LW",
-    "https://lh3.googleusercontent.com/d/162aS9-36fBw7zwRj0awENsHfhbgKcO5q",
-    "https://lh3.googleusercontent.com/d/1v3BeNmJ3aE6xK66ppivhXC3B_gy0yjGN",
-    "https://lh3.googleusercontent.com/d/1aTq_StaiozSuy2o4r7qW8zl6MeoM6Fvu"
-  ],
-  dressCode: {
-    theme: "Vibrant Spring Pastels",
-    description: "We kindly invite our guests to join the visual harmony of our wedding garden. We recommend wearing elegant, lightweight fabrics in soft pastel shades.",
-    palettes: [
-      { name: "Blush Pink", hex: "#F8BBD0", desc: "Cherry Blossom Softness" },
-      { name: "Peach Blossom", hex: "#FFCCBC", desc: "Warm Sunny Apricot" },
-      { name: "Lavender Fields", hex: "#CE93D8", desc: "Whimsical Wild Orchid" },
-      { name: "Sage Garden", hex: "#A5D6A7", desc: "Fresh Spring Moss" },
-      { name: "Sky Mist", hex: "#81D4FA", desc: "Bright Clear Morning" },
-      { name: "Soft Marigold", hex: "#FFF59D", desc: "Vibrant Spring Sunshine" }
-    ]
-  },
-  itinerary: [
-    { time: "10:00 AM", title: "Sacred Exchange of Vows", icon: Heart, desc: "Join us as we lock our promises inside St. Mary's Cathedral Garden." },
-    { time: "11:30 AM", title: "Family Portraits & Hugs", icon: Camera, desc: "A joyful photo-session amidst the wildflower pathways." },
-    { time: "01:00 PM", title: "The Grand Reception Luncheon", icon: Coffee, desc: "Welcome toast, culinary grazing tables, and romantic jazz pieces." },
-    { time: "02:30 PM", title: "Speeches, Games & Love Stories", icon: PartyPopper, desc: "Stories shared by family, bridal party antics, and laughter." },
-    { time: "04:30 PM", title: "The Grand Sparkler Send-Off", icon: Flame, desc: "Bless our departure under a warm, glowing pathway of sparklers." }
-  ],
-  faqs: [
-    {
-      q: "What is the designated Dress Code?",
-      a: "The dress code is Vibrant Spring Garden Pastels. Think delicate garden-formal attire: lovely floral dresses, light colored suits, pastel linen, and comfortable shoes for outdoor lawns."
-    },
-    {
-      q: "Are children invited to the celebration?",
-      a: "To ensure all of our friends and family can relax, mingle, and celebrate fully, our wedding will be an intimate, adults-only occasion."
-    },
-    {
-      q: "When should I complete my RSVP confirmation?",
-      a: "Please fill out the digital RSVP form by November 20, 2026, so our floral planners and caterers can arrange seating perfectly."
-    },
-    {
-      q: "Will the events take place outdoors?",
-      a: "Yes! Both the holy vows and the lunch reception will be held in semi-shaded open-air garden meadows. We suggest sunglasses and sunblock!"
-    }
-  ],
-  registry: [
-    {
-      type: "GCash Digital Transfer",
-      accountNumber: "0912-345-6789",
-      accountHolder: "Rendel Santos",
-      color: "bg-emerald-50/60 border-emerald-200 text-emerald-900"
-    },
-    {
-      type: "BDO Savings Account",
-      accountNumber: "9876-5432-1011",
-      accountHolder: "Danica Santos",
-      color: "bg-rose-50/60 border-rose-200 text-rose-900"
-    }
-  ]
+
+// Direct Google CDN WebP Optimized Assets
+const GOOGLE_DRIVE_IDS = {
+  hero: '1fSwM8zyAx0geG46VOqoMu8t4HcSetNxh',
+  coupleGroom: '13LSsrxTql-mIG9Cknhu4rcuOEe6TYJ0H',
+  coupleBride: '1ynp-SXsLJ6zIq0RttaupiTYyTjlJSjXB',
+  gallery1: '1duIzeRvw-0A_eXn8CbliVPNuLX4djdeR',
+  gallery2: '1Z9s6Pf0neCLejMu4HGeRZVCh2s7CkOVI',
+  giftQr: '1-NUiPfH8unFWIR6wye_w4x2V1PdA-16L',
 };
 
-const INJECTED_CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap');
-  
-  body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #FFFDF8;
-    color: #2D2A29;
-  }
-  
-  .font-serif-header {
-    font-family: 'Playfair Display', serif;
-  }
+// Generates high-performance WebP dynamically using Google LH CDN parameters to save mobile bandwidth
+const getOptimizedImg = (id, width = 600) => {
+  return `https://lh3.googleusercontent.com/d/${id}=w${width}-rw`;
+};
 
-  .font-accent-header {
-    font-family: 'Cormorant Garamond', serif;
-  }
-
-  /* Custom Butterfly flight animations */
-  @keyframes fly-butterfly-1 {
-    0% { transform: translate(0, 0) rotate(0deg) scale(0.8); }
-    33% { transform: translate(80px, -60px) rotate(15deg) scale(0.9); }
-    66% { transform: translate(160px, -20px) rotate(-10deg) scale(0.85); }
-    100% { transform: translate(240px, -100px) rotate(5deg) scale(0.8); }
-  }
-
-  @keyframes fly-butterfly-2 {
-    0% { transform: translate(0, 0) rotate(0deg) scale(0.7); }
-    50% { transform: translate(-100px, -120px) rotate(-20deg) scale(0.85); }
-    100% { transform: translate(-200px, -40px) rotate(10deg) scale(0.7); }
-  }
-
-  .butterfly-anim-1 {
-    animation: fly-butterfly-1 25s ease-in-out infinite alternate;
-  }
-
-  .butterfly-anim-2 {
-    animation: fly-butterfly-2 28s ease-in-out infinite alternate;
-  }
-
-  /* Petal drift movement */
-  @keyframes drift-spring-petal {
-    0% {
-      transform: translateY(-10%) translateX(0) rotate(0deg) scale(0.7);
-      opacity: 0;
-    }
-    10% { opacity: 0.85; }
-    90% { opacity: 0.85; }
-    100% {
-      transform: translateY(110vh) translateX(120px) rotate(360deg) scale(1);
-      opacity: 0;
-    }
-  }
-
-  .spring-petal {
-    position: absolute;
-    pointer-events: none;
-    border-radius: 80% 0 85% 85%;
-    animation: drift-spring-petal 15s linear infinite;
-  }
-
-  @keyframes scale-pulse-subtle {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.04); }
-  }
-
-  .pulse-scale-gold {
-    animation: scale-pulse-subtle 4s infinite ease-in-out;
-  }
-
-  @keyframes portrait-pan {
-    0% { transform: scale(1); }
-    100% { transform: scale(1.08); }
-  }
-
-  .zoom-cinematic {
-    animation: portrait-pan 20s ease-out forwards alternate infinite;
-  }
-
-  /* Custom stylish scrollbar */
-  ::-webkit-scrollbar {
-    width: 6px;
-  }
-  ::-webkit-scrollbar-track {
-    background: #FFFDF8;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: #F8BBD0;
-    border-radius: 10px;
-  }
-`;
+// Preset tracks with YouTube Video IDs to power our background music
+const MUSIC_PRESETS = [
+  { name: 'Beautiful in White (Romantic Piano)', id: 'SHmvzBocLCQ' },
+  { name: 'Canon in D (Acoustic Guitar)', id: '_v091As_Pcw' },
+  { name: 'A Thousand Years (Sweet Harp)', id: 'rtOisg_D690' }
+];
 
 export default function App() {
-  const [isOpened, setIsOpened] = useState(false);
-  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-  const [copiedRegistryIndex, setCopiedRegistryIndex] = useState(null);
-  const [activeStoryIdx, setActiveStoryIdx] = useState(0);
-  const [openedFaq, setOpenedFaq] = useState(null);
-  const [lightboxData, setLightboxData] = useState({ open: false, src: "", index: 0 });
-  const [breakingSeal, setBreakingSeal] = useState(false);
-  const [guestName, setGuestName] = useState("Our Honored Guest");
+  const [isOpen, setIsOpen] = useState(false);
+  const [recipient, setRecipient] = useState('Guest');
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(false);
+  const [audioUrl, setAudioUrl] = useState(MUSIC_PRESETS[0].id); // Stores the current active YouTube video ID
+  const [customAudioUrl, setCustomAudioUrl] = useState('');
+  const [showMusicSettings, setShowMusicSettings] = useState(false);
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [wishes, setWishes] = useState([]);
+  const [newAuthor, setNewAuthor] = useState('');
+  const [newMessage, setNewMessage] = useState('');
+  const [copiedIndex, setCopiedIndex] = useState(null);
+  const [lightboxImg, setLightboxImg] = useState(null);
+  const [isQrZoomed, setIsQrZoomed] = useState(false);
+  const [openFaq, setOpenFaq] = useState(null);
+  
+  // Custom Toast notification states to replace intrusive alert boxes
+  const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
 
-  const audioRef = useRef(null);
+  // RSVP Form States
+  const [rsvpName, setRsvpName] = useState('');
+  const [rsvpAttendance, setRsvpAttendance] = useState('yes');
+  const [rsvpGuests, setRsvpGuests] = useState('1');
+  const [rsvpMsg, setRsvpMsg] = useState('');
+  const [customPhone, setCustomPhone] = useState('6281234567890'); // WhatsApp destination number
 
-  // RSVP Form Input Bindings
-  const [rsvpName, setRsvpName] = useState("");
-  const [rsvpStatus, setRsvpStatus] = useState("Joyfully Attending");
-  const [rsvpGuestCount, setRsvpGuestCount] = useState("1");
-  const [rsvpMessage, setRsvpMessage] = useState("");
+  // Ref for the YouTube Player instance
+  const playerRef = useRef(null);
+  const iframeApiLoadedRef = useRef(false);
 
-  // Guestbook Wishes Local Ledger state
-  const [guestbookWishes, setGuestbookWishes] = useState([
-    { name: "Aunt Clara & Uncle Arthur", relation: "Family Support", text: "May your marriage bloom like the most gorgeous spring rose garden. We love you both so much!" },
-    { name: "Sophia Miller", relation: "Danica's Maid of Honor", text: "Counting down the milliseconds to throw flowers on your paths! To the absolute dream couple!" },
-    { name: "Thomas & Elena", relation: "Rendel's College Buds", text: "From late-night design reviews to walking the wedding aisle! What an extraordinary adventure, mates." }
-  ]);
-  const [inputWishName, setInputWishName] = useState("");
-  const [inputWishRelation, setInputWishRelation] = useState("");
-  const [inputWishText, setInputWishText] = useState("");
-  const [copiedAllWishes, setCopiedAllWishes] = useState(false);
-
-  // Timer countdown values
-  const [timerValues, setTimerValues] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-
-  // Floating Garden Petals
-  const [interactivePetals, setInteractivePetals] = useState([]);
-
-  useEffect(() => {
-    // Resolve parameterized custom guest invitation
-    const searchParams = new URLSearchParams(window.location.search);
-    const toParam = searchParams.get('to');
-    if (toParam) {
-      setGuestName(toParam);
-    }
-
-    // Populate customized spring petals with random coordinates
-    const petalColors = [
-      'rgba(248, 187, 208, 0.75)', // Blush Pink
-      'rgba(255, 204, 188, 0.7)',  // Peach
-      'rgba(206, 147, 216, 0.65)', // Lavender
-      'rgba(165, 214, 167, 0.55)', // Sage
-      'rgba(255, 245, 157, 0.65)'  // Yellow
-    ];
-    const generated = Array.from({ length: 22 }).map((_, i) => ({
-      id: i,
-      size: Math.random() * 15 + 8,
-      left: Math.random() * 100,
-      delay: Math.random() * -15,
-      duration: Math.random() * 10 + 10,
-      color: petalColors[i % petalColors.length]
-    }));
-    setInteractivePetals(generated);
-
-    // Pull local storage guestbook wishes
-    const cached = localStorage.getItem('rendel_danica_wishes_ledger');
-    if (cached) {
-      try {
-        setGuestbookWishes(JSON.parse(cached));
-      } catch (err) {
-        console.error("Local registry parsing failure:", err);
-      }
-    }
-  }, []);
-
-  // Update dynamic countdown time relative to target
-  useEffect(() => {
-    const targetDate = new Date(WEDDING_CONFIG.general.weddingDate).getTime();
-    const intervalId = setInterval(() => {
-      const now = new Date().getTime();
-      const distance = targetDate - now;
-      if (distance < 0) {
-        clearInterval(intervalId);
-        return;
-      }
-      setTimerValues({
-        days: Math.floor(distance / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
-        minutes: Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)),
-        seconds: Math.floor((distance % (1000 * 60)) / 1000)
-      });
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, []);
-
-  const handleOpenInvitationBreak = () => {
-    setBreakingSeal(true);
+  const showToastMessage = (message, type = 'success') => {
+    setToast({ show: true, message, type });
     setTimeout(() => {
-      setIsOpened(true);
-      setIsAudioPlaying(true);
-      if (audioRef.current) {
-        audioRef.current.play().catch(err => console.log("User gesture required for audio trigger:", err));
-      }
-    }, 1200);
+      setToast({ show: false, message: '', type: 'success' });
+    }, 3000);
   };
 
-  const handleToggleAudio = () => {
-    if (audioRef.current) {
-      if (isAudioPlaying) {
-        audioRef.current.pause();
+  useEffect(() => {
+    // Inject Custom Fonts directly for instant rendering
+    const link = document.createElement('link');
+    link.href = 'https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,750;1,400&family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Poppins:wght@300;400;600;700&display=swap';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+
+    // Read personalized invite key
+    const params = new URLSearchParams(window.location.search);
+    const toParam = params.get('to');
+    if (toParam) {
+      setRecipient(toParam.replace(/\+/g, ' '));
+    }
+
+    // Load Guestbook wishes from localStorage safely
+    try {
+      const saved = localStorage.getItem('wedding_wishes_v3');
+      if (saved) {
+        setWishes(JSON.parse(saved));
       } else {
-        audioRef.current.play().catch(err => console.log("Audio deferred:", err));
+        const defaultWishes = [
+          { author: 'Moises Family', message: 'Selamat menempuh hidup baru Rendel & Danica! Semoga dilimpahi kebahagiaan, berkat melimpah, serta cinta yang abadi sepanjang masa.', date: '2026-06-20' },
+          { author: 'Sabanal Family', message: 'Sangat bangga dengan kalian berdua. Selamat menyambut hari istimewa ini dengan sukacita dan damai sejahtera!', date: '2026-06-21' },
+          { author: 'Clara & Michael', message: 'Wishing you both a lifetime of love, laughter, and beautiful dynamic adventures! So excited to witness your special day in Marco Polo!', date: '2026-06-22' }
+        ];
+        setWishes(defaultWishes);
+        localStorage.setItem('wedding_wishes_v3', JSON.stringify(defaultWishes));
       }
-      setIsAudioPlaying(!isAudioPlaying);
+    } catch (e) {
+      console.warn("Storage warning: ", e);
+    }
+
+    // Countdown target date setup
+    const targetDate = new Date('September 9, 2026 00:00:00').getTime();
+    const interval = setInterval(() => {
+      const now = new Date().getTime();
+      const diff = targetDate - now;
+      if (diff <= 0) {
+        clearInterval(interval);
+      } else {
+        setTimeLeft({
+          days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+          hours: Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)),
+          minutes: Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)),
+          seconds: Math.floor((diff % (1000 * 60)) / 1000)
+        });
+      }
+    }, 1000);
+
+    if (!window.YT) {
+      const tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      const firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    }
+
+    // Assign YouTube global trigger
+    window.onYouTubeIframeAPIReady = () => {
+      initYoutubePlayer(audioUrl);
+    };
+
+    // If API is already ready in the document context
+    if (window.YT && window.YT.Player) {
+      initYoutubePlayer(audioUrl);
+    }
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
+
+  const initYoutubePlayer = (vidId) => {
+    try {
+      if (playerRef.current) {
+        playerRef.current.destroy();
+      }
+      playerRef.current = new window.YT.Player('player', {
+        height: '0',
+        width: '0',
+        videoId: vidId,
+        playerVars: {
+          'autoplay': 0,
+          'loop': 1,
+          'playlist': vidId,
+          'controls': 0,
+          'disablekb': 1,
+          'fs': 0,
+          'modestbranding': 1,
+          'rel': 0,
+          'showinfo': 0
+        },
+        events: {
+          'onStateChange': (event) => {
+            if (event.data === window.YT.PlayerState.PLAYING) {
+              setIsPlaying(true);
+            } else if (event.data === window.YT.PlayerState.PAUSED) {
+              setIsPlaying(false);
+            }
+          },
+          'onError': (e) => {
+            console.error("YouTube Player error:", e);
+          }
+        }
+      });
+    } catch (err) {
+      console.warn("YouTube integration error:", err);
     }
   };
 
-  const handleCopyAccountNum = (accountNum, index) => {
-    navigator.clipboard.writeText(accountNum);
-    setCopiedRegistryIndex(index);
-    setTimeout(() => setCopiedRegistryIndex(null), 2500);
+  const handleTogglePlay = () => {
+    if (!playerRef.current || typeof playerRef.current.getPlayerState !== 'function') {
+      showToastMessage("Menyiapkan pemutar audio...", "info");
+      return;
+    }
+    
+    const state = playerRef.current.getPlayerState();
+    if (state === window.YT.PlayerState.PLAYING) {
+      playerRef.current.pauseVideo();
+      setIsPlaying(false);
+      showToastMessage("Musik dimatikan", "info");
+    } else {
+      playerRef.current.playVideo();
+      setIsPlaying(true);
+      showToastMessage("Musik diputar", "success");
+    }
   };
 
-  const handleRsvpSubmitRedirect = (e) => {
-    e.preventDefault();
-    const formattedText = `Hello! I would love to RSVP for Rendel & Danica's Beautiful Spring Wedding!%0A%0A*Guest Name:* ${encodeURIComponent(rsvpName || guestName)}%0A*Attendance Status:* ${encodeURIComponent(rsvpStatus)}%0A*Total Guests:* ${rsvpGuestCount}%0A*Special Message/Dietary Notes:* ${encodeURIComponent(rsvpMessage || "Sending you all our love!")}`;
-    const whatsappLink = `https://api.whatsapp.com/send?phone=${WEDDING_CONFIG.general.whatsappNumber}&text=${formattedText}`;
-    window.open(whatsappLink, '_blank');
+  const handleToggleMute = () => {
+    if (playerRef.current && typeof playerRef.current.isMuted === 'function') {
+      if (playerRef.current.isMuted()) {
+        playerRef.current.unMute();
+        setIsMuted(false);
+        showToastMessage("Volume dinyalakan", "info");
+      } else {
+        playerRef.current.mute();
+        setIsMuted(true);
+        showToastMessage("Volume dibisukan", "info");
+      }
+    }
   };
 
-  const handleAddLocalWish = (e) => {
+  const changeMusic = (vidId) => {
+    setAudioUrl(vidId);
+    if (playerRef.current && typeof playerRef.current.loadVideoById === 'function') {
+      playerRef.current.loadVideoById({
+        videoId: vidId,
+        playlist: vidId,
+        startSeconds: 0
+      });
+      setIsPlaying(true);
+      showToastMessage("Lagu latar belakang diganti!", "success");
+    } else {
+      initYoutubePlayer(vidId);
+    }
+  };
+
+  const handleCustomMusicSubmit = (e) => {
     e.preventDefault();
-    if (!inputWishName || !inputWishText) return;
-    const newEntry = {
-      name: inputWishName,
-      relation: inputWishRelation || "Dear Friend",
-      text: inputWishText
+    if (customAudioUrl.trim()) {
+      // Basic extraction of ID or Direct ID entry
+      let vidId = customAudioUrl.trim();
+      const match = vidId.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/);
+      if (match) {
+        vidId = match[1];
+      }
+      if (vidId.length === 11) {
+        changeMusic(vidId);
+        setShowMusicSettings(false);
+        setCustomAudioUrl('');
+        showToastMessage("Lagu kustom berhasil dimuat!", "success");
+      } else {
+        showToastMessage("Link atau ID YouTube tidak valid!", "error");
+      }
+    }
+  };
+
+  const handleOpenInvitation = () => {
+    setIsOpen(true);
+    // Begin playing background stream on first interactive action
+    setTimeout(() => {
+      if (playerRef.current && typeof playerRef.current.playVideo === 'function') {
+        playerRef.current.playVideo();
+        setIsPlaying(true);
+      }
+    }, 250);
+  };
+
+  const handleRsvpSubmit = (e) => {
+    e.preventDefault();
+    if (!rsvpName.trim()) {
+      showToastMessage("Mohon masukkan nama Anda.", "error");
+      return;
+    }
+
+    const msg = `Halo Rendel & Danica!\n\nSaya ingin mengonfirmasi kehadiran untuk pernikahan kalian:\n\n*Nama:* ${rsvpName}\n*Kehadiran:* ${rsvpAttendance === 'yes' ? 'Ya, Saya Akan Hadir' : 'Maaf, Saya Tidak Bisa Hadir'}\n*Jumlah Tamu:* ${rsvpGuests} Orang\n*Pesan:* ${rsvpMsg}\n\nTerima kasih!`;
+    const encoded = encodeURIComponent(msg);
+    
+    window.open(`https://api.whatsapp.com/send?phone=${customPhone}&text=${encoded}`, '_blank');
+    showToastMessage("Mengarahkan ke WhatsApp...", "success");
+  };
+
+  const handleAddWish = (e) => {
+    e.preventDefault();
+    if (!newAuthor.trim() || !newMessage.trim()) {
+      showToastMessage("Nama dan pesan tidak boleh kosong!", "error");
+      return;
+    }
+
+    const newWish = {
+      author: newAuthor,
+      message: newMessage,
+      date: new Date().toISOString().split('T')[0]
     };
-    const updated = [newEntry, ...guestbookWishes];
-    setGuestbookWishes(updated);
-    localStorage.setItem('rendel_danica_wishes_ledger', JSON.stringify(updated));
-    setInputWishName("");
-    setInputWishRelation("");
-    setInputWishText("");
+
+    const updated = [newWish, ...wishes];
+    setWishes(updated);
+    try {
+      localStorage.setItem('wedding_wishes_v3', JSON.stringify(updated));
+      showToastMessage("Ucapan Anda berhasil terkirim!", "success");
+    } catch (err) {
+      console.warn("Storage quota exceeded.", err);
+    }
+    setNewAuthor('');
+    setNewMessage('');
   };
 
-  const handleCopyAllWishes = () => {
-    const textStream = guestbookWishes.map(w => `Wish from ${w.name} (${w.relation}): "${w.text}"`).join('\n\n');
-    navigator.clipboard.writeText(textStream);
-    setCopiedAllWishes(true);
-    setTimeout(() => setCopiedAllWishes(false), 2500);
+  const copyWishText = (text, index) => {
+    const tempTextArea = document.createElement("textarea");
+    tempTextArea.value = text;
+    document.body.appendChild(tempTextArea);
+    tempTextArea.select();
+    try {
+      document.execCommand("copy");
+      setCopiedIndex(index);
+      showToastMessage("Ucapan disalin!", "success");
+      setTimeout(() => setCopiedIndex(null), 2000);
+    } catch (err) {
+      console.error("Failed to copy text", err);
+    }
+    document.body.removeChild(tempTextArea);
   };
 
-  const handleExportWishesFile = () => {
-    const formatted = guestbookWishes.map(w => `Guest Name: ${w.name}\nRelation: ${w.relation}\nWishes: ${w.text}\n------------------------------`).join('\n\n');
-    const blob = new Blob([formatted], { type: "text/plain;charset=utf-8" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "Rendel_and_Danica_Wedding_Wishes.txt";
+  const copyAccountNum = (num, label) => {
+    const tempTextArea = document.createElement("textarea");
+    tempTextArea.value = num;
+    document.body.appendChild(tempTextArea);
+    tempTextArea.select();
+    try {
+      document.execCommand("copy");
+      showToastMessage(`Nomor Rekening ${label} disalin!`, "success");
+    } catch (err) {
+      console.error("Failed to copy", err);
+    }
+    document.body.removeChild(tempTextArea);
+  };
+
+  const exportWishesTxt = () => {
+    const text = wishes.map(w => `[${w.date}] ${w.author}: ${w.message}`).join('\n\n');
+    const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `Ucapan_Pernikahan_Rendel_Danica.txt`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    showToastMessage("Mengekspor semua ucapan...", "success");
   };
 
-  return (
-    <div className="relative min-h-screen text-[#2E2825] bg-[#FFFDF8] overflow-x-hidden antialiased selection:bg-[#F8BBD0] selection:text-gray-900">
-      <style>{INJECTED_CSS}</style>
+  if (!isOpen) {
+    return (
+      <div className="fixed inset-0 z-50 flex flex-col justify-between items-center bg-[#FFF9FA] px-6 py-12 text-center select-none overflow-hidden">
+        {/* Hidden anchor div for YouTube API bind */}
+        <div className="hidden">
+          <div id="player"></div>
+        </div>
 
-      {/* Embedded Symphony Audio Element */}
-      <audio ref={audioRef} src={WEDDING_CONFIG.general.musicUrl} loop />
-
-      {/* Elegant Drifting Petals Overlay (Fixed globally) */}
-      <div className="fixed inset-0 pointer-events-none z-30 overflow-hidden">
-        {interactivePetals.map(p => (
-          <div
-            key={p.id}
-            className="spring-petal"
-            style={{
-              width: `${p.size}px`,
-              height: `${p.size}px`,
-              left: `${p.left}%`,
-              background: `radial-gradient(circle, #FFFFFF 0%, ${p.color} 100%)`,
-              animationDelay: `${p.delay}s`,
-              animationDuration: `${p.duration}s`,
-              top: `-10%`
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Floating Animated Butterflies in background */}
-      <div className="absolute inset-x-0 top-[20%] pointer-events-none overflow-hidden h-[80vh] z-10">
-        <svg className="absolute w-8 h-8 text-[#CE93D8] butterfly-anim-1 opacity-40 left-[10%] top-[10%]" viewBox="0 0 100 100" fill="currentColor">
-          <path d="M50 50 C20 20, 10 50, 50 80 C90 50, 80 20, 50 50 Z" />
-        </svg>
-        <svg className="absolute w-6 h-6 text-[#F8BBD0] butterfly-anim-2 opacity-50 right-[15%] top-[40%]" viewBox="0 0 100 100" fill="currentColor">
-          <path d="M50 50 C20 20, 10 50, 50 80 C90 50, 80 20, 50 50 Z" />
-        </svg>
-      </div>
-
-      {}
-      {!isOpened && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 bg-gradient-to-br from-[#FFFDF8] via-[#FFF5F6] to-[#E8F5E9] transition-all duration-1000">
-          <div className="absolute inset-0 bg-[radial-gradient(#F8BBD0_1px,transparent_1px)] [background-size:24px_24px] opacity-25"></div>
+        {/* Soft, beautiful graphic patterns */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute top-[-10%] right-[-10%] w-72 h-72 rounded-full bg-[#F8D6DF]/40 blur-3xl" />
+          <div className="absolute bottom-[-10%] left-[-10%] w-80 h-80 rounded-full bg-[#F5C123]/20 blur-3xl" />
           
-          <div className={`relative max-w-xl w-full bg-white/80 backdrop-blur-md border border-[#F8BBD0]/35 rounded-[40px] p-8 md:p-12 shadow-[0_30px_100px_rgba(248,187,208,0.3)] flex flex-col items-center justify-center text-center transition-all duration-1000 ${breakingSeal ? 'scale-90 opacity-0 blur-md pointer-events-none' : 'scale-100'}`}>
-            
-            {/* Elegant Floral Monogram Monocle */}
-            <div className="mb-6 relative animate-bounce">
-              <div className="w-28 h-28 rounded-full border-2 border-dashed border-[#A5D6A7] flex items-center justify-center p-2 bg-gradient-to-tr from-[#FFFDF8] to-[#FFF5F6]">
-                <div className="w-22 h-22 rounded-full border border-[#F8BBD0] flex flex-col items-center justify-center bg-white shadow-inner">
-                  <span className="font-serif-header text-xs text-[#A5D6A7] tracking-widest font-bold">R & D</span>
-                  <Heart className="w-4.5 h-4.5 text-[#F8BBD0] fill-current animate-pulse mt-1" />
-                </div>
-              </div>
-            </div>
+          <div className="absolute top-[12%] left-[10%] animate-pulse opacity-40">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2C6.5 2 2 6.5 2 12c0 5.5 4.5 10 10 10s10-4.5 10-10C22 6.5 17.5 2 12 2zm0 18c-4.4 0-8-3.6-8-8s3.6-8 8-8 8 3.6 8 8-3.6 8-8 8z" fill="#FC3695"/>
+            </svg>
+          </div>
+          <div className="absolute bottom-[15%] right-[12%] animate-bounce opacity-30 duration-1000">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="#FD4807"/>
+            </svg>
+          </div>
+        </div>
 
-            <p className="text-[10px] md:text-xs font-bold text-[#A5D6A7] tracking-[0.4em] uppercase mb-4">THE CELEBRATION COVENANT</p>
-            
-            <h1 className="font-serif-header text-4xl md:text-5xl text-[#2D2A29] font-bold leading-tight mb-2">
-              Rendel <span className="font-accent-header italic text-2xl text-slate-400">&amp;</span> Danica
-            </h1>
+        <div className="flex flex-col items-center mt-6 z-10">
+          <span className="text-[10px] tracking-[0.3em] text-[#FC3695] font-semibold uppercase block mb-2">The Wedding Of</span>
+          <div className="w-12 h-[1px] bg-gradient-to-r from-transparent via-[#FC3695] to-transparent"></div>
+        </div>
 
-            <div className="w-24 h-[1px] bg-gradient-to-r from-transparent via-[#F8BBD0] to-transparent my-4"></div>
+        <div className="my-auto z-10 max-w-md px-2">
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#2C1820] font-bold tracking-wide leading-tight animate-fade-in">
+            Rendel Moises
+          </h1>
+          <div className="my-4 flex items-center justify-center gap-4 animate-pulse">
+            <span className="w-8 h-[1px] bg-[#FD4807]/30"></span>
+            <span className="font-serif italic text-2xl text-[#FD4807] font-semibold">&</span>
+            <span className="w-8 h-[1px] bg-[#FD4807]/30"></span>
+          </div>
+          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#2C1820] font-bold tracking-wide leading-tight">
+            Danica Sabanal
+          </h1>
 
-            {/* Customized Personal Invitation Box */}
-            <div className="bg-[#FFFDF8] border border-[#F8BBD0]/20 rounded-2xl p-5 mb-8 shadow-sm max-w-sm w-full">
-              <span className="text-[9px] font-bold tracking-[0.2em] text-[#CE93D8] uppercase block mb-1">EXCLUSIVELY INVITED</span>
-              <h3 className="font-serif-header text-lg font-bold text-slate-800 italic">&ldquo;{guestName}&rdquo;</h3>
-              <p className="text-[10px] text-slate-500 mt-2 font-medium">Together with our beloved families, we request the honor of your pleasant presence.</p>
-            </div>
+          <div className="mt-10 bg-white/90 border border-[#F8D6DF] rounded-3xl p-6 shadow-sm max-w-sm mx-auto backdrop-blur-sm transition-all duration-300">
+            <span className="text-[9px] uppercase tracking-[0.25em] text-[#5D8A52] font-semibold block mb-2">Special Invitation To:</span>
+            <p className="text-xl font-serif text-[#2C1820] italic font-bold">
+              {recipient}
+            </p>
+            <p className="text-[11px] text-gray-500 mt-2 leading-relaxed max-w-xs mx-auto">
+              Together with our families, we warmly invite you to celebrate our wedding day.
+            </p>
+          </div>
+        </div>
 
-            {/* Interactive Spring Flower Wax Seal */}
-            <div className="relative group cursor-pointer mb-6" onClick={handleOpenInvitationBreak}>
-              <div className="w-22 h-22 bg-gradient-to-br from-[#F8BBD0] to-[#E91E63] rounded-full border-4 border-[#FFF59D] shadow-xl flex items-center justify-center transform transition-all duration-700 active:scale-95 group-hover:scale-105">
-                <div className="w-18 h-18 rounded-full border border-white/25 flex flex-col items-center justify-center">
-                  <span className="font-accent-header text-white font-bold text-sm tracking-widest">TAP SEAL</span>
-                </div>
-              </div>
-              <div className="absolute inset-0 bg-[#F8BBD0]/25 rounded-full blur-md opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            </div>
+        <div className="flex flex-col items-center gap-3 z-10 w-full max-w-xs">
+          <button 
+            onClick={handleOpenInvitation}
+            className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#FC3695] to-[#FD4807] hover:from-[#FD4807] hover:to-[#FC3695] text-white py-4 px-6 rounded-full shadow-lg shadow-[#FC3695]/15 font-semibold text-xs tracking-widest uppercase transition-all duration-300 active:scale-95"
+          >
+            <Heart className="w-4 h-4 fill-current animate-pulse text-white" />
+            Open Invitation
+          </button>
+          <span className="text-[9px] text-gray-400 font-mono">mahalkita.online</span>
+        </div>
+      </div>
+    );
+  }
 
+  return (
+    <div className="min-h-screen bg-[#FFF9FA] text-[#2C1820] font-sans selection:bg-[#F8D6DF] overflow-x-hidden antialiased">
+      
+      {/* Hidden iframe player location */}
+      <div className="hidden">
+        <div id="player"></div>
+      </div>
+
+      {/* Elegant floating custom toast notification panel */}
+      {toast.show && (
+        <div className="fixed top-5 left-1/2 transform -translate-x-1/2 z-50 bg-[#2C1820]/95 text-white text-xs px-4 py-3 rounded-xl shadow-xl flex items-center gap-2.5 animate-bounce">
+          <Check className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+          <span className="font-semibold">{toast.message}</span>
+        </div>
+      )}
+
+      {/* FLOATING CONTROLS FOR MUSIC */}
+      <div className="fixed bottom-6 right-6 z-40 flex flex-col items-center gap-2">
+        {showMusicSettings && (
+          <div className="bg-white rounded-2xl p-4 border border-[#F8D6DF] shadow-xl flex flex-col gap-1.5 max-w-xs w-48 mb-1 animate-fade-in-up">
+            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+              <Music className="w-3 h-3 text-[#FC3695]" /> YouTube Tracks
+            </p>
+            {MUSIC_PRESETS.map((preset, idx) => (
+              <button
+                key={idx}
+                onClick={() => changeMusic(preset.id)}
+                className={`w-full text-left px-2 py-1.5 rounded-lg text-[10px] font-semibold border transition-all truncate ${audioUrl === preset.id ? 'bg-[#FC3695]/10 border-[#FC3695] text-[#FC3695]' : 'bg-slate-50 border-gray-100 hover:bg-slate-100 text-gray-700'}`}
+              >
+                {preset.name}
+              </button>
+            ))}
+            <form onSubmit={handleCustomMusicSubmit} className="mt-2 pt-2 border-t border-gray-100">
+              <input
+                type="text"
+                value={customAudioUrl}
+                onChange={(e) => setCustomAudioUrl(e.target.value)}
+                placeholder="YouTube Link / Video ID..."
+                className="w-full bg-slate-50 border border-gray-200 rounded-lg px-2 py-1 text-[10px] focus:outline-none focus:ring-1 focus:ring-[#FC3695]"
+              />
+            </form>
+          </div>
+        )}
+
+        <div className="flex gap-2">
+          <button 
+            onClick={() => setShowMusicSettings(!showMusicSettings)}
+            className="p-2.5 bg-white/95 border border-[#F8D6DF] rounded-full shadow-lg hover:bg-slate-50 transition-all active:scale-90"
+            title="Configure Background Music"
+          >
+            <Settings className="w-4 h-4 text-gray-600" />
+          </button>
+
+          <button 
+            onClick={handleTogglePlay}
+            className={`p-3.5 rounded-full shadow-lg text-white transition-all duration-500 ${isPlaying ? 'bg-gradient-to-r from-[#FC3695] to-[#FD4807] animate-spin-slow' : 'bg-gray-600'}`}
+            title={isPlaying ? 'Pause Music' : 'Play Music'}
+          >
+            {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-current" />}
+          </button>
+
+          {isPlaying && (
             <button 
-              onClick={handleOpenInvitationBreak}
-              className="pulse-scale-gold bg-gradient-to-r from-[#A5D6A7] to-[#81D4FA] hover:from-[#81D4FA] hover:to-[#A5D6A7] text-white text-xs font-bold tracking-[0.25em] px-10 py-4.5 rounded-full transition-all duration-500 shadow-md uppercase"
+              onClick={handleToggleMute}
+              className="p-2.5 bg-white/95 border border-[#F8D6DF] rounded-full shadow-lg hover:bg-slate-50 transition-all"
+              title={isMuted ? 'Unmute' : 'Mute'}
             >
-              Open Spring Invitation
+              {isMuted ? <VolumeX className="w-4 h-4 text-red-500" /> : <Volume2 className="w-4 h-4 text-[#5D8A52]" />}
             </button>
+          )}
+        </div>
+      </div>
+
+      {/* HERO HEROICS SECTION */}
+      <section className="relative h-screen flex flex-col justify-end items-center text-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src={getOptimizedImg(GOOGLE_DRIVE_IDS.hero, 1200)} 
+            alt="Rendel & Danica" 
+            className="w-full h-full object-cover brightness-[0.70] scale-100"
+            style={{ contentVisibility: 'auto' }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#FFF9FA] via-[#FFF9FA]/10 to-black/30" />
+        </div>
+
+        <div className="relative z-10 px-6 pb-24 w-full max-w-2xl text-white">
+          <p className="text-[10px] uppercase tracking-[0.35em] text-[#F5C123] font-bold mb-3 drop-shadow">September 9, 2026</p>
+          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold leading-tight drop-shadow-md">
+            Rendel & Danica
+          </h2>
+          <p className="font-serif text-sm md:text-base italic text-[#F8D6DF] mt-2 tracking-wide drop-shadow-sm">
+            Together Forever Begins Here
+          </p>
+          <div className="mt-8 inline-flex items-center justify-center animate-bounce duration-1000">
+            <ChevronDown className="w-5 h-5 text-white/90 bg-white/10 p-1 rounded-full backdrop-blur-sm" />
+          </div>
+        </div>
+      </section>
+
+      {/* COUNTDOWN TILES BAR */}
+      <section className="py-6 bg-gradient-to-r from-[#FC3695] to-[#FD4807] text-white">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <span className="text-[9px] uppercase tracking-[0.2em] font-semibold text-[#F5C123] block mb-2">Counting Down To Our Day</span>
+          <div className="grid grid-cols-4 gap-2 max-w-xs mx-auto">
+            {[
+              { label: 'Hari', val: timeLeft.days },
+              { label: 'Jam', val: timeLeft.hours },
+              { label: 'Menit', val: timeLeft.minutes },
+              { label: 'Detik', val: timeLeft.seconds }
+            ].map((unit, index) => (
+              <div key={index} className="bg-white/10 border border-white/10 backdrop-blur-sm rounded-xl py-2 px-1 flex flex-col items-center">
+                <span className="font-sans text-base md:text-lg font-bold">{unit.val}</span>
+                <span className="text-[8px] uppercase tracking-wider text-white/80">{unit.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* MEMPELAI PROFILE ROW */}
+      <section className="py-16 px-6 max-w-4xl mx-auto text-center">
+        <span className="text-[10px] tracking-[0.25em] uppercase text-[#FC3695] font-semibold block mb-2">Mempelai</span>
+        <h2 className="font-serif text-2xl md:text-3xl font-bold text-[#2C1820] mb-12">Kedua Mempelai</h2>
+
+        <div className="grid md:grid-cols-2 gap-8 max-w-2xl mx-auto">
+          {/* Groom Card */}
+          <div className="bg-white rounded-3xl p-6 border border-[#F8D6DF] shadow-sm flex flex-col items-center transform transition-transform duration-350 hover:scale-[1.01]">
+            <div className="w-32 h-32 rounded-full overflow-hidden mb-4 border-2 border-[#F8D6DF] p-1 bg-white">
+              <img 
+                src={getOptimizedImg(GOOGLE_DRIVE_IDS.coupleGroom, 400)} 
+                alt="Rendel Moises" 
+                className="w-full h-full object-cover rounded-full"
+                loading="lazy"
+              />
+            </div>
+            <h3 className="font-serif text-xl font-bold text-[#2C1820]">Rendel Moises</h3>
+            <p className="text-[9px] text-gray-400 mt-1 uppercase tracking-widest font-semibold">Mempelai Pria</p>
+            <div className="w-8 h-[1px] bg-[#FD4807]/20 my-4"></div>
+            <div className="text-[11px] space-y-1.5 text-gray-600">
+              <p className="text-[9px] text-gray-400 font-bold uppercase">Putra dari:</p>
+              <p className="font-semibold text-gray-800">Ruben P. Moises</p>
+              <p className="italic text-[9px] text-gray-400">dan</p>
+              <p className="font-semibold text-gray-800">Noemi H. Moises</p>
+            </div>
+          </div>
+
+          {/* Bride Card */}
+          <div className="bg-white rounded-3xl p-6 border border-[#F8D6DF] shadow-sm flex flex-col items-center transform transition-transform duration-350 hover:scale-[1.01]">
+            <div className="w-32 h-32 rounded-full overflow-hidden mb-4 border-2 border-[#F8D6DF] p-1 bg-white">
+              <img 
+                src={getOptimizedImg(GOOGLE_DRIVE_IDS.coupleBride, 400)} 
+                alt="Danica Sabanal" 
+                className="w-full h-full object-cover rounded-full"
+                loading="lazy"
+              />
+            </div>
+            <h3 className="font-serif text-xl font-bold text-[#2C1820]">Danica Sabanal</h3>
+            <p className="text-[9px] text-gray-400 mt-1 uppercase tracking-widest font-semibold">Mempelai Wanita</p>
+            <div className="w-8 h-[1px] bg-[#FD4807]/20 my-4"></div>
+            <div className="text-[11px] space-y-1.5 text-gray-600">
+              <p className="text-[9px] text-gray-400 font-bold uppercase">Putri dari:</p>
+              <p className="font-semibold text-gray-800">Roldan A. Sabanal</p>
+              <p className="italic text-[9px] text-gray-400">dan</p>
+              <p className="font-semibold text-gray-800">Mary Grace C. Sabanal</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* STORY ROADMAP TRAJECTORY */}
+      <section className="py-16 bg-[#F8D6DF]/15 px-6">
+        <div className="max-w-md mx-auto">
+          <div className="text-center mb-10">
+            <span className="text-[10px] tracking-[0.25em] uppercase text-[#FC3695] font-semibold block mb-2">Our Journey</span>
+            <h2 className="font-serif text-2xl font-bold text-[#2C1820]">Kisah Kasih Kami</h2>
+          </div>
+
+          <div className="relative border-l border-[#FC3695]/30 pl-5 ml-1.5 space-y-8">
+            {[
+              { title: 'Pertemuan Pertama', details: 'Takdir mempertemukan kami pertama kali di Davao City. Berawal dari sapaan sederhana yang kemudian tumbuh menjadi percakapan hangat yang tak pernah berakhir.' },
+              { title: 'Kencan Pertama', details: 'Sebuah janji temu santai di kedai kopi lokal yang nyaman. Di sana, tawa lepas dan kecocokan yang tidak biasa meyakinkan kami bahwa ini adalah sesuatu yang istimewa.' },
+              { title: 'Lamaran (The Proposal)', details: 'Di bawah langit senja yang indah, Rendel melamar Danica dengan janji setia seumur hidup. Air mata bahagia dan jawaban "Ya" mengunci komitmen kami.' },
+              { title: 'Pertunangan Resmi', details: 'Bersama dengan keluarga besar tercinta, kami mengadakan pertemuan keluarga resmi untuk menyatukan dua hati dan memohon restu perjalanan baru kami.' },
+              { title: 'Hari Pernikahan', details: 'Rabu, September 09, 2026 - Di hadapan Tuhan dan para saksi, kami akan mengukir babak baru sebagai suami dan istri.' }
+            ].map((story, i) => (
+              <div key={i} className="relative group">
+                <span className="absolute -left-[26px] top-1.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-white border border-[#FC3695] group-hover:bg-[#FC3695] transition-colors">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#FC3695] group-hover:bg-white" />
+                </span>
+                <div className="bg-white rounded-2xl p-4 border border-[#F8D6DF]/40 shadow-sm transition-transform duration-300 hover:translate-x-1">
+                  <h4 className="font-serif text-sm font-bold text-[#FC3695]">{story.title}</h4>
+                  <p className="text-xs text-gray-500 mt-1 leading-relaxed">{story.details}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* AGENDA TIMES PANELS */}
+      <section className="py-16 px-6 max-w-4xl mx-auto">
+        <div className="text-center mb-12">
+          <span className="text-[10px] tracking-[0.25em] uppercase text-[#5D8A52] font-semibold block mb-2">Agenda</span>
+          <h2 className="font-serif text-2xl font-bold text-[#2C1820]">Waktu & Lokasi Acara</h2>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+          {/* Ceremony Card */}
+          <div className="bg-white rounded-3xl p-6 border border-[#F8D6DF] shadow-sm flex flex-col justify-between items-center text-center">
+            <div className="flex flex-col items-center w-full">
+              <div className="p-3 bg-[#F8D6DF]/20 rounded-full text-[#FC3695] mb-4">
+                <Calendar className="w-5 h-5" />
+              </div>
+              <h3 className="font-serif text-lg font-bold text-[#2C1820] mb-2">Pemberkatan Pernikahan</h3>
+              <p className="text-xs font-semibold tracking-wider uppercase text-[#FC3695] mb-1">Rabu, September 9, 2026</p>
+              <p className="text-[10px] text-gray-400 mb-4">Pukul 10:00 AM - Selesai</p>
+              <div className="w-full h-[1px] bg-slate-100 my-3"></div>
+              <p className="font-semibold text-gray-800 text-xs flex items-center gap-1 justify-center">
+                <MapPin className="w-3.5 h-3.5 text-red-500 flex-shrink-0" />
+                Marco Polo Hotel
+              </p>
+              <p className="text-[10px] text-gray-400 mt-1 text-center max-w-xs">
+                Claro M. Recto Ave, Poblacion District, Davao City, 8000 Davao del Sur, Philippines
+              </p>
+            </div>
             
-            <p className="text-[10px] text-slate-400 mt-4 tracking-widest uppercase">Experience the story in bloom</p>
+            <div className="mt-6 flex flex-col gap-2 w-full">
+              <a 
+                href="https://maps.app.goo.gl/BPrNbeD5Z3YJ7p4G9" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-full flex items-center justify-center gap-1 bg-slate-50 hover:bg-slate-100 text-gray-600 py-2.5 rounded-xl text-xs font-semibold transition-colors border border-gray-100"
+              >
+                Peta Google Maps
+              </a>
+              <button 
+                onClick={() => {
+                  const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Pernikahan+Rendel+%26+Danica&dates=20260909T020000Z/20260909T120000Z&details=Pemberkatan+Pernikahan+Rendel+dan+Danica&location=Marco+Polo+Hotel+Davao+City`;
+                  window.open(url, '_blank');
+                  showToastMessage("Kalender dibuka!", "success");
+                }}
+                className="w-full flex items-center justify-center gap-1 bg-[#5D8A52] text-white py-2.5 rounded-xl text-xs font-semibold hover:opacity-95 transition-opacity"
+              >
+                Simpan ke Kalender
+              </button>
+            </div>
+          </div>
+
+          {/* Reception Card */}
+          <div className="bg-white rounded-3xl p-6 border border-[#F8D6DF] shadow-sm flex flex-col justify-between items-center text-center">
+            <div className="flex flex-col items-center w-full">
+              <div className="p-3 bg-[#F8D6DF]/20 rounded-full text-[#FD4807] mb-4">
+                <Heart className="w-5 h-5" />
+              </div>
+              <h3 className="font-serif text-lg font-bold text-[#2C1820] mb-2">Resepsi Pernikahan</h3>
+              <p className="text-xs font-semibold tracking-wider uppercase text-[#FD4807] mb-1">Rabu, September 9, 2026</p>
+              <p className="text-[10px] text-gray-400 mb-4">Pukul 01:00 PM - Selesai</p>
+              <div className="w-full h-[1px] bg-slate-100 my-3"></div>
+              <p className="font-semibold text-gray-800 text-xs flex items-center gap-1 justify-center">
+                <MapPin className="w-3.5 h-3.5 text-red-500 flex-shrink-0" />
+                Marco Polo Hotel
+              </p>
+              <p className="text-[10px] text-gray-400 mt-1 text-center max-w-xs">
+                Grand Ballroom, Marco Polo Hotel, Poblacion District, Davao City, Philippines
+              </p>
+            </div>
+
+            <div className="mt-6 flex flex-col gap-2 w-full">
+              <a 
+                href="https://maps.app.goo.gl/BPrNbeD5Z3YJ7p4G9" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-full flex items-center justify-center gap-1 bg-slate-50 hover:bg-slate-100 text-gray-600 py-2.5 rounded-xl text-xs font-semibold transition-colors border border-gray-100"
+              >
+                Peta Google Maps
+              </a>
+              <button 
+                onClick={() => {
+                  const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=Resepsi+Pernikahan+Rendel+%26+Danica&dates=20260909T050000Z/20260909T140000Z&details=Resepsi+Pernikahan+Rendel+dan+Danica&location=Marco+Polo+Hotel+Davao+City`;
+                  window.open(url, '_blank');
+                  showToastMessage("Kalender dibuka!", "success");
+                }}
+                className="w-full flex items-center justify-center gap-1 bg-[#FD4807] text-white py-2.5 rounded-xl text-xs font-semibold hover:opacity-95 transition-opacity"
+              >
+                Simpan ke Kalender
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* MOMENT CHRONICLES PHOTO MATRIX */}
+      <section className="py-16 bg-[#FFF9FA] px-6">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-10">
+            <span className="text-[10px] tracking-[0.25em] uppercase text-[#FC3695] font-semibold block mb-2">Moments</span>
+            <h2 className="font-serif text-2xl font-bold text-[#2C1820]">Galeri Foto</h2>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {[
+              { id: GOOGLE_DRIVE_IDS.hero, title: "Our Engagement" },
+              { id: GOOGLE_DRIVE_IDS.coupleBride, title: "The Bride" },
+              { id: GOOGLE_DRIVE_IDS.coupleGroom, title: "The Groom" },
+              { id: GOOGLE_DRIVE_IDS.gallery1, title: "Sweet Moment" },
+              { id: GOOGLE_DRIVE_IDS.gallery2, title: "Forever Love" }
+            ].map((img, idx) => (
+              <div 
+                key={idx} 
+                onClick={() => setLightboxImg(getOptimizedImg(img.id, 1000))}
+                className="relative rounded-2xl overflow-hidden shadow-sm group cursor-pointer bg-slate-100 aspect-[4/5] border border-[#F8D6DF]/30"
+              >
+                <img 
+                  src={getOptimizedImg(img.id, 400)} 
+                  alt={img.title}
+                  loading="lazy"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  style={{ contentVisibility: 'auto' }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* DRESS CODE PALETTE BLOCKS */}
+      <section className="py-16 px-6 max-w-4xl mx-auto text-center">
+        <span className="text-[10px] tracking-[0.25em] uppercase text-[#FC3695] font-semibold block mb-2">Outfit</span>
+        <h2 className="font-serif text-2xl font-bold text-[#2C1820] mb-2">Tema Pakaian</h2>
+        <p className="text-xs text-gray-500 max-w-sm mx-auto mb-8">
+          Kami memohon kehadiran Anda dengan mengenakan pakaian formal bertema warna <span className="font-semibold text-[#FC3695]">Vibrant Tropical Spring</span> berikut:
+        </p>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-md mx-auto">
+          {[
+            { hex: '#FC3695', name: 'Hot Pink' },
+            { hex: '#FD4807', name: 'Vibrant Orange' },
+            { hex: '#F5C123', name: 'Yellow' },
+            { hex: '#F8D6DF', name: 'Blush Pink' }
+          ].map((color, idx) => (
+            <div key={idx} className="bg-white p-3.5 rounded-2xl border border-[#F8D6DF] flex flex-col items-center shadow-sm">
+              <div className="w-10 h-10 rounded-full shadow-inner mb-2" style={{ backgroundColor: color.hex }} />
+              <span className="text-[9px] font-bold uppercase tracking-wider text-gray-700">{color.name}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* COMPREHENSIVE AGENDA SCHEDULE TIME TILES */}
+      <section className="py-16 bg-[#F8D6DF]/10 px-6">
+        <div className="max-w-md mx-auto">
+          <div className="text-center mb-10">
+            <span className="text-[10px] tracking-[0.25em] uppercase text-[#FC3695] font-semibold block mb-2">Schedule</span>
+            <h2 className="font-serif text-2xl font-bold text-[#2C1820]">Agenda Acara</h2>
+          </div>
+
+          <div className="space-y-3">
+            {[
+              { time: '10:00 AM', event: 'Upacara Pemberkatan', desc: 'Prosesi sakral pemberkatan pernikahan' },
+              { time: '11:30 AM', event: 'Sesi Foto Bersama', desc: 'Sesi dokumentasi bersama keluarga besar' },
+              { time: '01:00 PM', event: 'Penyambutan Resepsi', desc: 'Makan siang dan perayaan pengantin baru' },
+              { time: '03:00 PM', event: 'Acara Hiburan & Toast', desc: 'Rangkaian hiburan, toast, dan potong kue' },
+              { time: '04:00 PM', event: 'Selesai & Penutup', desc: 'Salam perpisahan dan foto terakhir' }
+            ].map((step, idx) => (
+              <div key={idx} className="flex gap-3.5 items-center bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                <div className="flex-shrink-0 text-[#FC3695] font-bold text-[9px] tracking-wider uppercase bg-[#F8D6DF]/20 px-2.5 py-1 rounded-full flex items-center gap-1">
+                  <Clock className="w-3 h-3" />
+                  {step.time}
+                </div>
+                <div>
+                  <h4 className="font-serif font-bold text-gray-800 text-xs">{step.event}</h4>
+                  <p className="text-[10px] text-gray-400 mt-0.5">{step.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* GIFT CHANNELS AND CODES CARD */}
+      <section className="py-16 px-6 max-w-sm mx-auto">
+        <div className="bg-white rounded-3xl p-6 border border-[#F8D6DF] shadow-md text-center">
+          <span className="text-[9px] tracking-[0.2em] uppercase text-[#FC3695] font-bold block mb-2">Digital Gift</span>
+          <h3 className="font-serif text-xl font-bold text-[#2C1820] mb-3">Kado Digital</h3>
+          <p className="text-[11px] text-gray-500 leading-relaxed mb-6">
+            Bagi keluarga dan sahabat yang ingin memberikan tanda kasih untuk menyertai kebahagiaan kami, silakan mengirimkan melalui tombol salin rekening atau memindai kode QR berikut:
+          </p>
+
+          {/* QR Code container */}
+          <div className="flex flex-col items-center justify-center p-4 bg-slate-50 border border-dashed border-[#F8D6DF] rounded-2xl mb-6 relative group">
+            <span className="text-[8px] bg-[#FC3695]/10 text-[#FC3695] font-bold px-2 py-0.5 rounded-full mb-3 uppercase tracking-widest">Pindai QR QRIS</span>
+            <div 
+              onClick={() => setIsQrZoomed(true)}
+              className="w-36 h-36 bg-white border rounded-xl overflow-hidden shadow-inner cursor-zoom-in relative"
+            >
+              <img 
+                src={getOptimizedImg(GOOGLE_DRIVE_IDS.giftQr, 300)} 
+                alt="QRIS Gift" 
+                className="w-full h-full object-contain"
+              />
+              <div className="absolute inset-0 bg-black/10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <span className="text-[9px] text-white font-semibold bg-black/55 px-2 py-1 rounded-md">Zoom Gambar</span>
+              </div>
+            </div>
+            <p className="text-[9px] text-gray-400 mt-2">Ketuk gambar QR untuk memperbesar</p>
+          </div>
+
+          {/* Bank Accounts list */}
+          <div className="space-y-3.5 text-left">
+            {[
+              { bank: "GCash", num: "09123456789", holder: "Rendel M." },
+              { bank: "BCA Account", num: "8040123456", holder: "Danica Sabanal" },
+              { bank: "Mandiri Bank", num: "1370012345678", holder: "Rendel Moises" }
+            ].map((account, idx) => (
+              <div key={idx} className="p-3 bg-[#FFF9FA] border border-[#F8D6DF]/60 rounded-xl flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] font-bold text-[#FC3695]">{account.bank}</span>
+                  <p className="text-xs font-semibold text-gray-800 tracking-wider font-mono mt-0.5">{account.num}</p>
+                  <p className="text-[9px] text-gray-400 font-medium">a/n {account.holder}</p>
+                </div>
+                <button
+                  onClick={() => copyAccountNum(account.num, account.bank)}
+                  className="flex items-center gap-1 bg-white hover:bg-slate-50 border border-[#F8D6DF] px-2.5 py-1.5 rounded-lg text-[9px] font-bold text-gray-600 active:scale-95 transition-all"
+                >
+                  <Copy className="w-3 h-3 text-[#FC3695]" /> Salin
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CONVENIENT RSVP INPUT BLOCK */}
+      <section className="py-16 bg-[#FFF9FA] border-t border-[#F8D6DF]/30 px-6">
+        <div className="max-w-md mx-auto bg-white rounded-3xl p-6 border border-[#F8D6DF] shadow-sm">
+          <div className="text-center mb-6">
+            <span className="text-[10px] tracking-[0.25em] uppercase text-[#5D8A52] font-semibold block mb-1">R S V P</span>
+            <h3 className="font-serif text-xl font-bold text-[#2C1820]">Konfirmasi Kehadiran</h3>
+            <p className="text-[11px] text-gray-400 mt-1">Kami sangat menantikan kehadiran Bapak/Ibu/Saudara/i</p>
+          </div>
+
+          <form onSubmit={handleRsvpSubmit} className="space-y-4">
+            <div>
+              <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 block mb-1.5">Nama Lengkap</label>
+              <input
+                type="text"
+                value={rsvpName}
+                onChange={(e) => setRsvpName(e.target.value)}
+                placeholder="Masukkan nama Anda..."
+                className="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-1 focus:ring-[#FC3695]"
+              />
+            </div>
+
+            <div>
+              <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 block mb-1.5">Status Kehadiran</label>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setRsvpAttendance('yes')}
+                  className={`py-2.5 rounded-xl text-xs font-bold transition-all border ${rsvpAttendance === 'yes' ? 'bg-[#FC3695] border-[#FC3695] text-white shadow-md shadow-[#FC3695]/10' : 'bg-slate-50 border-gray-200 text-gray-600 hover:bg-slate-100'}`}
+                >
+                  Ya, Saya Hadir
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setRsvpAttendance('no')}
+                  className={`py-2.5 rounded-xl text-xs font-bold transition-all border ${rsvpAttendance === 'no' ? 'bg-gray-600 border-gray-600 text-white' : 'bg-slate-50 border-gray-200 text-gray-600 hover:bg-slate-100'}`}
+                >
+                  Tidak Bisa Hadir
+                </button>
+              </div>
+            </div>
+
+            {rsvpAttendance === 'yes' && (
+              <div>
+                <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 block mb-1.5">Jumlah Tamu Kehadiran</label>
+                <select
+                  value={rsvpGuests}
+                  onChange={(e) => setRsvpGuests(e.target.value)}
+                  className="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-1 focus:ring-[#FC3695]"
+                >
+                  <option value="1">1 Orang</option>
+                  <option value="2">2 Orang</option>
+                  <option value="3">3 Orang</option>
+                  <option value="4">4 Orang</option>
+                  <option value="5">5 Orang (Keluarga)</option>
+                </select>
+              </div>
+            )}
+
+            <div>
+              <label className="text-[10px] font-bold uppercase tracking-wider text-gray-500 block mb-1.5">Pesan atau Ucapan Tambahan</label>
+              <textarea
+                value={rsvpMsg}
+                onChange={(e) => setRsvpMsg(e.target.value)}
+                rows={3}
+                placeholder="Tuliskan ucapan atau konfirmasi detail Anda..."
+                className="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-3 text-xs focus:outline-none focus:ring-1 focus:ring-[#FC3695]"
+              />
+            </div>
+
+            <div className="pt-2 border-t border-slate-100">
+              <label className="text-[8px] font-bold uppercase tracking-wider text-gray-400 block mb-1">WhatsApp Pengantin (Untuk Kirim RSVP)</label>
+              <input
+                type="text"
+                value={customPhone}
+                onChange={(e) => setCustomPhone(e.target.value)}
+                placeholder="Misal: 6281234567890"
+                className="w-full bg-slate-50 border border-gray-200 rounded-xl px-4 py-1.5 text-[10px] text-gray-400 font-mono focus:outline-none"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-[#FC3695] to-[#FD4807] text-white py-3 rounded-full font-bold text-xs tracking-widest uppercase shadow-md hover:opacity-95 active:scale-95 transition-all mt-4"
+            >
+              <Send className="w-3.5 h-3.5" /> Kirim RSVP Via WA
+            </button>
+          </form>
+        </div>
+      </section>
+
+      {/* GUESTBOOK AND WISHES ROSTER */}
+      <section className="py-16 px-6 max-w-lg mx-auto">
+        <div className="text-center mb-8">
+          <span className="text-[10px] tracking-[0.25em] uppercase text-[#FC3695] font-semibold block mb-1">Guestbook</span>
+          <h3 className="font-serif text-xl font-bold text-[#2C1820]">Ucapan & Doa Restu</h3>
+          <p className="text-[11px] text-gray-400 mt-1">Berikan doa terbaik Anda untuk mengiringi kehidupan pernikahan kami</p>
+        </div>
+
+        <form onSubmit={handleAddWish} className="bg-white rounded-2xl p-5 border border-[#F8D6DF] shadow-sm mb-6 space-y-3.5">
+          <div>
+            <label className="text-[9px] font-bold uppercase tracking-wider text-gray-500 block mb-1">Nama Pengirim</label>
+            <input
+              type="text"
+              value={newAuthor}
+              onChange={(e) => setNewAuthor(e.target.value)}
+              placeholder="Masukkan nama Anda..."
+              className="w-full bg-slate-50 border border-gray-100 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#FC3695]"
+            />
+          </div>
+          <div>
+            <label className="text-[9px] font-bold uppercase tracking-wider text-gray-500 block mb-1">Pesan Ucapan</label>
+            <textarea
+              value={newMessage}
+              onChange={(e) => setNewMessage(e.target.value)}
+              rows={3}
+              placeholder="Tulis ucapan selamat & doa restu di sini..."
+              className="w-full bg-slate-50 border border-gray-100 rounded-xl px-3.5 py-2.5 text-xs focus:outline-none focus:ring-1 focus:ring-[#FC3695]"
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full flex items-center justify-center gap-1.5 bg-[#FC3695] text-white py-2.5 rounded-xl font-bold text-[10px] tracking-wider uppercase shadow-sm hover:bg-[#FC3695]/95 transition-colors active:scale-[0.98]"
+          >
+            Kirim Ucapan
+          </button>
+        </form>
+
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{wishes.length} Ucapan Masuk</span>
+          <button
+            onClick={exportWishesTxt}
+            className="flex items-center gap-1 text-[10px] font-bold text-[#5D8A52] hover:underline"
+          >
+            <Download className="w-3.5 h-3.5" /> Unduh Semua (.txt)
+          </button>
+        </div>
+
+        <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
+          {wishes.map((w, index) => (
+            <div key={index} className="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm relative group">
+              <div className="flex justify-between items-start mb-1">
+                <div>
+                  <h5 className="font-serif font-bold text-xs text-gray-800">{w.author}</h5>
+                  <span className="text-[8px] text-gray-400">{w.date}</span>
+                </div>
+                <button
+                  onClick={() => copyWishText(w.message, index)}
+                  className="p-1 bg-slate-50 hover:bg-slate-100 rounded-lg text-gray-400 hover:text-gray-600 transition-colors"
+                  title="Salin ucapan ini"
+                >
+                  {copiedIndex === index ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
+                </button>
+              </div>
+              <p className="text-[11px] text-gray-600 italic leading-relaxed mt-1">"{w.message}"</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ACCORDION FAQS SYSTEM */}
+      <section className="py-16 bg-[#F8D6DF]/10 px-6">
+        <div className="max-w-md mx-auto">
+          <div className="text-center mb-8">
+            <span className="text-[10px] tracking-[0.25em] uppercase text-[#FC3695] font-semibold block mb-1">F A Q</span>
+            <h3 className="font-serif text-xl font-bold text-[#2C1820]">Pertanyaan yang Sering Diajukan</h3>
+            <p className="text-[11px] text-gray-400 mt-1">Informasi penting tambahan mengenai jalannya acara pernikahan</p>
+          </div>
+
+          <div className="space-y-2.5">
+            {[
+              {
+                q: "Bagaimana dengan akses parkir di Marco Polo Hotel?",
+                a: "Akses parkir gratis tersedia di dalam gedung hotel bagi para tamu undangan pernikahan. Anda hanya perlu memvalidasi tiket parkir di meja pendaftaran resepsi kami."
+              },
+              {
+                q: "Apakah diperbolehkan membawa anak-anak?",
+                a: "Tentu saja! Namun, kami mengimbau Anda agar selalu mengawasi anak-anak tercinta demi kelancaran dan kenyamanan prosesi sakral pemberkatan pernikahan."
+              },
+              {
+                q: "Apakah saya perlu membawa bukti undangan digital?",
+                a: "Tidak perlu membawa kertas cetak. Cukup sebutkan nama Anda yang terdaftar pada form tamu digital di meja pendaftaran utama resepsi kami."
+              },
+              {
+                q: "Bagaimana protokol kesehatan selama acara?",
+                a: "Demi kenyamanan bersama, panitia menyediakan hand sanitizer di beberapa titik strategis. Penggunaan masker bersifat opsional namun dianjurkan bagi yang kurang fit."
+              }
+            ].map((faq, idx) => (
+              <div key={idx} className="bg-white border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
+                <button
+                  type="button"
+                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
+                  className="w-full flex items-center justify-between p-4 text-left focus:outline-none"
+                >
+                  <span className="text-xs font-bold text-gray-700 font-serif">{faq.q}</span>
+                  <ChevronDown className={`w-4 h-4 text-[#FC3695] transition-transform duration-300 ${openFaq === idx ? 'rotate-180' : ''}`} />
+                </button>
+                {openFaq === idx && (
+                  <div className="px-4 pb-4 text-[11px] text-gray-500 leading-relaxed border-t border-gray-50/50 pt-2 animate-fade-in">
+                    {faq.a}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FULL PREVIEW PORTAL LIGHTBOX */}
+      {lightboxImg && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col justify-center items-center p-4"
+          onClick={() => setLightboxImg(null)}
+        >
+          <button 
+            type="button"
+            className="absolute top-6 right-6 p-2 bg-white/10 hover:bg-white/20 rounded-full text-white"
+            onClick={() => setLightboxImg(null)}
+          >
+            <X className="w-5 h-5" />
+          </button>
+          <img 
+            src={lightboxImg} 
+            alt="Zoomed" 
+            className="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl"
+          />
+          <p className="text-[10px] text-white/50 mt-4 font-mono uppercase tracking-widest">Ketuk di luar area untuk kembali</p>
+        </div>
+      )}
+
+      {/* ZOOMED QR MODAL SYSTEM */}
+      {isQrZoomed && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex flex-col justify-center items-center p-6"
+          onClick={() => setIsQrZoomed(false)}
+        >
+          <div className="bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl relative text-center" onClick={(e) => e.stopPropagation()}>
+            <button 
+              type="button"
+              onClick={() => setIsQrZoomed(false)}
+              className="absolute top-4 right-4 p-1.5 bg-slate-100 hover:bg-slate-200 rounded-full text-gray-500 transition-colors"
+            >
+              <X className="w-4 h-4" />
+            </button>
+            <span className="text-[9px] font-bold tracking-widest uppercase text-[#FC3695] block mb-2">QRIS Kado Pernikahan</span>
+            <div className="w-64 h-64 mx-auto border rounded-2xl overflow-hidden p-2 bg-white">
+              <img 
+                src={getOptimizedImg(GOOGLE_DRIVE_IDS.giftQr, 600)} 
+                alt="QRIS Zoomed" 
+                className="w-full h-full object-contain"
+              />
+            </div>
+            <p className="text-[10px] text-gray-400 mt-4 leading-relaxed font-sans">
+              Terima kasih yang mendalam atas restu, doa, dan tanda kasih istimewa yang Anda berikan untuk kebersamaan kami.
+            </p>
           </div>
         </div>
       )}
 
-      {/* MAIN CINEMATIC WEB PLATFORM */}
-      {isOpened && (
-        <div className="animate-fade-in transition-opacity duration-1000">
+      {/* FOOTER WRAP */}
+      <footer className="py-16 bg-gradient-to-t from-[#F8D6DF]/35 via-[#FFF9FA] to-[#FFF9FA] text-center border-t border-[#F8D6DF]/20 px-6">
+        <span className="text-[9px] uppercase tracking-[0.3em] text-[#FC3695] font-semibold block mb-2">The Happy Couple</span>
+        <h2 className="font-serif text-2xl font-bold text-[#2C1820]">Rendel & Danica</h2>
+        <p className="font-serif italic text-xs text-gray-500 mt-1">Kami sangat menantikan kehadiran serta doa restu Anda semua.</p>
+        
+        <div className="w-12 h-[1px] bg-gradient-to-r from-transparent via-[#FC3695] to-transparent mx-auto my-6"></div>
+        
+        <p className="text-[9px] text-gray-400 font-mono">Dibuat dengan cinta © 2026 mahalkita.online. All Rights Reserved.</p>
+      </footer>
 
-          {/* Elegant top progress tracking indicator & symphony visualizer */}
-          <button
-            onClick={handleToggleAudio}
-            className="fixed bottom-6 right-6 z-40 bg-white/95 backdrop-blur-md border border-[#F8BBD0]/40 p-4 rounded-2xl shadow-2xl flex items-center space-x-3 transition-all duration-300 hover:scale-105"
-            title="Toggle Symphony"
-          >
-            <div className="flex items-end space-x-[2.5px] h-4.5 w-7">
-              {[...Array(5)].map((_, i) => (
-                <div 
-                  key={i} 
-                  className={`w-[3px] bg-[#F8BBD0] rounded-full transition-all duration-300 ${isAudioPlaying ? 'animate-pulse' : 'h-[2px]'}`}
-                  style={{
-                    height: isAudioPlaying ? `${Math.floor(Math.random() * 14) + 4}px` : '2px',
-                    animationDelay: `${i * 150}ms`
-                  }}
-                />
-              ))}
-            </div>
-            <span className="text-[9px] font-bold tracking-[0.25em] text-slate-500 hidden md:inline">
-              {isAudioPlaying ? "MUSIC PLAYING" : "MUSIC MUTED"}
-            </span>
-          </button>
-
-          {}
-          <header id="home" className="relative min-h-screen flex flex-col justify-between items-center text-center px-4 py-16 overflow-hidden bg-slate-900">
-            {/* Cinematic overlay filter for ambient lighting */}
-            <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/15 to-black/55 z-10"></div>
-            
-            {/* Ken Burns background transition canvas */}
-            <div className="absolute inset-0 overflow-hidden">
-              <img
-                src="https://lh3.googleusercontent.com/d/1fSwM8zyAx0geG46VOqoMu8t4HcSetNxh"
-                alt="Rendel and Danica Romantic Garden Background"
-                className="w-full h-full object-cover zoom-cinematic filter brightness-90"
-              />
-            </div>
-
-            {/* Cinematic Monogram Header */}
-            <div className="z-20 text-white/90">
-              <span className="text-[10px] tracking-[0.4em] text-[#FFF59D] font-bold uppercase block mb-2">SPRING COMMENCEMENT</span>
-              <h2 className="font-serif-header text-xl tracking-widest font-semibold italic">R &amp; D</h2>
-              <div className="w-10 h-[1px] bg-gradient-to-r from-transparent via-white to-transparent mx-auto mt-2"></div>
-            </div>
-
-            {/* Core typography centerpiece */}
-            <div className="z-20 max-w-4xl mx-auto my-auto py-12">
-              <p className="font-accent-header text-2xl md:text-3xl text-white italic font-medium mb-4 tracking-wide text-shadow">
-                &ldquo;Together Forever Begins Here&rdquo;
-              </p>
-              
-              <h1 className="font-serif-header text-5xl md:text-8xl font-bold text-white leading-none tracking-widest drop-shadow-2xl">
-                Rendel <span className="font-accent-header italic font-light text-3xl md:text-5xl text-[#FFF59D]">&amp;</span> Danica
-              </h1>
-              
-              <p className="text-white/80 text-xs md:text-sm font-bold tracking-[0.3em] uppercase mt-6 max-w-lg mx-auto">
-                {WEDDING_CONFIG.general.subTagline}
-              </p>
-            </div>
-
-            {/* Luxury Live Countdown Indicator */}
-            <div className="z-20 w-full max-w-lg mx-auto bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-[30px] shadow-2xl">
-              <span className="text-[9px] font-bold tracking-[0.3em] text-[#FFF59D] block mb-4 uppercase">COUNTING THE DAYS TO THE UNION</span>
-              <div className="grid grid-cols-4 gap-4">
-                <div>
-                  <span className="block font-serif-header text-3xl md:text-4xl text-white font-bold">{timerValues.days}</span>
-                  <span className="text-[9px] uppercase font-bold text-white/65 tracking-widest">Days</span>
-                </div>
-                <div>
-                  <span className="block font-serif-header text-3xl md:text-4xl text-white font-bold">{timerValues.hours}</span>
-                  <span className="text-[9px] uppercase font-bold text-white/65 tracking-widest">Hours</span>
-                </div>
-                <div>
-                  <span className="block font-serif-header text-3xl md:text-4xl text-white font-bold">{timerValues.minutes}</span>
-                  <span className="text-[9px] uppercase font-bold text-white/65 tracking-widest">Mins</span>
-                </div>
-                <div>
-                  <span className="block font-serif-header text-3xl md:text-4xl text-white font-bold">{timerValues.seconds}</span>
-                  <span className="text-[9px] uppercase font-bold text-white/65 tracking-widest">Secs</span>
-                </div>
-              </div>
-            </div>
-          </header>
-
-          {}
-          <section className="py-24 px-6 bg-gradient-to-b from-[#FFFDF8] via-white to-[#FFF5F6] relative overflow-hidden">
-            <div className="max-w-4xl mx-auto text-center relative z-10">
-              <span className="text-xs font-bold text-[#A5D6A7] tracking-[0.3em] uppercase block mb-3">A SOLEMN MESSAGE TO</span>
-              <h2 className="font-serif-header text-3xl md:text-5xl text-[#2D2A29] font-extrabold italic">&ldquo;{guestName}&rdquo;</h2>
-              <div className="w-16 h-[1.5px] bg-[#F8BBD0] mx-auto my-6"></div>
-              
-              <p className="font-accent-header text-2xl italic text-slate-600 leading-relaxed max-w-2xl mx-auto mb-8">
-                &ldquo;Because you have shared in our lives by your friendship and love, we invite you to join us in celebrating our marriage as we promise our lives in the garden.&rdquo;
-              </p>
-              
-              <div className="inline-flex items-center space-x-3 text-slate-500 font-bold tracking-widest text-[10px] uppercase">
-                <span>SUNDAY, DECEMBER 20, 2026</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-[#A5D6A7]"></span>
-                <span>BANJARMASIN, INDONESIA</span>
-              </div>
-            </div>
-          </section>
-
-          {}
-          <section id="couple" className="py-28 px-6 bg-white relative overflow-hidden">
-            <div className="absolute -left-12 top-0 w-64 h-64 bg-[#FFF5F6] rounded-full filter blur-3xl opacity-75"></div>
-            
-            <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-20">
-                <span className="text-xs font-bold text-[#A5D6A7] tracking-[0.3em] uppercase block mb-2">THE SOULS BEYOND PLACES</span>
-                <h2 className="font-serif-header text-3xl md:text-5xl font-bold text-[#2D2A29]">The Blessed Couple</h2>
-                <div className="w-16 h-[1.5px] bg-[#F8BBD0] mx-auto mt-4"></div>
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-stretch">
-                
-                {/* Groom Card */}
-                <div className="flex flex-col md:flex-row items-center md:items-start bg-[#FFFDF8] border border-[#F8BBD0]/15 rounded-[40px] p-8 space-y-6 md:space-y-0 md:space-x-8 shadow-sm hover:shadow-md transition-all duration-500">
-                  <div className="relative w-56 h-76 rounded-[40px_10px_40px_10px] overflow-hidden border border-[#A5D6A7]/30 shadow-lg flex-shrink-0 bg-slate-100">
-                    <img
-                      src={WEDDING_CONFIG.couple.groom.photo}
-                      alt={WEDDING_CONFIG.couple.groom.name}
-                      className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                    />
-                  </div>
-                  <div className="flex flex-col justify-between h-full text-center md:text-left">
-                    <div>
-                      <h3 className="font-serif-header text-2xl font-bold text-[#2D2A29]">{WEDDING_CONFIG.couple.groom.name}</h3>
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-[#A5D6A7] block mt-1 mb-4">THE GROOM</span>
-                      
-                      <div className="mb-4">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">SON OF</p>
-                        <p className="font-accent-header italic text-[#2D2A29] font-bold text-lg">{WEDDING_CONFIG.couple.groom.parents}</p>
-                      </div>
-                      
-                      <p className="text-slate-600 text-xs md:text-sm leading-relaxed italic">
-                        &ldquo;{WEDDING_CONFIG.couple.groom.bio}&rdquo;
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Bride Card */}
-                <div className="flex flex-col md:flex-row items-center md:items-start bg-[#FFFDF8] border border-[#F8BBD0]/15 rounded-[40px] p-8 space-y-6 md:space-y-0 md:space-x-8 shadow-sm hover:shadow-md transition-all duration-500">
-                  <div className="relative w-56 h-76 rounded-[10px_40px_10px_40px] overflow-hidden border border-[#CE93D8]/30 shadow-lg flex-shrink-0 bg-slate-100">
-                    <img
-                      src={WEDDING_CONFIG.couple.bride.photo}
-                      alt={WEDDING_CONFIG.couple.bride.name}
-                      className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
-                    />
-                  </div>
-                  <div className="flex flex-col justify-between h-full text-center md:text-left">
-                    <div>
-                      <h3 className="font-serif-header text-2xl font-bold text-[#2D2A29]">{WEDDING_CONFIG.couple.bride.name}</h3>
-                      <span className="text-[10px] font-bold uppercase tracking-widest text-[#CE93D8] block mt-1 mb-4">THE BRIDE</span>
-                      
-                      <div className="mb-4">
-                        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">DAUGHTER OF</p>
-                        <p className="font-accent-header italic text-[#2D2A29] font-bold text-lg">{WEDDING_CONFIG.couple.bride.parents}</p>
-                      </div>
-                      
-                      <p className="text-slate-600 text-xs md:text-sm leading-relaxed italic">
-                        &ldquo;{WEDDING_CONFIG.couple.bride.bio}&rdquo;
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </section>
-
-          {}
-          <section id="story" className="py-28 px-6 bg-[#FFFDF8] relative overflow-hidden border-t border-[#F8BBD0]/15">
-            <div className="max-w-5xl mx-auto">
-              <div className="text-center mb-16">
-                <span className="text-xs font-bold text-[#A5D6A7] tracking-[0.3em] uppercase block mb-1">OUR CHAPTERS OF BLOOM</span>
-                <h2 className="font-serif-header text-3xl md:text-5xl font-bold text-[#2D2A29]">Love Story Timeline</h2>
-                <div className="w-16 h-[1.5px] bg-[#F8BBD0] mx-auto mt-4"></div>
-              </div>
-
-              {/* Vertical Timeline Stack with dynamic state */}
-              <div className="relative border-l-2 border-[#F8BBD0]/35 ml-4 md:ml-32 space-y-16">
-                {WEDDING_CONFIG.timeline.map((story, idx) => (
-                  <div key={idx} className="relative pl-8 md:pl-12 group">
-                    {/* Floating point on timeline timeline */}
-                    <div className="absolute -left-[9px] top-1.5 w-4 h-4 rounded-full border-2 border-[#A5D6A7] bg-white group-hover:scale-125 transition-transform duration-300" />
-                    
-                    <span className="absolute -left-4 md:-left-28 top-0 font-serif-header text-xl md:text-2xl text-[#CE93D8] font-bold">
-                      {story.year}
-                    </span>
-
-                    <div className="bg-white border border-[#F8BBD0]/15 rounded-[32px] p-6 md:p-8 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col md:flex-row items-center gap-8">
-                      <div className="w-full md:w-2/5 aspect-[4/3] rounded-2xl overflow-hidden border border-[#A5D6A7]/20 flex-shrink-0 bg-slate-50">
-                        <img src={story.photo} alt={story.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
-                      </div>
-                      <div>
-                        <h4 className="font-serif-header text-lg md:text-xl font-bold text-[#2D2A29] mb-3">
-                          {story.title}
-                        </h4>
-                        <p className="text-slate-600 text-xs md:text-sm leading-relaxed">
-                          {story.desc}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {}
-          <section id="itinerary" className="py-28 px-6 bg-white relative overflow-hidden border-t border-[#F8BBD0]/15">
-            <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-16">
-                <span className="text-xs font-bold text-[#CE93D8] tracking-[0.3em] uppercase block mb-1">THE SEQUENCE OF HAPPINESS</span>
-                <h2 className="font-serif-header text-3xl md:text-5xl font-bold text-[#2D2A29]">Wedding Itinerary</h2>
-                <div className="w-16 h-[1.5px] bg-[#F8BBD0] mx-auto mt-4"></div>
-              </div>
-
-              {/* Horizontal / Stacked sequence of steps */}
-              <div className="grid grid-cols-1 md:grid-cols-5 gap-6">
-                {WEDDING_CONFIG.itinerary.map((step, idx) => {
-                  const IconComp = step.icon;
-                  return (
-                    <div key={idx} className="bg-[#FFFDF8] border border-[#F8BBD0]/15 rounded-[30px] p-6 text-center hover:shadow-md transition-all duration-300 flex flex-col justify-between items-center group">
-                      <div>
-                        <span className="text-[10px] font-bold text-[#A5D6A7] block mb-2">{step.time}</span>
-                        <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#FFF5F6] to-[#FFF59D] border border-[#F8BBD0]/30 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                          <IconComp className="w-5 h-5 text-[#F8BBD0] fill-current" />
-                        </div>
-                        <h4 className="font-serif-header text-xs md:text-sm font-bold text-[#2D2A29] mb-2">{step.title}</h4>
-                      </div>
-                      <p className="text-[11px] text-slate-500 leading-relaxed mt-2">{step.desc}</p>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </section>
-
-          {}
-          <section id="dresscode" className="py-28 px-6 bg-[#FFFDF8] relative overflow-hidden border-t border-[#F8BBD0]/15">
-            <div className="max-w-4xl mx-auto text-center">
-              <div className="mb-12">
-                <div className="inline-flex p-3 rounded-full bg-white border border-[#F8BBD0]/35 mb-4">
-                  <Shirt className="w-6 h-6 text-[#CE93D8]" />
-                </div>
-                <span className="text-xs font-bold text-[#A5D6A7] tracking-[0.3em] uppercase block mb-1">VISUAL HARMONY</span>
-                <h2 className="font-serif-header text-3xl md:text-5xl font-bold text-[#2D2A29]">{WEDDING_CONFIG.dressCode.theme}</h2>
-                <p className="text-xs text-slate-500 mt-4 max-w-lg mx-auto leading-relaxed">
-                  {WEDDING_CONFIG.dressCode.description}
-                </p>
-              </div>
-
-              {/* Pastel Swatch row */}
-              <div className="grid grid-cols-2 md:grid-cols-6 gap-6 max-w-3xl mx-auto">
-                {WEDDING_CONFIG.dressCode.palettes.map((swatch, idx) => (
-                  <div key={idx} className="flex flex-col items-center">
-                    <div 
-                      className="w-16 h-16 rounded-full shadow-inner border border-white/40 transform hover:scale-110 transition-transform duration-300"
-                      style={{ backgroundColor: swatch.hex }}
-                    />
-                    <span className="text-xs font-bold text-slate-700 mt-3 block">{swatch.name}</span>
-                    <span className="text-[9px] text-slate-400 block mt-0.5">{swatch.desc}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {}
-          <section id="details" className="py-28 px-6 bg-white relative overflow-hidden">
-            <div className="max-w-5xl mx-auto">
-              <div className="text-center mb-16">
-                <span className="text-xs font-bold text-[#A5D6A7] tracking-[0.3em] uppercase block mb-1">CELEBRATE THE SACRED DAY</span>
-                <h2 className="font-serif-header text-3xl md:text-5xl font-bold text-[#2D2A29]">Sacred Schedules</h2>
-                <div className="w-16 h-[1.5px] bg-[#F8BBD0] mx-auto mt-4"></div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-stretch">
-                
-                {/* Ceremony Block */}
-                <div className="bg-[#FFFDF8] border-2 border-[#F8BBD0]/15 rounded-[40px] p-8 md:p-10 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300">
-                  <div>
-                    <div className="w-12 h-12 bg-white border border-[#F8BBD0]/35 rounded-full flex items-center justify-center mb-6 shadow-md text-[#F8BBD0]">
-                      <Heart className="w-5 h-5 fill-current" />
-                    </div>
-                    <h3 className="font-serif-header text-2xl font-bold text-[#2D2A29] mb-4">{WEDDING_CONFIG.events.ceremony.title}</h3>
-                    
-                    <div className="space-y-4 text-xs md:text-sm text-slate-600 mb-8">
-                      <div className="flex items-start space-x-3">
-                        <Calendar className="w-5 h-5 text-[#A5D6A7] mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-bold text-[#2D2A29]">{WEDDING_CONFIG.events.ceremony.date}</p>
-                          <p className="text-slate-500">{WEDDING_CONFIG.events.ceremony.time}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start space-x-3">
-                        <MapPin className="w-5 h-5 text-[#A5D6A7] mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-bold text-[#2D2A29]">{WEDDING_CONFIG.events.ceremony.venue}</p>
-                          <p className="text-slate-500">{WEDDING_CONFIG.events.ceremony.address}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <a
-                      href={WEDDING_CONFIG.events.ceremony.mapUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 inline-flex items-center justify-center space-x-2 bg-[#A5D6A7] hover:bg-slate-900 text-white font-bold tracking-wider py-3.5 px-4 rounded-xl shadow transition-colors text-xs"
-                    >
-                      <MapPin className="w-4 h-4" />
-                      <span>VIEW GOOGLE MAPS</span>
-                    </a>
-                    <a
-                      href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(WEDDING_CONFIG.events.ceremony.title)}&dates=20261220T030000Z/20261220T043000Z&details=The+Wedding+of+Rendel+and+Danica&location=${encodeURIComponent(WEDDING_CONFIG.events.ceremony.venue)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center space-x-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold tracking-wider py-3.5 px-4 rounded-xl transition-colors text-xs"
-                    >
-                      <Calendar className="w-4 h-4 text-[#F8BBD0]" />
-                      <span>ADD TO CALENDAR</span>
-                    </a>
-                  </div>
-                </div>
-
-                {/* Reception Block */}
-                <div className="bg-[#FFFDF8] border-2 border-[#F8BBD0]/15 rounded-[40px] p-8 md:p-10 flex flex-col justify-between shadow-sm hover:shadow-md transition-all duration-300">
-                  <div>
-                    <div className="w-12 h-12 bg-white border border-[#CE93D8]/35 rounded-full flex items-center justify-center mb-6 shadow-md text-[#CE93D8]">
-                      <Sparkles className="w-5 h-5 fill-current" />
-                    </div>
-                    <h3 className="font-serif-header text-2xl font-bold text-[#2D2A29] mb-4">{WEDDING_CONFIG.events.reception.title}</h3>
-                    
-                    <div className="space-y-4 text-xs md:text-sm text-slate-600 mb-8">
-                      <div className="flex items-start space-x-3">
-                        <Calendar className="w-5 h-5 text-[#CE93D8] mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-bold text-[#2D2A29]">{WEDDING_CONFIG.events.reception.date}</p>
-                          <p className="text-slate-500">{WEDDING_CONFIG.events.reception.time}</p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start space-x-3">
-                        <MapPin className="w-5 h-5 text-[#CE93D8] mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-bold text-[#2D2A29]">{WEDDING_CONFIG.events.reception.venue}</p>
-                          <p className="text-slate-500">{WEDDING_CONFIG.events.reception.address}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <a
-                      href={WEDDING_CONFIG.events.reception.mapUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-1 inline-flex items-center justify-center space-x-2 bg-[#CE93D8] hover:bg-slate-900 text-white font-bold tracking-wider py-3.5 px-4 rounded-xl shadow transition-colors text-xs"
-                    >
-                      <MapPin className="w-4 h-4" />
-                      <span>VIEW GOOGLE MAPS</span>
-                    </a>
-                    <a
-                      href={`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(WEDDING_CONFIG.events.reception.title)}&dates=20261220T060000Z/20261220T100000Z&details=The+Wedding+of+Rendel+and+Danica+Reception&location=${encodeURIComponent(WEDDING_CONFIG.events.reception.venue)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center space-x-2 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold tracking-wider py-3.5 px-4 rounded-xl transition-colors text-xs"
-                    >
-                      <Calendar className="w-4 h-4 text-[#F8BBD0]" />
-                      <span>ADD TO CALENDAR</span>
-                    </a>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </section>
-
-          {}
-          <section id="gallery" className="py-28 px-6 bg-[#FFFDF8] relative overflow-hidden border-t border-[#F8BBD0]/15">
-            <div className="max-w-6xl mx-auto">
-              <div className="text-center mb-16">
-                <span className="text-xs font-bold text-[#A5D6A7] tracking-[0.3em] uppercase block mb-1">MOMENTS OF FOREVER</span>
-                <h2 className="font-serif-header text-3xl md:text-5xl font-bold text-[#2D2A29]">Captured Memories</h2>
-                <div className="w-16 h-[1.5px] bg-[#F8BBD0] mx-auto mt-4"></div>
-              </div>
-
-              {/* Multi-column masonry layout */}
-              <div className="columns-2 md:columns-4 gap-4 space-y-4">
-                {WEDDING_CONFIG.gallery.map((imgUrl, idx) => (
-                  <div
-                    key={idx}
-                    onClick={() => setLightboxData({ open: true, src: imgUrl, index: idx })}
-                    className="overflow-hidden rounded-3xl cursor-pointer relative group border border-[#F8BBD0]/20 shadow-sm hover:shadow-md transition-all duration-300 break-inside-avoid"
-                  >
-                    <img
-                      src={imgUrl}
-                      alt={`Memory path frame ${idx + 1}`}
-                      className="w-full object-cover rounded-3xl transition-transform duration-700 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                    <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                      <Sparkles className="w-6 h-6 text-white animate-pulse" />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Custom Lightbox zoomed viewer */}
-            {lightboxData.open && (
-              <div className="fixed inset-0 z-50 bg-slate-950/95 backdrop-blur-sm flex items-center justify-center p-4">
-                <button
-                  onClick={() => setLightboxData({ open: false, src: "", index: 0 })}
-                  className="absolute top-6 right-6 text-white/80 hover:text-white text-3xl p-2 hover:scale-110 transition-transform"
-                >
-                  &times;
-                </button>
-                
-                <button
-                  onClick={() => {
-                    const prevIdx = (lightboxData.index - 1 + WEDDING_CONFIG.gallery.length) % WEDDING_CONFIG.gallery.length;
-                    setLightboxData({ open: true, src: WEDDING_CONFIG.gallery[prevIdx], index: prevIdx });
-                  }}
-                  className="absolute left-4 text-white/80 hover:text-white text-3xl p-4 hover:scale-125 transition-transform"
-                >
-                  &#10094;
-                </button>
-
-                <div className="max-w-4xl max-h-[80vh] rounded-3xl overflow-hidden border border-[#F8BBD0] shadow-2xl">
-                  <img src={lightboxData.src} alt="Lightbox Zoom Frame" className="max-w-full max-h-[75vh] object-contain mx-auto" />
-                </div>
-
-                <button
-                  onClick={() => {
-                    const nextIdx = (lightboxData.index + 1) % WEDDING_CONFIG.gallery.length;
-                    setLightboxData({ open: true, src: WEDDING_CONFIG.gallery[nextIdx], index: nextIdx });
-                  }}
-                  className="absolute right-4 text-white/80 hover:text-white text-3xl p-4 hover:scale-125 transition-transform"
-                >
-                  &#10095;
-                </button>
-              </div>
-            )}
-          </section>
-
-          {/* Interactive embedded maps block */}
-          <section className="relative w-full h-[400px] overflow-hidden border-t border-b border-[#F8BBD0]/20 bg-slate-50">
-            <iframe
-              title="Meadow Pavilion maps route"
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127453.64936353347!2d114.52622724647334!3d-3.3241517436034176!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2de4208e43c51111%3A0x3030bfb5b03f0b0!2sBanjarmasin%2C%20Banjarmasin%20City%2C%20South%20Kalimantan!5e0!3m2!1sen!2sid!4v1700000000000!5m2!1sen!2sid"
-              className="absolute inset-0 w-full h-full border-none filter contrast-105"
-              allowFullScreen=""
-              loading="lazy"
-            ></iframe>
-          </section>
-
-          {}
-          <section id="rsvp" className="py-28 px-6 bg-white relative overflow-hidden">
-            <div className="max-w-5xl mx-auto">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-start">
-                
-                {/* RSVP Form Card with soft spring colors */}
-                <div className="bg-[#FFFDF8] border border-[#F8BBD0]/35 rounded-[40px] p-8 md:p-10 shadow-sm relative">
-                  <div className="absolute -top-3 -right-3 w-8 h-8 rounded-full bg-[#FFF59D] animate-bounce" />
-                  <span className="text-xs font-bold text-[#A5D6A7] tracking-[0.25em] uppercase block mb-1">RESERVE A MOMENT</span>
-                  <h3 className="font-serif-header text-3xl font-bold text-[#2D2A29] mb-4">Confirm Presence</h3>
-                  <p className="text-xs text-slate-500 mb-8 leading-relaxed">
-                    Kindly share your confirmation below. Submitting will open your WhatsApp client directly to coordinate with our concierge.
-                  </p>
-
-                  <form onSubmit={handleRsvpSubmitRedirect} className="space-y-6">
-                    <div>
-                      <label className="block text-[10px] font-bold text-slate-700 uppercase tracking-wider mb-2">Full Name</label>
-                      <input
-                        type="text"
-                        required
-                        value={rsvpName}
-                        onChange={(e) => setRsvpName(e.target.value)}
-                        placeholder="e.g. Duke Chrisanto Somerset"
-                        className="w-full px-4 py-3.5 text-sm border border-[#F8BBD0]/30 bg-white rounded-2xl focus:outline-none focus:border-[#CE93D8] transition-colors"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-[10px] font-bold text-slate-700 uppercase tracking-wider mb-2">Attendance Status</label>
-                      <select
-                        value={rsvpStatus}
-                        onChange={(e) => setRsvpStatus(e.target.value)}
-                        className="w-full px-4 py-3.5 text-sm border border-[#F8BBD0]/30 bg-white rounded-2xl focus:outline-none focus:border-[#CE93D8] transition-colors"
-                      >
-                        <option value="Joyfully Attending">Joyfully Attending</option>
-                        <option value="Regretfully Declining">Regretfully Declining</option>
-                        <option value="Undecided">Still Undecided</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-[10px] font-bold text-slate-700 uppercase tracking-wider mb-2">Total Seats Required</label>
-                      <select
-                        value={rsvpGuestCount}
-                        onChange={(e) => setRsvpGuestCount(e.target.value)}
-                        className="w-full px-4 py-3.5 text-sm border border-[#F8BBD0]/30 bg-white rounded-2xl focus:outline-none focus:border-[#CE93D8] transition-colors"
-                      >
-                        <option value="1">1 Seat</option>
-                        <option value="2">2 Seats</option>
-                        <option value="3">3 Seats</option>
-                        <option value="4">4 Seats</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="block text-[10px] font-bold text-slate-700 uppercase tracking-wider mb-2">Blessing Notes / Dietary Request</label>
-                      <textarea
-                        rows="3"
-                        value={rsvpMessage}
-                        onChange={(e) => setRsvpMessage(e.target.value)}
-                        placeholder="Write special food dietary requirements or a sweet note..."
-                        className="w-full px-4 py-3.5 text-sm border border-[#F8BBD0]/30 bg-white rounded-2xl focus:outline-none focus:border-[#CE93D8] transition-colors resize-none"
-                      />
-                    </div>
-
-                    <button
-                      type="submit"
-                      className="w-full inline-flex items-center justify-center space-x-2 bg-gradient-to-r from-[#A5D6A7] to-[#81D4FA] hover:from-[#CE93D8] hover:to-[#F8BBD0] text-white font-bold tracking-widest py-4 rounded-2xl shadow-md transition-colors"
-                    >
-                      <Send className="w-4 h-4" />
-                      <span>SUBMIT VIA WHATSAPP</span>
-                    </button>
-                  </form>
-                </div>
-
-                {/* Local Guestbook Scroller Board */}
-                <div className="flex flex-col justify-between h-full space-y-8">
-                  <div>
-                    <span className="text-xs font-bold text-[#CE93D8] tracking-[0.25em] uppercase block mb-1">DIGITAL LEDGER CONTRIB</span>
-                    <h3 className="font-serif-header text-3xl font-bold text-[#2D2A29] mb-4">Wishes Guestbook</h3>
-                    <p className="text-xs text-slate-500 mb-6 leading-relaxed">
-                      Leave a lovely message on our local session register. Your kind wishes are cached directly on your client browser, and you can export or share the list!
-                    </p>
-
-                    <form onSubmit={handleAddLocalWish} className="space-y-4 mb-6">
-                      <div className="grid grid-cols-2 gap-4">
-                        <input
-                          type="text"
-                          required
-                          placeholder="Your Name"
-                          value={inputWishName}
-                          onChange={(e) => setInputWishName(e.target.value)}
-                          className="w-full px-4 py-3 text-xs border border-[#F8BBD0]/30 bg-[#FFFDF8] rounded-2xl focus:outline-none focus:border-[#CE93D8]"
-                        />
-                        <input
-                          type="text"
-                          placeholder="Relation (e.g. Bestie)"
-                          value={inputWishRelation}
-                          onChange={(e) => setInputWishRelation(e.target.value)}
-                          className="w-full px-4 py-3 text-xs border border-[#F8BBD0]/30 bg-[#FFFDF8] rounded-2xl focus:outline-none focus:border-[#CE93D8]"
-                        />
-                      </div>
-                      <textarea
-                        rows="2"
-                        required
-                        placeholder="Write your beautiful spring wishes and prayers..."
-                        value={inputWishText}
-                        onChange={(e) => setInputWishText(e.target.value)}
-                        className="w-full px-4 py-3 text-xs border border-[#F8BBD0]/30 bg-[#FFFDF8] rounded-2xl focus:outline-none focus:border-[#CE93D8] resize-none"
-                      />
-                      <button
-                        type="submit"
-                        className="w-full bg-[#FFFDF8] hover:bg-slate-50 text-slate-700 font-bold py-2.5 rounded-2xl text-xs tracking-wider border border-[#F8BBD0]/30 transition-colors"
-                      >
-                        SUBMIT LEDGER ENTRY
-                      </button>
-                    </form>
-                  </div>
-
-                  {/* Scroller feeds list */}
-                  <div className="bg-gradient-to-b from-[#FFFDF8] to-[#FFF5F6] rounded-[30px] p-6 border border-[#F8BBD0]/20 max-h-[250px] overflow-y-auto space-y-4 shadow-inner">
-                    {guestbookWishes.map((w, idx) => (
-                      <div key={idx} className="border-b border-slate-200/50 pb-3 last:border-none">
-                        <div className="flex items-center space-x-2 mb-1">
-                          <span className="font-bold text-xs text-slate-800">{w.name}</span>
-                          <span className="text-[8px] font-bold px-2 py-0.5 bg-[#A5D6A7]/15 text-[#A5D6A7] rounded-full uppercase">
-                            {w.relation}
-                          </span>
-                        </div>
-                        <p className="text-xs text-slate-600 italic">"{w.text}"</p>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Backup Actions */}
-                  <div className="grid grid-cols-2 gap-3 mt-4">
-                    <button
-                      onClick={handleCopyAllWishes}
-                      className="inline-flex items-center justify-center space-x-1.5 py-2.5 px-3 border border-[#F8BBD0]/40 hover:bg-[#F8BBD0]/10 text-[#F8BBD0] font-semibold rounded-2xl text-xs transition-colors"
-                    >
-                      <Copy className="w-4 h-4" />
-                      <span>{copiedAllWishes ? 'COPIED!' : 'COPY ALL MESSAGES'}</span>
-                    </button>
-                    <button
-                      onClick={handleExportWishesFile}
-                      className="inline-flex items-center justify-center space-x-1.5 py-2.5 px-3 bg-[#A5D6A7]/15 hover:bg-[#A5D6A7]/25 text-[#A5D6A7] font-semibold rounded-2xl text-xs transition-colors"
-                    >
-                      <Download className="w-4 h-4" />
-                      <span>DOWNLOAD .TXT</span>
-                    </button>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          </section>
-
-          {}
-          <section id="registry" className="py-28 px-6 bg-[#FFFDF8] relative overflow-hidden border-t border-[#F8BBD0]/15">
-            <div className="max-w-4xl mx-auto text-center">
-              <div className="mb-16">
-                <span className="text-xs font-bold text-[#CE93D8] tracking-[0.25em] uppercase block mb-1">SECURE TOKENS LEDGER</span>
-                <h2 className="font-serif-header text-3xl md:text-5xl font-bold text-[#2D2A29]">Love &amp; Blessings Gifts</h2>
-                <div className="w-16 h-[1.5px] bg-[#F8BBD0] mx-auto mt-4"></div>
-                <p className="text-xs md:text-sm text-slate-500 max-w-lg mx-auto mt-4 leading-relaxed">
-                  Your warm presence is already the most precious flower in our spring garden. But if you wish to assist in funding our honeymoon path, you can securely utilize our direct details:
-                </p>
-              </div>
-
-              {/* Bank Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-2xl mx-auto">
-                {WEDDING_CONFIG.registry.map((reg, idx) => (
-                  <div
-                    key={idx}
-                    className={`${reg.color} rounded-[32px] p-6 text-left border relative overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between`}
-                  >
-                    <div>
-                      <div className="flex justify-between items-start mb-6">
-                        <span className="font-serif-header font-bold text-slate-800 tracking-wider text-base">{reg.type}</span>
-                        <div className="w-8 h-8 rounded-full bg-white/40 flex items-center justify-center text-slate-600">
-                          <Gift className="w-4 h-4" />
-                        </div>
-                      </div>
-
-                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">ACCOUNT NUMBER</p>
-                      <p className="font-serif-header text-xl md:text-2xl font-bold text-slate-800 tracking-wide mb-4">
-                        {reg.accountNumber}
-                      </p>
-
-                      <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-1">ACCOUNT HOLDER</p>
-                      <p className="font-bold text-slate-700 text-xs">
-                        {reg.accountHolder}
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={() => handleCopyAccountNum(reg.accountNumber, idx)}
-                      className="mt-6 w-full py-3 bg-white hover:bg-slate-50 border border-slate-100 text-slate-700 font-bold rounded-2xl text-[11px] tracking-wider transition-colors inline-flex items-center justify-center space-x-1.5 shadow-sm"
-                    >
-                      {copiedRegistryIndex === idx ? (
-                        <>
-                          <Check className="w-4 h-4 text-emerald-600" />
-                          <span className="text-emerald-700 font-bold">COPIED SUCCESSFULLY</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-4 h-4 text-slate-400" />
-                          <span>COPY ACCOUNT NUMBER</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
-
-          {}
-          <section id="faq" className="py-28 px-6 bg-white relative overflow-hidden">
-            <div className="max-w-4xl mx-auto">
-              <div className="text-center mb-16">
-                <span className="text-xs font-bold text-[#A5D6A7] tracking-[0.25em] uppercase block mb-1">HELPFUL INFORMATION</span>
-                <h2 className="font-serif-header text-3xl md:text-5xl font-bold text-[#2D2A29]">Frequently Asked Questions</h2>
-                <div className="w-16 h-[1.5px] bg-[#F8BBD0] mx-auto mt-4"></div>
-              </div>
-
-              <div className="space-y-4">
-                {WEDDING_CONFIG.faqs.map((faq, idx) => {
-                  const isOpen = openedFaq === idx;
-                  return (
-                    <div
-                      key={idx}
-                      className="border border-[#F8BBD0]/30 rounded-3xl overflow-hidden transition-all duration-300 bg-[#FFFDF8] hover:border-[#CE93D8]"
-                    >
-                      <button
-                        onClick={() => setOpenedFaq(isOpen ? null : idx)}
-                        className="w-full px-6 py-5 flex justify-between items-center text-left hover:bg-[#FFF5F6] transition-colors focus:outline-none"
-                      >
-                        <span className="font-serif-header font-bold text-slate-800 text-xs md:text-sm">{faq.q}</span>
-                        <ChevronDown
-                          className={`w-4 h-4 text-[#F8BBD0] transform transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
-                        />
-                      </button>
-
-                      {isOpen && (
-                        <div className="px-6 py-5 bg-white text-xs md:text-sm text-slate-600 leading-relaxed border-t border-slate-100">
-                          {faq.a}
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </section>
-
-          {}
-          <section className="py-28 px-6 bg-[#FFFDF8] relative text-center overflow-hidden border-t border-[#F8BBD0]/20">
-            <div className="max-w-3xl mx-auto relative z-10">
-              {/* Premium flower-bordered grateful portrait framing */}
-              <div className="relative w-64 h-80 mx-auto mb-10 rounded-[60px_10px_60px_10px] overflow-hidden border border-[#F8BBD0]/30 shadow-2xl bg-slate-50">
-                <img
-                  src="https://lh3.googleusercontent.com/d/1duIzeRvw-0A_eXn8CbliVPNuLX4djdeR"
-                  alt="Rendel and Danica Final Frame"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              <p className="font-accent-header text-3xl md:text-4xl italic text-slate-800 font-bold mb-4">
-                With Sincerest Gratitude
-              </p>
-              
-              <p className="text-xs md:text-sm text-slate-500 max-w-md mx-auto leading-relaxed mb-12">
-                Thank you for weaving your support into our floral bouquet of memories. We look forward to clinking glasses under the wildflowers with you!
-              </p>
-
-              <h2 className="font-serif-header text-3xl md:text-5xl text-[#F8BBD0] font-extrabold mb-1">
-                Rendel &amp; Danica
-              </h2>
-              <p className="text-[10px] font-bold text-[#A5D6A7] tracking-[0.3em] uppercase mt-2">
-                {WEDDING_CONFIG.general.hashtag}
-              </p>
-            </div>
-          </section>
-
-          {}
-          <footer className="bg-gradient-to-b from-slate-900 to-black text-white/90 py-16 px-6 text-center border-t border-[#F8BBD0]/15">
-            <div className="max-w-4xl mx-auto">
-              <span className="font-serif-header text-2xl font-bold tracking-widest text-[#F8BBD0]">R &amp; D</span>
-              <p className="text-[9px] text-slate-500 mt-2 mb-8 tracking-[0.3em] uppercase">HANDCRAFTED FOR RENDEL &amp; DANICA</p>
-              
-              <div className="w-16 h-[0.5px] bg-white/20 mx-auto mb-8"></div>
-
-              {/* Dynamic deployment guide pane */}
-              <div className="text-left bg-white/5 backdrop-blur-sm p-6 rounded-3xl max-w-xl mx-auto border border-white/10">
-                <h4 className="text-xs font-serif-header font-bold text-[#F8BBD0] tracking-wider mb-3 flex items-center">
-                  <Compass className="w-4 h-4 mr-1.5" />
-                  <span>Deployment Directives</span>
-                </h4>
-                <p className="text-[11px] text-slate-400 mb-4 leading-relaxed">
-                  This Next.js / React build generates custom static indices without requiring external state engines.
-                </p>
-                <div className="space-y-3 text-xs">
-                  <div>
-                    <span className="font-bold text-[#F8BBD0]">▲ Vercel Hosting:</span>
-                    <p className="text-[10px] text-slate-400 ml-3">Run <code className="bg-white/10 px-1 py-0.5 rounded">vercel deploy</code> within the project folder to set up a live domain instantly.</p>
-                  </div>
-                  <div>
-                    <span className="font-bold text-[#CE93D8]">✦ Netlify Portal:</span>
-                    <p className="text-[10px] text-slate-400 ml-3">Drag-and-drop the compiled static assets directory directly into the Netlify GUI builder.</p>
-                  </div>
-                  <div>
-                    <span className="font-bold text-[#A5D6A7]">❖ GitHub Pages:</span>
-                    <p className="text-[10px] text-slate-400 ml-3">Push code to your master branch and activate Actions to compile and host your page on Github servers.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </footer>
-
-        </div>
-      )}
     </div>
   );
 }
