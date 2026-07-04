@@ -1,76 +1,193 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Undangan Pernikahan Rendel & Danica</title>
+    <title>Wedding Invitation: Rendel & Danica</title>
+    
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Vibrant & Elegant -->
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <style>
-        body { font-family: 'Montserrat', sans-serif; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: #fdfaf6; 
+            color: #4a4a4a;
+            margin: 0;
+            overflow-x: hidden;
+        }
+        
+        #ambientCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, #fdfaf6 0%, #fff1f2 100%);
+        }
+
         .hero-section {
             height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://lh3.googleusercontent.com/d/10LKJ2zIe5h8ePkqjy2TejTgunb5uhqKA');
+            background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://lh3.googleusercontent.com/d/10LKJ2zIe5h8ePkqjy2TejTgunb5uhqKA');
             background-size: cover;
             background-position: center;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            color: white;
+            color: #fff;
             text-align: center;
+            position: relative;
         }
+        
         .monogram {
-            border: 1px solid white;
-            padding: 10px 30px;
-            border-radius: 50px;
-            font-size: 1.5rem;
-            margin-bottom: 2rem;
-            letter-spacing: 3px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
+        
         .names {
-            font-family: 'Playfair Display', serif;
-            font-size: 4rem;
-            margin-bottom: 3rem;
-            letter-spacing: 5px;
+            font-family: 'Dancing Script', cursive;
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            color: #ffeff5;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.5);
         }
+        
         .btn-open {
-            border: 1px solid white;
+            border: 2px solid #ff9a9e;
             color: white;
-            padding: 10px 40px;
+            padding: 12px 45px;
             border-radius: 50px;
-            background: transparent;
+            background: #ff9a9e;
+            font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 2px;
-            transition: 0.3s;
+            transition: 0.4s;
+            cursor: pointer;
         }
+        
         .btn-open:hover {
-            background: white;
-            color: black;
+            background: #f87198;
+            border-color: #f87198;
+            transform: translateY(-5px);
         }
+
+        .carousel-item img {
+            height: 500px;
+            object-fit: cover;
+            border-radius: 20px;
+        }
+
+        .text-vibrant { color: #d946ef; }
+        
+        .btn-reservation {
+            background: linear-gradient(45deg, #10b981, #059669);
+            color: white;
+            padding: 18px 50px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: 0.3s;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        .btn-reservation:hover { transform: scale(1.05); color: white; opacity: 0.9; }
     </style>
 </head>
 <body>
 
-    <!-- Landing Page (Hero) -->
+    <canvas id="ambientCanvas"></canvas>
+
     <section class="hero-section">
         <div class="monogram">R & D</div>
-        <h1 class="names">RENDEL & DANICA</h1>
-        <button class="btn btn-open" onclick="window.location.href='#invitation'">OPEN</button>
+        <h1 class="names">Rendel & Danica</h1>
+        <button class="btn btn-open" onclick="startExperience()">Open Invitation</button>
     </section>
 
-    <!-- Main Invitation Content -->
-    <section id="invitation" class="py-5 bg-light">
+    <section id="invitation" class="py-5">
         <div class="container text-center">
-            <h2 class="display-5 font-serif mb-4">You're Invited!</h2>
-            <p class="lead">Kami mengundang Bapak/Ibu/Saudara/i untuk merayakan pernikahan kami.</p>
-            <!-- Anda bisa menambahkan konten detail acara lainnya di sini menggunakan grid system Bootstrap -->
+            <h2 class="display-4 fw-bold text-vibrant mb-4" style="font-family: 'Dancing Script', cursive;">Welcome to Our Special Day!</h2>
+            <p class="lead text-muted">With love and happiness, we invite you to celebrate our union.</p>
+        </div>
+
+        <div class="container py-5">
+            <h3 class="text-center mb-5 text-vibrant fw-bold">Our Journey</h3>
+            <div id="weddingCarousel" class="carousel slide" data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active"><img src="https://lh3.googleusercontent.com/d/1fSwM8zyAx0geG46VOqoMu8t4HcSetNxh" class="d-block w-100"></div>
+                    <div class="carousel-item"><img src="https://lh3.googleusercontent.com/d/13LSsrxTql-mIG9Cknhu4rcuOEe6TYJ0H" class="d-block w-100"></div>
+                    <div class="carousel-item"><img src="https://lh3.googleusercontent.com/d/1ynp-SXsLJ6zIq0RttaupiTYyTjlJSjXB" class="d-block w-100"></div>
+                    <div class="carousel-item"><img src="https://lh3.googleusercontent.com/d/1duIzeRvw-0A_eXn8CbliVPNuLX4djdeR" class="d-block w-100"></div>
+                    <div class="carousel-item"><img src="https://lh3.googleusercontent.com/d/1Z9s6Pf0neCLejMu4HGeRZVCh2s7CkOVI" class="d-block w-100"></div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#weddingCarousel" data-bs-slide="prev"><span class="carousel-control-prev-icon"></span></button>
+                <button class="carousel-control-next" type="button" data-bs-target="#weddingCarousel" data-bs-slide="next"><span class="carousel-control-next-icon"></span></button>
+            </div>
+        </div>
+
+        <div class="container text-center py-5">
+            <h3 class="text-vibrant fw-bold mb-4">Love Gift</h3>
+            <p class="mb-4">Your presence is our greatest gift, but if you wish to contribute, please scan the QR code.</p>
+            <div class="card mx-auto p-3" style="max-width: 320px; border-radius: 25px; border: none; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+                <img src="https://lh3.googleusercontent.com/d/1-NUiPfH8unFWIR6wye_w4x2V1PdA-16L" alt="Love Gift QR" class="img-fluid rounded">
+            </div>
+        </div>
+
+        <div class="container text-center py-5">
+            <h3 class="text-success fw-bold mb-4">RSVP</h3>
+            <a href="#" class="btn btn-reservation">Confirm Your Attendance</a>
         </div>
     </section>
 
-    <!-- Bootstrap JS Bundle -->
+    <!-- Hidden YouTube Player -->
+    <iframe id="audioPlayer" width="0" height="0" src="https://www.youtube.com/embed/_GizC-HxxiM?autoplay=0&enablejsapi=1" frameborder="0" allow="autoplay"></iframe>
+
+    <footer class="py-4 text-center text-muted">
+        <p>&copy; 2026 Rendel & Danica Wedding</p>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function startExperience() {
+            document.getElementById('invitation').scrollIntoView({behavior: 'smooth'});
+            // Attempt to trigger audio
+            const player = document.getElementById('audioPlayer');
+            player.src = player.src.replace('autoplay=0', 'autoplay=1');
+        }
+
+        const canvas = document.getElementById('ambientCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        const particles = [];
+        for(let i=0; i<30; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                radius: Math.random() * 50 + 20,
+                color: `rgba(255, 182, 193, ${Math.random() * 0.3})`,
+                speed: Math.random() * 0.5 + 0.2
+            });
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.y -= p.speed;
+                if(p.y < -50) p.y = canvas.height + 50;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
 </body>
 </html>
