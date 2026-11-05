@@ -1,11 +1,14 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f6f3eb">
-  <meta name="description"
-        content="Sesuatu yang istimewa sedang disiapkan. Mahalkita Project — coming soon.">
+  <meta
+    name="description"
+    content="Something special is on its way. Mahalkita Project — coming soon."
+  >
+
   <title>Mahalkita Project — Coming Soon</title>
 
   <style>
@@ -17,7 +20,9 @@
       --line: #dcdcd0;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       margin: 0;
@@ -37,7 +42,8 @@
       flex-direction: column;
     }
 
-    header, footer {
+    header,
+    footer {
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -76,6 +82,7 @@
 
     .status::before {
       content: "";
+      flex-shrink: 0;
       width: 7px;
       height: 7px;
       border-radius: 50%;
@@ -106,7 +113,7 @@
       font-family: Georgia, "Times New Roman", serif;
       font-size: clamp(76px, 9vw, 142px);
       font-weight: 400;
-      line-height: .92;
+      line-height: 0.92;
       letter-spacing: -7px;
     }
 
@@ -116,7 +123,7 @@
     }
 
     .description {
-      max-width: 340px;
+      max-width: 350px;
       margin: 32px 0;
       color: var(--muted);
       font-size: 15px;
@@ -198,23 +205,49 @@
       line-height: 1.6;
     }
 
-    footer p { margin: 0; }
-    .footer-note { letter-spacing: 1px; }
-    .heart { color: var(--red); }
+    footer p {
+      margin: 0;
+    }
+
+    .footer-note {
+      letter-spacing: 1px;
+    }
+
+    .heart {
+      color: var(--red);
+    }
 
     @keyframes float {
-      0%, 100% { transform: translateY(0) rotate(-9deg); }
-      50% { transform: translateY(-12px) rotate(-6deg); }
+      0%,
+      100% {
+        transform: translateY(0) rotate(-9deg);
+      }
+
+      50% {
+        transform: translateY(-12px) rotate(-6deg);
+      }
     }
 
     @media (min-width: 1500px) {
-      .page { padding-top: 44px; padding-bottom: 36px; }
+      .page {
+        padding-top: 44px;
+        padding-bottom: 36px;
+      }
     }
 
     @media (max-width: 760px) {
-      .page { padding: 24px 7%; }
-      .brand { font-size: 21px; }
-      .status { font-size: 9px; letter-spacing: 1px; }
+      .page {
+        padding: 24px 7%;
+      }
+
+      .brand {
+        font-size: 21px;
+      }
+
+      .status {
+        font-size: 9px;
+        letter-spacing: 1px;
+      }
 
       main {
         grid-template-columns: 1fr;
@@ -227,18 +260,46 @@
         letter-spacing: -5px;
       }
 
-      .description { margin: 26px 0 18px; }
-      .art { min-height: 320px; }
-      .envelope { width: min(85%, 350px); }
-      .halo { width: 290px; }
-      .spark { right: 10%; font-size: 64px; }
-      .caption { right: 10%; font-size: 18px; }
-      footer { align-items: flex-start; font-size: 10px; }
-      .footer-note { text-align: right; }
+      .description {
+        margin: 26px 0 18px;
+      }
+
+      .art {
+        min-height: 320px;
+      }
+
+      .envelope {
+        width: min(85%, 350px);
+      }
+
+      .halo {
+        width: min(100%, 290px);
+      }
+
+      .spark {
+        right: 10%;
+        font-size: 64px;
+      }
+
+      .caption {
+        right: 10%;
+        font-size: 18px;
+      }
+
+      footer {
+        align-items: flex-start;
+        font-size: 10px;
+      }
+
+      .footer-note {
+        text-align: right;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      .envelope { animation: none; }
+      .envelope {
+        animation: none;
+      }
     }
   </style>
 </head>
@@ -247,75 +308,144 @@
   <div class="page">
     <header>
       <div class="brand" aria-label="Mahalkita Project">
-        mahalkita<span>Project</span>
+        mahalkita
+        <span>Project</span>
       </div>
-      <div class="status">Dalam persiapan</div>
+
+      <div class="status">In the making</div>
     </header>
 
     <main>
       <section aria-labelledby="headline">
-        <p class="eyebrow">A little patience, a lot of love.</p>
+        <p class="eyebrow">
+          A little patience, a lot of love.
+        </p>
 
-        <h1 id="headline">Coming<br><em>soon.</em></h1>
+        <h1 id="headline">
+          Coming<br>
+          <em>soon.</em>
+        </h1>
 
         <p class="description">
-          Sesuatu yang istimewa sedang kami siapkan.
-          Sebuah awal baru dari Mahalkita Project,
-          dibuat dengan sepenuh hati.
+          Something special is on its way.
+          A new beginning from Mahalkita Project,
+          made with all our heart.
         </p>
 
         <div class="note">
           <span aria-hidden="true">↗</span>
-          Sampai bertemu sebentar lagi.
+          See you very soon.
         </div>
       </section>
 
       <div class="art" aria-hidden="true">
         <div class="halo"></div>
+
         <span class="spark">✳</span>
 
         <svg class="envelope" viewBox="0 0 440 340" fill="none">
-          <!-- Surat -->
-          <rect x="75" y="32" width="290" height="225" rx="4"
-                fill="#fffcf5" stroke="#ddd6c8"/>
-          <rect x="96" y="52" width="248" height="185" rx="2"
-                stroke="#e8e0d3"/>
+          <!-- Letter -->
+          <rect
+            x="75"
+            y="32"
+            width="290"
+            height="225"
+            rx="4"
+            fill="#fffcf5"
+            stroke="#ddd6c8"
+          />
 
-          <text x="220" y="101" text-anchor="middle"
-                font-family="Arial, sans-serif" font-size="10"
-                letter-spacing="3" fill="#999084">
+          <rect
+            x="96"
+            y="52"
+            width="248"
+            height="185"
+            rx="2"
+            stroke="#e8e0d3"
+          />
+
+          <text
+            x="220"
+            y="101"
+            text-anchor="middle"
+            font-family="Arial, sans-serif"
+            font-size="10"
+            letter-spacing="3"
+            fill="#999084"
+          >
             A NOTE FOR YOU
           </text>
 
-          <text x="220" y="147" text-anchor="middle"
-                font-family="Georgia, serif" font-size="31"
-                font-style="italic" fill="#b84432">
+          <text
+            x="220"
+            y="147"
+            text-anchor="middle"
+            font-family="Georgia, serif"
+            font-size="31"
+            font-style="italic"
+            fill="#b84432"
+          >
             Good things
           </text>
 
-          <text x="220" y="183" text-anchor="middle"
-                font-family="Georgia, serif" font-size="31"
-                font-style="italic" fill="#b84432">
+          <text
+            x="220"
+            y="183"
+            text-anchor="middle"
+            font-family="Georgia, serif"
+            font-size="31"
+            font-style="italic"
+            fill="#b84432"
+          >
             take a little love.
           </text>
 
-          <!-- Amplop -->
-          <path d="M35 142 L220 261 L405 142 V306
-                   Q405 314 397 314 H43 Q35 314 35 306 Z"
-                fill="#dfdacb" stroke="#cfc7b7"/>
-          <path d="M35 147 L220 264 L35 308 Z" fill="#e9e4d8"/>
-          <path d="M405 147 L220 264 L405 308 Z" fill="#e5dfd1"/>
-          <path d="M35 310 L205 205 Q220 195 235 205 L405 310"
-                fill="#eee8dc" stroke="#d3cbbb"/>
+          <!-- Envelope -->
+          <path
+            d="M35 142 L220 261 L405 142 V306
+               Q405 314 397 314 H43 Q35 314 35 306 Z"
+            fill="#dfdacb"
+            stroke="#cfc7b7"
+          />
 
-          <!-- Segel -->
-          <circle cx="220" cy="249" r="28" fill="#b84432"/>
-          <circle cx="220" cy="249" r="22" stroke="#d47a66"/>
-          <path d="M220 260 C216 256 207 251 207 245
-                   C207 238 216 236 220 243
-                   C224 236 233 238 233 245
-                   C233 251 224 256 220 260Z"
-                fill="#f3dfc9"/>
+          <path
+            d="M35 147 L220 264 L35 308 Z"
+            fill="#e9e4d8"
+          />
+
+          <path
+            d="M405 147 L220 264 L405 308 Z"
+            fill="#e5dfd1"
+          />
+
+          <path
+            d="M35 310 L205 205 Q220 195 235 205 L405 310"
+            fill="#eee8dc"
+            stroke="#d3cbbb"
+          />
+
+          <!-- Wax seal -->
+          <circle
+            cx="220"
+            cy="249"
+            r="28"
+            fill="#b84432"
+          />
+
+          <circle
+            cx="220"
+            cy="249"
+            r="22"
+            stroke="#d47a66"
+          />
+
+          <path
+            d="M220 260 C216 256 207 251 207 245
+               C207 238 216 236 220 243
+               C224 236 233 238 233 245
+               C233 251 224 256 220 260Z"
+            fill="#f3dfc9"
+          />
         </svg>
 
         <span class="caption">sealed with love.</span>
@@ -324,7 +454,11 @@
 
     <footer>
       <p>© 2026 Mahalkita Project.</p>
-      <p class="footer-note">Sesuatu yang baik sedang dimulai <span class="heart">♥</span></p>
+
+      <p class="footer-note">
+        Something good is about to begin
+        <span class="heart">♥</span>
+      </p>
     </footer>
   </div>
 </body>
