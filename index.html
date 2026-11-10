@@ -1,465 +1,581 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f6f3eb">
-  <meta
-    name="description"
-    content="Something special is on its way. Mahalkita Project — coming soon."
-  >
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#354b40">
+<meta name="description" content="Beautiful digital wedding invitations by Mahalkita Project. Explore packages, browse themes, and start your wedding invitation journey.">
+<title>Mahalkita Project | Digital Wedding Invitations</title>
 
-  <title>Mahalkita Project — Coming Soon</title>
+<style>
+:root {
+  --bg: #faf8f2;
+  --ink: #354b40;
+  --muted: #647168;
+  --sage: #e9eddf;
+  --line: #d7ddcf;
+  --gold: #92764e;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 24px; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.7 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+a { color: inherit; }
+a, button { touch-action: manipulation; }
+a:focus-visible, button:focus-visible, summary:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 5px;
+}
+.wrap { width: min(1100px, 90%); margin-inline: auto; }
+header { border-bottom: 1px solid var(--line); }
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 90px;
+}
+.brand { text-decoration: none; font: 25px Georgia, serif; }
+.brand small {
+  display: block;
+  margin-top: 5px;
+  font: 9px system-ui;
+  letter-spacing: 4px;
+}
+.nav-links { display: flex; gap: 25px; font-size: 13px; }
+.nav-links a { text-decoration: none; }
+.nav-links a:hover { text-decoration: underline; }
+.eyebrow {
+  color: var(--gold);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+}
+h1, h2, h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  line-height: 1.12;
+}
+h1 {
+  margin: 22px 0;
+  font-size: clamp(48px, 6.5vw, 80px);
+  letter-spacing: -2.5px;
+}
+h2 {
+  margin: 15px 0 22px;
+  font-size: clamp(35px, 4vw, 49px);
+  letter-spacing: -1px;
+}
+h3 { margin: 15px 0; font-size: 31px; }
+em { color: #7b896f; }
+p { color: var(--muted); }
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  gap: 65px;
+  padding-block: 75px;
+}
+.hero p { max-width: 470px; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 22px;
+  border: 1px solid var(--ink);
+  border-radius: 3px;
+  background: var(--ink);
+  color: white;
+  text-decoration: none;
+  font: 600 13px/1.5 system-ui;
+  cursor: pointer;
+}
+.btn:hover { background: #4b6252; }
+.btn.outline { background: transparent; color: var(--ink); }
+.btn.outline:hover { background: var(--sage); }
+.fine { font-size: 12px; }
 
-  <style>
-    :root {
-      --paper: #f6f3eb;
-      --ink: #292b25;
-      --muted: #77776d;
-      --red: #b84432;
-      --line: #dcdcd0;
-    }
+/* Lightweight invitation illustration: no image download required. */
+.art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 485px;
+  padding: 40px;
+  overflow: hidden;
+  background: var(--sage);
+  border-radius: 220px 220px 5px 5px;
+}
+.art::before, .art::after {
+  content: "";
+  position: absolute;
+  width: 220px;
+  height: 340px;
+  border: 1px solid #bdc8af;
+  border-radius: 50%;
+  transform: rotate(35deg);
+  left: -130px;
+  bottom: -80px;
+}
+.art::after { left: auto; right: -140px; top: -60px; }
+.invitation {
+  position: relative;
+  width: 255px;
+  padding: 40px 20px;
+  text-align: center;
+  background: #fffdf7;
+  border: 1px solid #d3dac5;
+  outline: 1px solid #d3dac5;
+  outline-offset: -11px;
+  box-shadow: 0 20px 45px #354b4020;
+  transform: rotate(-5deg);
+}
+.invitation p { font-size: 9px; letter-spacing: 2px; }
+.invitation h3 { font-size: 39px; margin: 22px 0; }
+.monogram { font: italic 48px Georgia; color: #889579; }
+.art-label {
+  position: absolute;
+  bottom: 12px;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.ribbon {
+  padding: 19px;
+  border-block: 1px solid var(--line);
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+section.content { padding-block: 75px; }
+.intro { max-width: 650px; margin-bottom: 30px; }
+.notice {
+  padding: 13px 18px;
+  background: #efefe6;
+  border-left: 2px solid #9ba88e;
+  font-size: 13px;
+}
+.packages {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 25px;
+}
+.package {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: #fffdf8;
+}
+.package:nth-child(2) { background: var(--sage); border-color: #a0ac91; }
+.number { color: #859276; font: italic 25px Georgia; }
+.package p { font-size: 14px; }
+.price {
+  padding-block: 15px;
+  border-block: 1px solid var(--line);
+  font: 23px Georgia;
+}
+.package .description { flex: 1; min-height: 95px; }
+.package .btn { margin-top: 11px; width: 100%; }
+.package .fine { font-size: 11px; }
+.showcase { background: var(--ink); color: var(--bg); }
+.showcase .wrap {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 65px;
+}
+.showcase p { color: #d1d9cb; }
+.showcase .eyebrow { color: #dbc49d; }
+.showcase em { color: #c7d2b8; }
+.showcase .btn { background: var(--bg); color: var(--ink); }
+.preview-card { padding: 45px 25px; border: 1px solid #899985; text-align: center; }
+.preview-card h3 { font-size: 43px; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 40px; }
+.steps h3 { font-size: 25px; }
+.steps p { font-size: 14px; }
+.guide {
+  display: grid;
+  grid-template-columns: .85fr 1.15fr;
+  gap: 60px;
+  margin-top: 60px;
+  padding-top: 55px;
+  border-top: 1px solid var(--line);
+}
+details { padding: 18px 0; border-bottom: 1px solid var(--line); }
+summary { cursor: pointer; font-weight: 600; font-size: 14px; }
+details p, details li { font-size: 14px; color: var(--muted); }
+details ul { padding-left: 20px; }
+.closing { padding: 65px 20px; background: var(--sage); text-align: center; }
+.closing p { max-width: 570px; margin: 0 auto 25px; }
+.closing .fine { margin-top: 15px; margin-bottom: 0; }
+footer { padding-block: 30px; font-size: 12px; }
+footer .wrap { display: flex; justify-content: space-between; gap: 20px; }
+.skip { position: absolute; left: -9999px; }
+.skip:focus { left: 10px; top: 10px; padding: 10px; background: white; z-index: 10; }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      background: var(--paper);
-      color: var(--ink);
-      font-family: Arial, Helvetica, sans-serif;
-      -webkit-font-smoothing: antialiased;
-    }
-
-    .page {
-      width: min(1440px, 100%);
-      min-height: 100vh;
-      min-height: 100svh;
-      margin: auto;
-      padding: 32px 6%;
-      display: flex;
-      flex-direction: column;
-    }
-
-    header,
-    footer {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 24px;
-    }
-
-    header {
-      padding-bottom: 27px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .brand {
-      font-size: 23px;
-      font-weight: 800;
-      letter-spacing: -1px;
-    }
-
-    .brand span {
-      display: block;
-      margin-top: 5px;
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 5px;
-      text-transform: uppercase;
-    }
-
-    .status {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      color: var(--muted);
-      font-size: 11px;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-    }
-
-    .status::before {
-      content: "";
-      flex-shrink: 0;
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--red);
-      box-shadow: 0 0 0 4px #b8443210;
-    }
-
-    main {
-      flex: 1;
-      display: grid;
-      grid-template-columns: 1.15fr 1fr;
-      align-items: center;
-      gap: 48px;
-      padding: 80px 0;
-    }
-
-    .eyebrow {
-      margin: 0 0 28px;
-      color: var(--red);
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-    }
-
-    h1 {
-      margin: 0;
-      font-family: Georgia, "Times New Roman", serif;
-      font-size: clamp(76px, 9vw, 142px);
-      font-weight: 400;
-      line-height: 0.92;
-      letter-spacing: -7px;
-    }
-
-    h1 em {
-      color: var(--red);
-      font-weight: 400;
-    }
-
-    .description {
-      max-width: 350px;
-      margin: 32px 0;
-      color: var(--muted);
-      font-size: 15px;
-      line-height: 1.85;
-    }
-
-    .note {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      padding-top: 8px;
-      font-size: 12px;
-    }
-
-    .note span {
-      color: var(--red);
-      font-size: 24px;
-    }
-
-    .art {
-      position: relative;
-      display: grid;
-      place-items: center;
-      min-height: 400px;
-      isolation: isolate;
-    }
-
-    .halo {
-      position: absolute;
-      width: min(100%, 390px);
-      aspect-ratio: 1;
-      border: 1px solid var(--line);
-      border-radius: 50%;
-      z-index: -1;
-    }
-
-    .halo::after {
-      content: "";
-      position: absolute;
-      inset: 24px;
-      border: 1px dashed var(--line);
-      border-radius: 50%;
-    }
-
-    .envelope {
-      width: min(100%, 420px);
-      overflow: visible;
-      transform: rotate(-9deg);
-      filter: drop-shadow(0 20px 18px #42322113);
-      animation: float 7s ease-in-out infinite;
-    }
-
-    .spark {
-      position: absolute;
-      top: 6%;
-      right: 6%;
-      color: var(--red);
-      font-family: Georgia, serif;
-      font-size: 80px;
-      line-height: 1;
-    }
-
-    .caption {
-      position: absolute;
-      bottom: 0;
-      right: 8%;
-      color: var(--red);
-      font-family: Georgia, serif;
-      font-size: 20px;
-      font-style: italic;
-      transform: rotate(-7deg);
-    }
-
-    footer {
-      padding-top: 24px;
-      border-top: 1px solid var(--line);
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.6;
-    }
-
-    footer p {
-      margin: 0;
-    }
-
-    .footer-note {
-      letter-spacing: 1px;
-    }
-
-    .heart {
-      color: var(--red);
-    }
-
-    @keyframes float {
-      0%,
-      100% {
-        transform: translateY(0) rotate(-9deg);
-      }
-
-      50% {
-        transform: translateY(-12px) rotate(-6deg);
-      }
-    }
-
-    @media (min-width: 1500px) {
-      .page {
-        padding-top: 44px;
-        padding-bottom: 36px;
-      }
-    }
-
-    @media (max-width: 760px) {
-      .page {
-        padding: 24px 7%;
-      }
-
-      .brand {
-        font-size: 21px;
-      }
-
-      .status {
-        font-size: 9px;
-        letter-spacing: 1px;
-      }
-
-      main {
-        grid-template-columns: 1fr;
-        gap: 36px;
-        padding: 64px 0 48px;
-      }
-
-      h1 {
-        font-size: clamp(76px, 17vw, 118px);
-        letter-spacing: -5px;
-      }
-
-      .description {
-        margin: 26px 0 18px;
-      }
-
-      .art {
-        min-height: 320px;
-      }
-
-      .envelope {
-        width: min(85%, 350px);
-      }
-
-      .halo {
-        width: min(100%, 290px);
-      }
-
-      .spark {
-        right: 10%;
-        font-size: 64px;
-      }
-
-      .caption {
-        right: 10%;
-        font-size: 18px;
-      }
-
-      footer {
-        align-items: flex-start;
-        font-size: 10px;
-      }
-
-      .footer-note {
-        text-align: right;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .envelope {
-        animation: none;
-      }
-    }
-  </style>
+@media (max-width: 760px) {
+  nav { min-height: 78px; }
+  .brand { font-size: 20px; }
+  .nav-links { gap: 14px; font-size: 12px; }
+  .nav-links .desktop { display: none; }
+  .hero { grid-template-columns: 1fr; gap: 35px; padding-block: 45px; }
+  .art { min-height: 430px; max-width: 430px; width: 100%; margin: auto; }
+  .packages, .steps, .showcase .wrap, .guide { grid-template-columns: 1fr; }
+  section.content { padding-block: 50px; }
+  .package .description { min-height: auto; }
+  .steps { gap: 20px; }
+  .showcase .wrap, .guide { gap: 30px; }
+  .guide { margin-top: 40px; padding-top: 40px; }
+  .ribbon { font-size: 9px; letter-spacing: 1px; }
+  footer .wrap { flex-direction: column; gap: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+</style>
 </head>
 
 <body>
-  <div class="page">
-    <header>
-      <div class="brand" aria-label="Mahalkita Project">
-        mahalkita
-        <span>Project</span>
+<a class="skip" href="#main">Skip to content</a>
+
+<header>
+  <nav class="wrap" aria-label="Main navigation">
+    <a href="#" class="brand">mahalkita ✧<small>PROJECT</small></a>
+    <div class="nav-links">
+      <a href="#packages">Packages</a>
+      <a href="#preview">Preview</a>
+      <a href="#guide" class="desktop">Order guide</a>
+    </div>
+  </nav>
+</header>
+
+<main id="main">
+  <section class="hero wrap">
+    <div>
+      <span class="eyebrow">Digital wedding invitations</span>
+      <h1>Your love story.<br>A beautiful<br><em>first invitation.</em></h1>
+      <p>Bring your favorite people together with an invitation that feels like you. A thoughtful beginning to your most meaningful celebration.</p>
+      <div class="actions">
+        <a href="#packages" class="btn">Explore packages ↓</a>
+        <a href="https://invitos.net/mahalkita-project/"
+           class="btn outline" target="_blank" rel="noopener noreferrer">
+          View live sample ↗
+        </a>
       </div>
+      <p class="fine">Made with love, by Mahalkita Project.</p>
+    </div>
 
-      <div class="status">In the making</div>
-    </header>
-
-    <main>
-      <section aria-labelledby="headline">
-        <p class="eyebrow">
-          A little patience, a lot of love.
-        </p>
-
-        <h1 id="headline">
-          Coming<br>
-          <em>soon.</em>
-        </h1>
-
-        <p class="description">
-          Something special is on its way.
-          A new beginning from Mahalkita Project,
-          made with all our heart.
-        </p>
-
-        <div class="note">
-          <span aria-hidden="true">↗</span>
-          See you very soon.
-        </div>
-      </section>
-
-      <div class="art" aria-hidden="true">
-        <div class="halo"></div>
-
-        <span class="spark">✳</span>
-
-        <svg class="envelope" viewBox="0 0 440 340" fill="none">
-          <!-- Letter -->
-          <rect
-            x="75"
-            y="32"
-            width="290"
-            height="225"
-            rx="4"
-            fill="#fffcf5"
-            stroke="#ddd6c8"
-          />
-
-          <rect
-            x="96"
-            y="52"
-            width="248"
-            height="185"
-            rx="2"
-            stroke="#e8e0d3"
-          />
-
-          <text
-            x="220"
-            y="101"
-            text-anchor="middle"
-            font-family="Arial, sans-serif"
-            font-size="10"
-            letter-spacing="3"
-            fill="#999084"
-          >
-            A NOTE FOR YOU
-          </text>
-
-          <text
-            x="220"
-            y="147"
-            text-anchor="middle"
-            font-family="Georgia, serif"
-            font-size="31"
-            font-style="italic"
-            fill="#b84432"
-          >
-            Good things
-          </text>
-
-          <text
-            x="220"
-            y="183"
-            text-anchor="middle"
-            font-family="Georgia, serif"
-            font-size="31"
-            font-style="italic"
-            fill="#b84432"
-          >
-            take a little love.
-          </text>
-
-          <!-- Envelope -->
-          <path
-            d="M35 142 L220 261 L405 142 V306
-               Q405 314 397 314 H43 Q35 314 35 306 Z"
-            fill="#dfdacb"
-            stroke="#cfc7b7"
-          />
-
-          <path
-            d="M35 147 L220 264 L35 308 Z"
-            fill="#e9e4d8"
-          />
-
-          <path
-            d="M405 147 L220 264 L405 308 Z"
-            fill="#e5dfd1"
-          />
-
-          <path
-            d="M35 310 L205 205 Q220 195 235 205 L405 310"
-            fill="#eee8dc"
-            stroke="#d3cbbb"
-          />
-
-          <!-- Wax seal -->
-          <circle
-            cx="220"
-            cy="249"
-            r="28"
-            fill="#b84432"
-          />
-
-          <circle
-            cx="220"
-            cy="249"
-            r="22"
-            stroke="#d47a66"
-          />
-
-          <path
-            d="M220 260 C216 256 207 251 207 245
-               C207 238 216 236 220 243
-               C224 236 233 238 233 245
-               C233 251 224 256 220 260Z"
-            fill="#f3dfc9"
-          />
-        </svg>
-
-        <span class="caption">sealed with love.</span>
+    <div class="art" aria-label="Illustrative wedding invitation">
+      <div class="invitation">
+        <p>TOGETHER WITH THEIR FAMILIES</p>
+        <div class="monogram">a &amp; j</div>
+        <h3>Amelia<br><em>&amp;</em> James</h3>
+        <p>JOYFULLY INVITE YOU TO CELEBRATE</p>
+        <p>THE BEGINNING OF FOREVER</p>
+        <span aria-hidden="true">✧</span>
       </div>
-    </main>
+      <span class="art-label">Illustrative design · explore our live sample</span>
+    </div>
+  </section>
 
-    <footer>
-      <p>© 2026 Mahalkita Project.</p>
-
-      <p class="footer-note">
-        Something good is about to begin
-        <span class="heart">♥</span>
-      </p>
-    </footer>
+  <div class="ribbon">
+    One love story &nbsp; · &nbsp; A thoughtful invitation &nbsp; · &nbsp; A day to remember
   </div>
+
+  <section id="packages" class="content wrap">
+    <div class="intro">
+      <span class="eyebrow">Find your perfect fit</span>
+      <h2>Three ways to say<br><em>“You’re invited.”</em></h2>
+      <p>Explore your options, discover a theme you love, and let’s plan the details together.</p>
+    </div>
+
+    <!-- EDIT BEFORE LAUNCH:
+         Package names are proposals. Replace descriptions and prices with
+         your confirmed offers. No package inclusions have been assumed.
+         All theme buttons currently open the same supplied catalogue. -->
+    <p class="notice">
+      Our package details are being finalized. Message us to confirm pricing
+      and inclusions before placing your order.
+    </p>
+
+    <div class="packages">
+      <article class="package">
+        <span class="number">01 /</span>
+        <h3>Essential</h3>
+        <p class="description">Start with your wedding essentials. Talk to us about a simple invitation for your special day.</p>
+        <div class="price">Ask for pricing</div>
+        <p class="fine">Final features and availability confirmed via Messenger.</p>
+        <a href="https://invitos.id/katalog-2/" class="btn outline"
+           target="_blank" rel="noopener noreferrer">Browse themes ↗</a>
+        <a href="https://m.me/61582254758128?ref=essential" class="btn"
+           target="_blank" rel="noopener noreferrer">Inquire about Essential ↗</a>
+      </article>
+
+      <article class="package">
+        <span class="number">02 /</span>
+        <h3>Signature</h3>
+        <p class="description">Let your personalities shine. Discuss how you would like to bring your photos and love story into your invitation.</p>
+        <div class="price">Ask for pricing</div>
+        <p class="fine">Final features and availability confirmed via Messenger.</p>
+        <a href="https://invitos.id/katalog-2/" class="btn outline"
+           target="_blank" rel="noopener noreferrer">Browse themes ↗</a>
+        <a href="https://m.me/61582254758128?ref=signature" class="btn"
+           target="_blank" rel="noopener noreferrer">Inquire about Signature ↗</a>
+      </article>
+
+      <article class="package">
+        <span class="number">03 /</span>
+        <h3>Ever After</h3>
+        <p class="description">Explore a fuller invitation experience. Tell us about the extra touches you have in mind for your celebration.</p>
+        <div class="price">Ask for pricing</div>
+        <p class="fine">Final features and availability confirmed via Messenger.</p>
+        <a href="https://invitos.id/katalog-2/" class="btn outline"
+           target="_blank" rel="noopener noreferrer">Browse themes ↗</a>
+        <a href="https://m.me/61582254758128?ref=ever-after" class="btn"
+           target="_blank" rel="noopener noreferrer">Inquire about Ever After ↗</a>
+      </article>
+    </div>
+  </section>
+
+  <section id="preview" class="content showcase">
+    <div class="wrap">
+      <div>
+        <span class="eyebrow">See it come to life</span>
+        <h2>A little glimpse<br>of <em>your forever.</em></h2>
+        <p>Explore the Mahalkita Project sample invitation. Open it on your phone to experience the details at your own pace.</p>
+        <a href="https://invitos.net/mahalkita-project/" class="btn"
+           target="_blank" rel="noopener noreferrer">Open live invitation ↗</a>
+      </div>
+      <div class="preview-card">
+        <span class="eyebrow">Mahalkita Project</span>
+        <h3>Every love story<br>has its own style.</h3>
+        <p>Find a theme that feels like yours.</p>
+        <a href="https://invitos.id/katalog-2/"
+           target="_blank" rel="noopener noreferrer">Explore the full catalogue ↗</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="guide" class="content wrap">
+    <span class="eyebrow">From “yes” to “you’re invited”</span>
+    <h2>Your invitation, in three steps.</h2>
+
+    <div class="steps">
+      <div>
+        <span class="number">01</span>
+        <h3>Choose your theme</h3>
+        <p>Browse the catalogue and save your chosen theme’s name or link. Choose carefully: the theme cannot be changed once confirmed.</p>
+      </div>
+      <div>
+        <span class="number">02</span>
+        <h3>Share your details</h3>
+        <p>Message us to confirm your package. Then prepare your wedding information, photos, and preferences using the checklist below.</p>
+      </div>
+      <div>
+        <span class="number">03</span>
+        <h3>Check &amp; confirm</h3>
+        <p>Double-check all names, dates, and locations. Processing begins when the required information is complete or any omissions are agreed with us.</p>
+      </div>
+    </div>
+
+    <div class="guide">
+      <div>
+        <span class="eyebrow">A little preparation</span>
+        <h2>Everything we need<br>to begin.</h2>
+        <p>Prepare these details after confirming your package. Mark unused fields with ❌ and let us know which sections you wish to leave out.</p>
+        <p class="fine">Send photos via WhatsApp or Google Drive. Contact us on Messenger for submission details.</p>
+        <button id="download" class="btn outline" type="button" hidden>
+          Download order checklist ↓
+        </button>
+        <p id="status" class="fine" role="status"></p>
+      </div>
+
+      <div id="checklist">
+        <details open>
+          <summary>01 · Theme &amp; preferences</summary>
+          <ul>
+            <li>Selected theme name and link.</li>
+            <li>Name order: groom first or bride first.</li>
+            <li>Muslim or non-Muslim invitation wording.</li>
+          </ul>
+          <p>Your confirmed theme cannot be replaced or changed.</p>
+        </details>
+
+        <details>
+          <summary>02 · Couple &amp; family details</summary>
+          <p>For both the groom and the bride:</p>
+          <ul>
+            <li>Nickname and full name.</li>
+            <li>Father’s and mother’s names.</li>
+            <li>Address.</li>
+            <li>Instagram account.</li>
+          </ul>
+        </details>
+
+        <details>
+          <summary>03 · Ceremony &amp; reception</summary>
+          <p>For each event, provide:</p>
+          <ul>
+            <li>Day, date, month, and year.</li>
+            <li>Time and time zone. Specify PHT for Philippine events.</li>
+            <li>Venue name and full address.</li>
+            <li>Map or shared location link.</li>
+          </ul>
+        </details>
+
+        <details>
+          <summary>04 · Photos, video &amp; music</summary>
+          <ul>
+            <li>14 photos for the album.</li>
+            <li>2 individual photos of each partner.</li>
+            <li>1 couple documentary video, if available.</li>
+            <li>Your requested music.</li>
+            <li>Your love story.</li>
+          </ul>
+        </details>
+
+        <details>
+          <summary>05 · Gifts, livestream &amp; RSVP</summary>
+          <ul>
+            <li>Digital gifts: up to 2 bank accounts. Provide the bank, account number, and account holder’s name.</li>
+            <li>Physical gifts: delivery address, recipient’s name, and WhatsApp number.</li>
+            <li>Livestream: Instagram or Zoom link, if applicable.</li>
+            <li>RSVP: 1 WhatsApp contact number.</li>
+          </ul>
+          <p>Confirm which features are included in your package. Send personal details privately to our team.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="closing">
+    <span class="eyebrow">Let’s make it yours</span>
+    <h2>Your forever starts<br>with a little <em>hello.</em></h2>
+    <p>Tell us your wedding date, preferred theme, and package. Let’s take the first step together.</p>
+    <a href="https://m.me/61582254758128" class="btn"
+       target="_blank" rel="noopener noreferrer">Message Mahalkita Project ↗</a>
+    <p class="fine">Opens Messenger. Send your message there to begin your inquiry.</p>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="year">2026</span> Mahalkita Project. Made for your love story.</span>
+    <a href="https://www.facebook.com/61582254758128"
+       target="_blank" rel="noopener noreferrer">Find us on Facebook ↗</a>
+  </div>
+</footer>
+
+<script>
+"use strict";
+
+document.getElementById("year").textContent = new Date().getFullYear();
+
+const checklist = `MAHALKITA PROJECT
+WEDDING INVITATION ORDER CHECKLIST
+
+PACKAGE & PREFERENCES
+Package:
+Theme name and link:
+(The theme cannot be changed once confirmed.)
+Name order (groom / bride first):
+Wording (Muslim / non-Muslim):
+
+GROOM
+Nickname:
+Full name:
+Father's name:
+Mother's name:
+Address:
+Instagram:
+
+BRIDE
+Nickname:
+Full name:
+Father's name:
+Mother's name:
+Address:
+Instagram:
+
+CEREMONY
+Day and full date:
+Time and time zone:
+Venue and address:
+Location / map link:
+
+RECEPTION
+Day and full date:
+Time and time zone:
+Venue and address:
+Location / map link:
+
+PHOTOS & MEDIA
+Send via WhatsApp or Google Drive.
+14 album photos:
+2 individual photos of each partner:
+1 couple documentary video (if available):
+Requested music:
+Love story:
+
+DIGITAL GIFTS — MAXIMUM 2 BANK ACCOUNTS
+Account 1
+Bank:
+Account number:
+Account holder:
+
+Account 2
+Bank:
+Account number:
+Account holder:
+
+PHYSICAL GIFTS
+Delivery address:
+Recipient:
+WhatsApp number:
+
+LIVESTREAM
+Instagram / Zoom link:
+
+RSVP
+One WhatsApp number:
+
+IMPORTANT
+Confirm package features with our team.
+Mark unused fields with X and confirm any omissions.
+Check all names, dates, times, and locations carefully.
+Processing begins after required details are complete
+or omissions have been agreed.
+Send completed details privately to Mahalkita Project.
+`;
+
+const downloadButton = document.getElementById("download");
+downloadButton.hidden = false;
+
+downloadButton.addEventListener("click", () => {
+  const blob = new Blob([checklist], {
+    type: "text/plain;charset=utf-8"
+  });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "mahalkita-wedding-checklist.txt";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  document.getElementById("status").textContent =
+    "Your checklist download is ready. Complete it and send it privately to our team.";
+});
+</script>
 </body>
 </html>
